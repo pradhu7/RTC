@@ -1,0 +1,136 @@
+uploadBatchConfig:
+  cacheDuration: 5
+
+daoConfig:
+  cqlCacheConfig:
+    bufferSize: 100
+
+  security:
+    securityScopePrefix: "pds-"
+
+  globalTableConfig:
+    link: apx_cfLink_new
+    link2: apx_cfLink
+    assembly: apx_cfassembly
+    assemblyDataType: apx_cfassembly
+    index: apx_cfIndex
+    index2: apx_cfIndex
+    seq: apx_cfSequenceStore
+    metric: apx_cfMetric
+
+  seqStoreConfig:
+    paths: attributes.sourceType,source.type,attributes.bucketType,attributes.$batchId
+    annotation_paths:
+    noninferred_paths: source.type,attributes.$batchId
+    inferred_paths: attributes.bucketType,attributes.$batchId
+
+  summaryConfig:
+    mergeMinNumThreshold: 20
+    mergeMaxNumThreshold: 50
+    mergeMinPeriodThresholdInMs: 86400000
+    mergeMaxPeriodThresholdInMs: 2592000000
+
+customerPropertiesConfig:
+  local: false  # this is so that we can run unit tests without using Redis
+
+propertyHelperConfig:
+  prefix: something
+
+persistenceConfig:
+  jedisConfig:
+    testWhileIdle: true
+    testOnBorrow: true
+    maxTotal: 100
+
+  jedisPool:
+    timeout: 60000
+
+  # redisConfig is REALLY ONLY FOR microfilters so they can make direct redis calls
+  #  for efficiency in checking role/status of users
+  redisConfig:
+    host: "redis-1-stg.apixio.com"
+    port: 6379
+    # prefix for user-account/tokenizer keys (NOT for coordinator keys!):
+    keyPrefix: "development-"
+
+  cassandraConfig:
+    hosts: 10.1.16.193,10.1.32.253,10.1.48.121
+    localDC: aws-us-west-2
+    binaryPort: 9042
+    keyspaceName: apixio
+    baseDelayMs: 50
+    maxDelayMs: 250
+    readConsistencyLevel: LOCAL_QUORUM
+    writeConsistencyLevel: LOCAL_QUORUM
+    minConnections: 2
+    maxConnections: 5
+    cqlMonitor: true
+    username: pipeline-stg
+    password: orSEmXXX7s6VS2tk
+
+  cassandraConfig_science:
+    hosts: 10.1.16.193,10.1.32.253,10.1.48.121
+    localDC: aws-us-west-2
+    binaryPort: 9042
+    keyspaceName: apixio
+    baseDelayMs: 50
+    maxDelayMs: 250
+    readConsistencyLevel: LOCAL_QUORUM
+    writeConsistencyLevel: LOCAL_QUORUM
+    minConnections: 2
+    maxConnections: 5
+    cqlMonitor: true
+    username: pipeline-stg
+    password: orSEmXXX7s6VS2tk
+
+  cassandraConfig_internal:
+    hosts: 10.1.16.63,10.1.32.222,10.1.48.254
+    localDC: aws-us-west-2
+    binaryPort: 9042
+    keyspaceName: internal
+    baseDelayMs: 50
+    maxDelayMs: 250
+    readConsistencyLevel: LOCAL_QUORUM
+    writeConsistencyLevel: LOCAL_QUORUM
+    minConnections: 2
+    maxConnections: 5
+    cqlMonitor: true
+    username: pipeline-stg
+    password: orSEmXXX7s6VS2tk
+
+  cassandraConfig_application:
+    hosts: 10.1.16.103,10.1.32.103,10.1.48.137
+    localDC: aws-us-west-2
+    binaryPort: 9042
+    keyspaceName: application
+    baseDelayMs: 50
+    maxDelayMs: 250
+    readConsistencyLevel: LOCAL_QUORUM
+    writeConsistencyLevel: LOCAL_QUORUM
+    minConnections: 2
+    maxConnections: 5
+    cqlMonitor: true
+    username: pipeline-stg
+    password: orSEmXXX7s6VS2tk
+
+storageConfig:
+  s3Config:
+    accessKey: 241741630924230785008V01xW05z6JUZElS9EiACd83oOnr4rshbXmK3k/BI1Cq8QMg=
+    secretKey: 2518139111728757521184V01xQ8rQBVWbMjzYhKkGmyARgaNx2WN7uTofvgk+3GC9cQmbEUzlgebblx4oS8HKj50U
+    container: apixio-documents-test-oregon
+
+  apixioFSConfig:
+    mountPoint: apixio-documents-test-oregon
+    fromStorageType: S3
+    toStorageTypes: S3
+
+loggingConfig:
+  appName: pipelineadmin
+  defaultLoggerName: pipelineadmin
+  properties:
+    graphite: false
+    graphiteUrl: http://blah
+    graphiteFolderPrefix: coordinator
+    fluent: true
+    fluent.url: 127.0.0.1
+    fluent.tag: staging

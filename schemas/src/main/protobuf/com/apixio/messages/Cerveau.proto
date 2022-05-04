@@ -1,0 +1,142 @@
+/*
+
+This file defines the messages that are used to communicate events in our
+Cerveau processing pipeline
+
+Each message has standard (i.e., common across all message types) envelope info
+along with type-specific data.
+
+Types of messages:
+
+1.  DocumentSignalsReady / DOCUMENT_SIGNALS_READY
+
+    A signal generation process has completed processing one or more signals for a document
+    The message will specify which signals
+
+2.  PatientSignalsReady / PATIENT_SIGNALS_READY
+
+    A signal generation process has completed processing one or more signals for a patient
+    The message will specify which signals
+
+3.  PatientChangeEvent / PATIENT_CHANGE_EVENT
+
+    A part of a patient's dataset has been updated. The message will specify what part
+
+4.  ControlSetChangeEvent / DOCSET_CHANGE_EVENT or PATSET_CHANGE_EVENT
+
+    Eiether a docset or patset has changed state
+
+5.  PredictionsReady / DOCUMENT_PREDICTIONS_READY
+
+    Publishing a message to Patientsvc that Predictions are Ready for a doc/docset/mcid
+*/
+
+syntax = "proto3";
+
+package com.apixio.messages;
+
+// this import defines:
+//   * message OuterEnvelope
+//   * enum    MessageType
+import "com/apixio/messages/MessageMetadata.proto";
+import "google/protobuf/timestamp.proto";
+
+
+enum ControlSetEventType {
+  NEW_CONTROLSET    = 0;  // a new docset or patset has been created, consider it active
+  PAUSE_PUBLISHING  = 2;  // directive to pause a docset from publishing results downstream
+  START_PUBLISHING  = 3;  // directive to resume publishing results downstream
+  PAUSE_PROCESSING  = 4;  // pause all processing for a docset
+  START_PROCESSING  = 5;  // resume processing for a docset
+  CLOSE_CONTROLSET  = 6;  // mark control set as not longer active
+}
+
+enum PersistedCategory {
+  ALL            = 0;
+  CLINICAL_ACTOR = 1;
+  COVERAGE       = 2;
+  DEMOGRAPHIC    = 3;
+  DOCUMENT_META  = 4;
+  ENCOUNTER      = 5;
+  PROBLEM        = 6;
+  PROCEDURE      = 7;
+}
+
+enum PatientEventType {
+  // not clear yet whether this is needed we'll just put in a default of "Change"
+  // for now
+  UPDATE         = 0;
+}
+
+message Signal {
+  XUUID algorithmID = 1;
+}
+
+message DocumentSignalsReady {
+  MessageHeader    header     = 1;
+  XUUID            documentID = 2;
+  XUUID            patientID  = 3;
+  repeated Signal  signals    = 4;
+}
+
+message PatientSignalsReady {
+  MessageHeader    header     = 1;
+  XUUID            patientID  = 2;
+  repeated Signal  signals    = 3;
+}
+
+message PatientChangeEvent {
+  MessageHeader               header              = 1;
+  XUUID                       pdsID               = 2;
+  XUUID                       patientID           = 3;
+  repeated PersistedCategory  persistedCategories = 4;
+  PatientEventType            eventType           = 5;
+}
+
+message ControlSetChangeEvent {
+  MessageHeader               header     = 1;
+  ControlSetEventType         eventType  = 2;
+  oneof controlSetID {
+    XUUID       docsetID   = 3;
+    XUUID       patSetID   = 4;
+    XUUID       projectId  = 5;
+  }
+  int64 start              = 6;
+  int64 end                = 7;
+  XUUID mc                 = 8;
+}
+
+message DocumentPredictionsReady {
+  MessageHeader               header              = 1;
+  XUUID                       pdsID               = 2;
+  XUUID                       patientID           = 3;
+  XUUID                       documentID          = 4;
+  XUUID                       docsetID            = 5;
+  XUUID                       projectID           = 6;
+  XUUID                       algorithmID         = 7;
+  string                      logicalID           = 8;
+}
+
+message IRRPredictionsReady {
+  MessageHeader               header              = 1;
+  string                      predictionType      = 2;
+  XUUID                       projectID           = 3;
+  int64                       startTime           = 4;
+  int64                       endTime             = 5;
+  string                      logicalId           = 6;
+}
+
+message PatientPredictionsReady {
+  MessageHeader               header              = 1;
+  XUUID                       pdsID               = 2;
+  XUUID                       patientID           = 3;
+  XUUID                       docsetID            = 4 [deprecated = true];
+  XUUID                       projectID           = 5;
+  XUUID                       algorithmID         = 6;
+  string                      logicalID           = 7;
+  XUUID                       trackingSetID       = 8;
+}
+
+
+
+

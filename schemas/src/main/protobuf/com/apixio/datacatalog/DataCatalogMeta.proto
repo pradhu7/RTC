@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/EditType.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+
+message DataCatalogMeta {
+    int64 lastEditTime = 1;
+    EditType editType = 2;
+    string pdsId = 3;
+    ExternalId originalId = 4;
+    repeated ExternalId otherOriginalIds = 5;
+    string oid = 6; // DocumentId or sourceFileArchiveUUID for example
+}

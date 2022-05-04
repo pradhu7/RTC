@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package com.apixio.predictions.predictionbin;
+
+import "com/apixio/predictions/PredictionQuality.proto";
+import "com/apixio/predictions/PredictionMA.proto";
+import "com/apixio/predictions/PredictionModelGap.proto";
+import "com/apixio/predictions/PredictionCAPV.proto";
+import "com/apixio/predictions/PredictionCommon.proto";
+
+option java_outer_classname = "PredictionContainer";
+
+//
+// This is the list of available predictions. Any predictions that are not modeled
+// here, will need to be added. Please contact your local DI specialist.
+//
+message Prediction {
+ oneof prediction {
+     //
+     // MedicareAdvantage
+     //
+     com.apixio.predictions.ma.MedicareAdvantagePrediction prediction11 = 11;
+
+     //
+     // ModelGap
+     //
+     com.apixio.predictions.modelgap.DocumentValuePrediction prediction12 = 12;
+     com.apixio.predictions.modelgap.PatientValuePrediction  prediction13 = 13;
+
+     //
+     // CAPV
+     //
+     com.apixio.predictions.capv.CAPVPrediction prediction14 = 14;
+
+     //
+     // Quality
+     //
+     com.apixio.predictions.quality.ConjectureAbaGt20 prediction1 = 1;
+     com.apixio.predictions.quality.ConjectureAbaLt20 prediction2 = 2;
+     com.apixio.predictions.quality.ConjectureCol1     prediction3 = 3;
+     com.apixio.predictions.quality.ConjectureCol4     prediction4 = 4;
+     com.apixio.predictions.quality.ConjectureCol5     prediction5 = 5;
+     com.apixio.predictions.quality.ConjectureCol2     prediction6 = 6;
+     com.apixio.predictions.quality.ConjectureCol3     prediction7 = 7;
+     com.apixio.predictions.quality.ConjectureCdc1     prediction8 = 8;
+     com.apixio.predictions.quality.ConjectureCbp      prediction9 = 9;
+     com.apixio.predictions.quality.ConjectureBcs1     prediction10 = 10;
+  }
+}
+
+enum SourceType {
+  PATIENT = 0;
+  DOCUMENT = 1;
+}
+
+message Provenance {
+  string name = 1;
+  string className = 2;
+  string jarVersion = 3;
+  string modelVersion = 4;
+}
+
+enum AttributeTypes {
+  STRING = 0;
+  NUMERIC = 1;
+  DATE = 2;
+}
+
+message Attribute {
+    string name = 1;
+    AttributeTypes type = 2;
+    string value = 3;
+}
+
+//
+// We support two types of supporting Data. Attribute, and nested predictions
+//
+message SupportingData
+{
+    repeated Attribute attributes = 1;
+    repeated PredictionBin predictions = 2;
+}
+
+//
+// This represents a container for predictions, every prediction container will
+// contain:
+//
+//   1) Scope Information
+//        * SOURCE_TYPE (PATIENT, DOCUMENT) and SOURCE_ID
+//   2) The Actual Prediction
+//   3) Provenance Information
+//   4) Supporting Data
+//   5) Audit Information
+//
+// Please refer to documentation, regarding what each of these fields mean.
+//
+message PredictionBin {
+    oneof source {
+        PatientXUUID patient_source = 1;
+        DocumentXUUID document_source = 2;
+    }
+
+    Prediction prediction = 3;
+
+    Provenance provenance = 4;
+
+    repeated SupportingData supportingData = 5;
+    repeated Attribute auditInformation = 6;
+}
+
+// Wrapper for prediction bins
+// Each prediction wrapper may contain one or more prediction bins
+// Used for serialization + deserialization for large amounts of prediction bins
+message PredictionBinWrapper {
+    repeated PredictionBin predictionBin = 1;
+}

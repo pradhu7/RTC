@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/VitalSign.proto";
+import "com/apixio/datacatalog/DataCatalogMeta.proto";
+import "com/apixio/datacatalog/AllergyInfo.proto";
+import "com/apixio/datacatalog/ProcedureInfo.proto";
+import "com/apixio/datacatalog/ProblemInfo.proto";
+import "com/apixio/datacatalog/EncounterInfo.proto";
+import "com/apixio/datacatalog/UUID.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/SocialHistoryInfo.proto";
+import "com/apixio/datacatalog/LabResult.proto";
+import "com/apixio/datacatalog/RiskAdjustmentClaim.proto";
+import "com/apixio/datacatalog/Mao004.proto";
+import "com/apixio/datacatalog/Prescription.proto";
+import "com/apixio/datacatalog/DocumentMeta.proto";
+import "com/apixio/datacatalog/FfsClaim.proto";
+import "com/apixio/datacatalog/FamilyHistory.proto";
+import "com/apixio/datacatalog/Immunization.proto";
+
+message CodedBase {
+  DataCatalogMeta dataCatalogMeta = 1;
+  repeated UUID parsingDetailsIds = 2;
+  repeated UUID sourceIds = 3;
+  UUID primaryActorId = 4;
+  repeated UUID supplementaryActorIds = 5;
+  repeated UUID encounterIds = 6;
+}
+
+message BiometricValue {
+  CodedBase base = 1;
+  VitalSign vitalSign = 2;
+}
+
+message Allergy {
+  CodedBase base = 1;
+  AllergyInfo allergyInfo = 2;
+}
+
+message Encounter {
+  DataCatalogMeta dataCatalogMeta = 1;
+  repeated UUID parsingDetailsIds = 2;
+  repeated UUID sourceIds = 3;
+  UUID primaryActorId = 4;
+  repeated UUID supplementaryActorIds = 5;
+  EncounterInfo encounterInfo = 6;
+  UUID internalId = 7;
+}
+
+message ProblemCBO {
+  CodedBase base = 1;
+  ProblemInfo problemInfo = 2;
+}
+
+message ProcedureCBO {
+  CodedBase base = 1;
+  ProcedureInfo procedureInfo = 2;
+  repeated ClinicalCode supportingDiagnosisCodes = 3;
+}
+
+message FfsClaimCBO {
+  CodedBase base = 1;
+  FfsClaim ffsClaim = 2;
+  repeated ClinicalCode supportingDiagnosisCodes = 3;
+}
+
+message SocialHistory {
+  CodedBase base = 1;
+  SocialHistoryInfo socialHistoryInfo = 2;
+}
+
+message LabResultCBO {
+  CodedBase base = 1;
+  LabResultInfo labResultInfo = 2;
+}
+
+message PrescriptionCBO {
+  CodedBase base = 1;
+  PrescriptionInfo prescriptionInfo = 2;
+}
+
+message DocumentMetaCBO {
+  CodedBase base = 1;
+  DocumentMeta documentMeta = 2;
+}
+
+message Mao004CBO {
+  CodedBase base = 1;
+  Mao004 mao004 = 2;
+}
+
+message RaClaimCBO {
+  CodedBase base = 1;
+  RiskAdjustmentClaim raClaim = 2;
+}
+
+message FamilyHistoryCBO {
+  CodedBase base = 1;
+  FamilyHistoryInfo familyHistoryInfo = 2;
+}
+
+message ImmunizationCBO {
+  CodedBase base = 1;
+  ImmunizationInfo immunizationInfo = 2;
+}

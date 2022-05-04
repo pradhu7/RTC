@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+enum Gender {
+    UNKNOWN = 0;
+    MALE = 1;
+    FEMALE = 2;
+    TRANSGENDER = 3;
+}
+

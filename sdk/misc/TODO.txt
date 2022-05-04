@@ -1,0 +1,340 @@
+#### NOTES
+
+* i'm now calling the IDL files ".idl" and the persisted representation of one a ".fx" file...
+
+* it appears that the build requires maven 3.6.3; 3.6.1 FAILS but 3.6.3 works
+
+* for real code, work with Rinat to put his PageWindow-producing code into a java lib separate from apx-spark-apps
+
+* fully copied the following files:
+   accessors/src/main/java/com/apixio/jobs/util/ApixioUuidUtils.java
+   accessors/src/main/java/com/apixio/jobs/util/NoPageException.java
+   accessors/src/main/java/com/apixio/signals/PageWindowUtils.java
+   accessors/src/main/java/com/apixio/signals/PipelinePageWindow.java
+
+  as i couldn't (easily, if at all) pull in the .jar that contained them (apx-spark-apps code)
+
+  probably relatedly, these files are 100% totally duplicated files in apx-spark-apps:
+
+    [scott@drakaea apx-spark-apps]$ sum $(find . -name PageWindowUtils.java)
+    60034     7 ./irr/src/main/java/com/apixio/signals/PageWindowUtils.java
+    60034     7 ./siggen/src/main/java/com/apixio/signals/PageWindowUtils.java
+    60034     7 ./util/src/main/java/com/apixio/signals/PageWindowUtils.java
+
+  etc.
+
+
+* notes from call w/ richard:
+  * config.yaml that's an MC part is engineering-created; i can/should use the subtree of the
+    main entry that's in the config.yaml i pulled.  that should be returned from ExecutionContext.getConfiguration
+  * use ModelFile.scala with filepath to model.zip to create what's needed
+  * i should be able to ignore most of the rest of ExecutionContext stuff
+
+
+################ git repos/artifacts:
+
+  apx-sdk:  master is ready-for-testing/use-by-others, dev is for me
+
+  apx-signalmanager:  branch "newer-mono" has mono-version update and mods to save protoclass in rdb
+
+  apx-modelcatalogsvc:  bumping up to compatible versions of things like mono and making it use {revision}
+                        and 2.1.4 of ensemble
+
+
+################################################################  TODO:
+
+* revisit the whole "auto-iterate" model as it feels hackish at best (but it does provide efficiency...)
+
+* figure out the whole FxEnvironment/EccEnvironment requirements; work with Science and review their metrics code:
+  * debug logging
+  * stats info
+    * timing info
+    * total f(x) calls;  failure, success counts
+    * f(x)-defined metrics (fun)
+  * configuration:
+    * for debug logging
+  * spark session?  basically make environment extensible:  defined/created by client, passed through SDK, used by f(x) impls
+  * system services:
+    * datasource access:
+      * s3 access (hopefully readonly)
+  * f(x) and f(x)impl metadata:
+    * version, jar, etc.
+
+* get staging-based tests working again
+
+* create an f(x)impl setup method that will read from MCS, pull artifacts locally, etc.
+* companion:  create publish tool
+
+
+BUG * need to call Converter.convertToInterface() in restore() accessor...
+
+* enforce the requirement that all FxImpls in EccInit have the same FxDef
+
+* finish markdown-based documentation in DOCS/HowTo.md
+
+* fix mismatch between tokenizer and method finding as tokenizer assumes Long and
+  Double which are carried through to looking up Method by Long.class, etc.
+
+* probable issue:  Setup.java is (now) returning the PATH to the asset files and not the URL.  this is
+  necessary at the moment as ModelFile.scala doesn't accept URLs.  will this cause an issue later when/if
+  we want real URLs?
+
+* for test code itself, it currently expects an asset "config.yaml" but that's not really needed so i'd
+  like to remove it from from everything.
+
+* question:  where does runtime config belong?  in ecc part of sdk or just in (generic) ecc level of code?
+  related questions:
+    * does core sdk require configuration or not?  if yes, what is it and define it at sdk level
+    * what config centralization mechanism is useful?
+
+
+BART * DESIGN questions:
+  * the current set of generators extend PageSignalGeneratorBase which provides a lot of functionality
+    and so the question is if the base class that's supplied with the SDK should do this or not.  i'd
+    first argue that it seems like the SDK shouldn't do all that, but then the question is how would
+    something like the set of ensemble generators have a convenient way for them to centralize
+    common functionality?
+   ===> let Bart handle this??
+
+DAVID * mini-POC:  can generic sparkapp driver code do the same kind of dynamic specification of
+  accessorjars & fximpl (both of which modify classpath) that loadrun.sh does?  this would
+  mean that executor config would include/pass this info so that the executor JVMs would
+  be able to do the same EccSystem setup that TestLoadAndRun.java does
+
+
+LOWER * change ApxDataDao's Map<Class<>, DataType> so it's Map<String,DataType> and use the canonical classname
+  as that gets rid of the currently inefficient lookup by String classname
+
+LOWER * mark as @Deprecated the methods in ApxDataDao that require DataType for restore as it can now
+  restore just based on groupingID
+
+LOWER * MAYBE add generic 'map<string,string> meta' to fximpl
+
+LOWER * support for primitives in f(x) defs; currently boxed primitives are required
+
+LATER? * idea:  build up fuller protobuf-based config for GenECC that includes:
+  * accessor list
+  * datatype list
+  * ...??
+
+LOWER * update guava to at least 19.0
+
+LATER * possibly deal with Integer vs int (etc) on param types
+
+
+################ DONE:
+
+DONE * check in apx-modelcatalogsvc pom.xml changes for newer mono (conflicts..sigh)
+
+DONE * code signal converter
+
+NOT NOW * document design (etc) lessons learned:
+  NO * concept of "package" of accessors and probably implementations; impacts .proto def of fxdef/fximpl etc
+  * think about launcher process that will just listen for init and spawn subprocess with fuller
+    classpath param to avoid use of classloaders (which might or might not be useful)
+  * some functionality must be moved out from apx-spark-apps
+
+    * change the design of things so that there's now a "packaging" concept (jar, for jvm) where the package can contain
+      one or more accessors or f(x) impls.  there will have to be .proto metadata that is associated with it that
+      describes/lists the contents but this would make it so that we could have a single .jar that contains multiple
+      accessors--as it is right now we'd have to load up a massive .jar for each accessor (the jar could be identical
+      but it would be large)
+
+NOT NECESSARY * modify restore accessor so that it takes an ID that's supplied by cerebro that's the logical
+  identifier of the data to fetch... really:  figure out how cerebro+ECCconfig work together
+  for composition of functions
+
+DONE * start to document "how to add ...":
+  * new datatype (as needed/returned by f(x)):
+    * Converter
+    * .proto
+    * (data) java interface def
+
+  * new f(x) signature
+    * interface
+    * base class
+
+  * new accessor
+
+  * new DataURI
+
+DONE * consolidate documentation info one place in repo code
+
+DONE * finish implementation of ApxQueryDataUriManager.getGroupingID...
+
+DONE * finish support for multiple f(x)impls in a single FxExecutor
+
+DONE not tested * create accessor to read/restore data; THIS REQUIRES KNOWING THE protoClass!!
+
+DONE-ISH * design-ish issue:  ApxQuery data URI must resolve to either a single groupingID or all
+  groupingIDs must be of the same protoclass (or the restore will fail)
+
+DONE * code restore of data given data URI
+
+DONE * create ApxGrouping DataURI
+
+DONE * possibly? add protoClass to what's stored in ApxDataDao during .putData() as there's no easy
+  way to manage that consistently/easily across components of the system; e.g., it seems wrong
+  to ask cerebro pass that in when calling the static method ApxQueryDataUriManager.makeDataURI()
+
+DONE * move com.apixio.sdk.cmdline parsers to com.apixio.sdk.util as they're now used for stuff besides cmdline
+
+DONE * review code and clean up and add comments, etc.
+
+"dotted" CONVENTION * figure out namespacing of f(x) and of accessors
+
+DONE * change FxInitializer and Accessor area so that accessor init doesn't require setAssets()
+
+DONE * need to figure out the persistence of output of f(x) for POC ???
+DONE * figure out persistence of List<Signal> using accessor-like pluggable functions
+
+DONE * change EccSystem.loadFx() so that it allows loading of new fximpls only if their implurl is already in
+  the URLClassLoader; allowing multiple loadfx()s is probably useful...
+
+NO ASSETS * do Accessors need the same initialization mechanism that f(x) impls do?  specifically, will accessor
+  impls have any assets (i.e., external data)?
+
+DONE * add ExecutionEnvironment stuff to impl.setup()
+
+DONE * RENAME sdkcode/.../args.proto to be ecc.proto (? or something)
+
+COVERED ELSEWHERE * add persistence support to SDK's EccSystem; on the input arg side, i think i'm expecting that a
+  system-supplied generic data accessor is (automatically?) used to pull in data, but that requires
+  a groupingID and datatype (identified by dataname, i believe).  how does this work??
+
+DONE ANOTHER WAY * Idea:  for persistence support, look at adding a proto def that maps to DataType in apxdata dao area; the
+  contents of the .proto would pretty much define all that's in DataType and having GenECC restore/use that
+   .pb object(s) would just automatically extend (or create new instances of) DataType.  of course this
+   would require that the classpath/uberjar for genecc app have all referenced classes in it;
+
+   NOTE that this mechanism MUST (currently?) support saving signal data using SignalLogic instead of
+   ApxDataDao...  not sure how to configure/specify this...
+
+DONE * actual do persistence of data from f(x) output using DataConverters, etc.
+
+DONE * break out evaluation of ecc expr into something that can be used by datauri construction code as
+  it needs to have 2 predefined accessors (environment() and request())
+
+DONE* modify FxEnvironment to define a way to get info like mcid
+DONE * modify FxRequest to define a way to get info like docid; it might be good if both of these just
+  share a base interface...
+
+
+DONE * rename the java outer class of args.proto so it is different from fx.proto's
+
+FIXED * IdlSignalParser incorrectly declares the return type of extractFeature to be the protobuf class and not
+  ifc.Signal class.  change and retest on staging sys
+
+DONE * think about risks within project
+
+DONE * identity/list real-ish tasks (for me and others):
+
+DONE * MODIFY ACCESSOR and invocation of f(x) design so that it can handle List<T> as the input to
+  f(x) where List<> triggers GenericECC to actually loop, calling f(x) on each element.  THIS IS
+  NOT AS EASY AS I'D HOPED as the top-level code doesn't know the accessors used on the params
+  that are to be passed to f(x)impl
+
+DONE * actually modify FaceToFace.scala to fit in poc:
+  DONE * figure out what ModelFile interface should do an probably just impl it based on Setup.java
+  N/A * create ExecutionEnvironment; stub out lots???
+
+APPARENTLY NOT NECESSARY * stub out most of ifc.ExecutionContext and .PlatformServices
+
+DONE * dynamically load accessors; current TESTS.sh includes accessors.jar in classpath; this could be
+  complicated by the fact that we need to load them into the same ClassLoader that fximpl was
+  loaded with
+
+DONE * should FxInitializer.setEnvironment be declared with "throws Exception" or not?
+
+DONE * add enough of a RuntimeEnvironment or ExecutionContext (whatever) that minimally has DaoServices, in order
+  to be able to get PatientLogic over to accessors
+
+* get facetoface.scala compiling in project; or maybe just wrap and pull in apixio-ensemble artifact fully
+  DONE * probably needs modifications on model.zip loading.  yuck
+  DONE * figure out how siggen cluster code produces PageWindows for f(x) invocation
+
+DONE * .process(pw) called at apx-spark-apps/siggen/src/main/scala/com/apixio/sparkapps/executor/DocumentSignalExecutor.scala on line 226:
+          pws.foreach { pw =>
+            Retry(pageSigGen.process(pw)) match {
+              case Success(signals) =>
+
+  pws is:
+    val pws: Seq[PageWindow] = Seq(fullDocPw) ++ perPagePwIter.map(_.getRight) ++ pwIter.map(_.getRight)
+
+   where
+
+      val fullDocPw     = PageWindowUtils.generateFullDocumentPageWindow(apo, document, docCacheElements.asJava)
+      val perPagePwIter = PageWindowUtils.generatePerPagePageWindows(fullDocPw).asScala
+      val pwIter        = PageWindowUtils.generatePageWindows(fullDocPw).asScala
+
+      val docCacheElements: Seq[DocCacheElement] = protoList.asScala.map(p => richPatient.convertToDocCacheElem(p))
+      val protoList     = DocCacheElemUtility.extractDocCacheElementProtoList(document)
+      val richPatient   = new RichPatient(apo)
+
+      def process(apo: Patient, ...
+      val document = apo.getDocuments.iterator().next()
+
+
+  see apx-spark-apps/siggen/src/main/java/com/apixio/signals/PageWindowUtils.java
+      mono/dao/src/main/java/com/apixio/dao/utility/DocCacheElemUtility.java
+      apx-ensemble/services/src/main/scala/com/apixio/ensemble/service/data/RichPatient.scala
+
+   ----> therefore, if i have a Patient, then i can get a sequence (list) of PageWindows
+
+   and this is how to get the apo/patient given the docuuid:
+
+      val patient: Patient = Daos.patientLogic.getSinglePartialPatient(docUuid, true)
+
+DONE * start on producing a real PageWindow obj for f2f.scala
+
+MOSTLY DONE * move some of what's in GenericECC down into something like ecclib or something:
+  * loadfx()
+  * initAccessors()
+  * invoke(environment) -- fun one as it needs to eval and invoke, and genECC really just should loop
+    -> LoadAndRun should just call into this new util class methods
+
+  WHAT DOES AN ECC DO:
+  * loops on getting a request
+    * for each request, sets the request into the current context
+    * calls eccutil.eval(currentcontext)
+
+MOSTLY DONE * deal with declaring, saving, and initializing asset stuff
+
+DONE * assets need to be a map<string,string> (or, really <string,url>)
+
+DONE * remove copied .protos and just use mono/schema artifact
+
+DONE * need to get accessors working for eval()
+
+DONE * fill out genericECC's invokable stuff so we can actually invoke the now-found Method
+
+DONE * how do i actually make calls to f(x) impl?  reimplement evalarg stuff...
+
+DONE * add back in accessors
+
+DONE * call impl.setup() from GenericECC code
+
+DONE * modify generated java ifc/base classes to have init()
+
+DONE * move sdkcode/src/main/java/com/apixio/sigtest to fxdefs/ area and remove apixio-ensemble-interface dep from sdkcode/pom.xml
+
+DONE * use restored IDL proto info to locate the java.util.reflect.Method of an impl.jar
+
+DONE * create a stub f(x) impl jar
+
+DONE * make sure the generated-from-idl .java files are correct and in the right place
+
+DONE * fill out FxImpl proto stuff
+
+DONE * need command line tool to produce a .fx file given the classname of a "pretend parser"; to make this work
+  i have to define a java interface like "IdlParser".  this will be used to produce a .fx for some f(x)
+  like facetoface
+
+DONE * need command line tool to produce an FxImpl.fx file given:  def.fx, impl.jar, entryName, list of assets.
+  this will be used to create the .fx that's used to load up an impl at runtime
+
+DONE * create .proto for persisting fx definition info
+
+DONE * create pretend parser for signal processing f(x)
+
+DONE * test write/read of fx.proto structs

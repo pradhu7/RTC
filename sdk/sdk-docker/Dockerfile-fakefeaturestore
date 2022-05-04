@@ -1,0 +1,49 @@
+FROM 088921318242.dkr.ecr.us-west-2.amazonaws.com/jenkins/maven:3.6.3-jdk-8
+
+RUN mkdir /tmp/bcjars && \
+    mkdir /tmp/execjars && \
+    mkdir /tmp/config
+
+COPY pom.xml /app/pom.xml
+COPY sdkcore /app/sdkcore
+COPY sdkcode /app/sdkcode
+COPY cmdline /app/cmdline
+COPY accessors /app/accessors
+COPY genlambdaecc /app/genlambdaecc
+COPY fxdef /app/fxdef
+COPY fximplcode /app/fximplcode 
+
+COPY docker/settings.xml /root/.m2/
+
+WORKDIR /app
+
+# RUN mvn dependency:resolve
+
+RUN mvn -DskipTests clean install
+
+RUN cp /app/sdkcore/target/apixio-sdk-core-1.0.8-SNAPSHOT.jar /tmp/execjars/sdkcore.jar
+RUN cp /app/accessors/target/apixio-fx-accessors-1.0.8-SNAPSHOT.jar /tmp/execjars/accessors.jar
+RUN cp /app/fxdef/target/apixio-fx-defs-1.0.8-SNAPSHOT.jar /tmp/execjars/fxdef.jar
+RUN cp /app/genlambdaecc/target/apixio-generic-ecc-1.0.8-SNAPSHOT.jar /tmp/execjars/genecc.jar
+RUN cp /app/fximplcode/target/apixio-fx-impls-1.0.8-SNAPSHOT.jar /tmp/execjars/fximpl.jar
+
+ARG ARTIFACT_USER
+ARG ARTIFACT_PASS
+WORKDIR /tmp/bcjars
+RUN wget --http-user=${ARTIFACT_USER} --http-password=${ARTIFACT_PASS} -O bcprov.jar \
+    https://repos.apixio.com/artifactory/maven-central-cache/org/bouncycastle/bcprov-jdk15on/1.49/bcprov-jdk15on-1.49.jar
+RUN wget --http-user=${ARTIFACT_USER} --http-password=${ARTIFACT_PASS} -O bc-fips.jar \
+    https://repos.apixio.com/artifactory/apixio-spark/org/bouncycastle/bc-fips/1.0.2/bc-fips-1.0.2.jar
+
+
+
+CMD ["java","-Dlog4j.logger.com.datastax.driver.core.Connection=INFO", \
+     "-Dbcprovpath=/tmp/bcjars/bcprov.jar", \
+     "-Dbcfipspath=/tmp/bcjars/bc-fips.jar", \
+     "-cp","/tmp/execjars/*", \
+     "com.apixio.sdk.test.FxTestServer", \
+     "/tmp/config/config.yaml", \
+     "compjars=/tmp/execjars/accessors.jar,/tmp/execjars/fximpl.jar", \
+     "accessors=com.apixio.accessors.JSONPatientAccessor,com.apixio.accessors.PatientAccessor,com.apixio.sdk.builtin.RestoreAccessor,com.apixio.sdk.builtin.MakeUriAccessor", \
+     "converters=com.apixio.converter.SignalConverter"]
+# CMD ["/bin/bash"]

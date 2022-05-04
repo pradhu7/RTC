@@ -1,0 +1,83 @@
+# dropwizard configuration:
+server:
+  applicationConnectors:
+    - type: http
+      port: 8075
+  adminConnectors:
+    - type: http
+      port: 9075
+
+# "globalConfig" refers to configuration that is shared across ALL projects that
+# conform to the new API & token/security model.  The term "global" is not meant to
+# imply global to just a single project.  Note that the request filter construct
+# capability is also global in the same way.
+
+microserviceConfig:
+
+  persistenceConfig:
+
+    jedisConfig:
+      testWhileIdle: true
+      testOnBorrow: true
+      maxTotal: 100
+
+    jedisPool:
+      timeout: 60000
+
+    redisConfig:
+      host: "{redis.host}"
+      port: 6379
+      keyPrefix: "{redis.keyprefix}"
+
+  loggingConfig:
+    appName: tokenizer
+    defaultLoggerName: tokenizer
+    properties:
+      graphite: false
+      graphite.url: 54.215.1.135
+      graphite.folderPrefix: test.tokenizer
+      fluent: false
+      fluent.url: 127.0.0.1
+      fluent.tag: test
+
+  # externalMaxTTL and internalMaxTTL specify the number of seconds after token
+  # creation when the token is destroyed, regardless of activity.
+  # externalActivityTimeout is the number of seconds after last activity after which
+  # the token is destroyed.  Example: externalMaxTTL=86400 forces a logout after a
+  # day, even with constant activity, whereas externalActivityTimeout=600 logs out
+  # after 10 minutes of inactivity even if it could otherwise be kept alive for a
+  # day.  internalMaxTTL and externalActivityTimeout are required and externalMaxTTL
+  # is optional.
+  tokenConfig:
+    internalMaxTTL: 60
+    externalMaxTTL: 86400
+    externalActivityTimeout: 1800
+    authCookieName: ApxToken
+    gatewayHeader: "x-envoy-internal: true"
+
+  # all request filters take configuration with the structure of a map from string to
+  # object, where the object can be whatever structure is needed (e.g., a list or
+  # map...).  One required map key is "filterClass" which refers to a class that
+  # extends com.apixio.web.Microfilter
+
+  # only 1 main filter is supported; this pattern indicates which URL requests
+  # actually get filtered: (Note: static bundles might affect this design here)
+
+  filterConfig:
+    filterUrlPattern:
+      - "/*"
+
+  # requestFilters is the list of web filters that will be applied in the listed order
+  # to each and every request coming in to the server:
+
+    requestFilters:
+      - com.apixio.restbase.web.RequestTimer
+      - com.apixio.restbase.web.ValidateToken
+
+    com.apixio.restbase.web.ValidateToken:
+      authCookieName: ApxToken             # MUST match what's in tokenConfig.authCookieName (sadly no central config on this)
+      tokenType:  EXTERNAL
+      publicURLs:
+        - /util
+      partialAuthURLs:
+        - /tokens

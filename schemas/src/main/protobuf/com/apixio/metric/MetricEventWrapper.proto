@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.apixio.metric;
+import "com/apixio/metric/AuditEventRecord.proto";
+
+message MetricEventWrapper {
+    string version = 1;
+    string metricName = 2;
+    string messageType = 3;
+
+    oneof data {
+        AuditEventRecord audit_event = 4 [json_name = "data"];
+    }
+}
+

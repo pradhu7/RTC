@@ -1,0 +1,119 @@
+/*
+
+This file defines the messaging contract between the Menage Scaling APIs and
+the Escalade auto-scaling Service.
+
+Note that this proto deviates from the standard Cerveau message format since
+this is a tooling format standardization. These messages are currently not
+transferred on a Kafka topic or persisted in S3 (we audit via MNAR).
+
+*/
+
+syntax = "proto3";
+
+package com.apixio.messages;
+
+import "com/apixio/messages/LambdaMessages.proto";
+import "com/apixio/messages/MessageMetadata.proto";
+import "google/protobuf/timestamp.proto";
+
+enum Command {
+    CREATE      = 0;
+    DELETE      = 1;
+    SCALE_OUT   = 2;
+    SCALE_IN    = 3;
+    SCALE_UP    = 4;
+    SCALE_DOWN  = 5;
+    REPORT      = 6;
+    SCALE_ERROR = 7;
+}
+
+enum Status {
+    SUCCESS = 0;
+    FAILURE = 1;
+}
+
+message MenageResponse {
+    int64                       code    = 1;
+    Status                      status  = 2;
+    string                      message = 3;
+    Command                     command = 4;
+    google.protobuf.Timestamp   messageDateTime = 5;
+    oneof body {
+        CreateBody              createBody  = 6;
+        ScaleBody               scaleBody   = 7;
+        ReportBody              reportBody  = 8;
+        DeleteBody              deleteBody  = 9;
+    }
+}
+
+message CreateBody {
+    XUUID               algorithmID         = 1;
+    string              environment         = 2;
+    string              instanceType        = 3;
+    int64               capacity            = 4;
+    Payload             payload             = 5;
+    string              repository          = 6;
+    string              version             = 7;
+    bool                autoscale           = 8;
+    bool                unittest            = 9;
+    /**
+     * Field to deprecate payload by EOY 2019
+     */
+    LambdaInitParams    lambdaInitParams    = 10;
+}
+
+message ScaleBody {
+    XUUID               algorithmID = 1;
+    string              environment = 2;
+    int64               capacity    = 3;
+    int64               diff        = 4;
+    repeated string     ip          = 5;
+}
+
+message ReportBody {
+    repeated ClusterMeta clusterMeta = 1;
+}
+
+message DeleteBody {
+    XUUID               algorithmID         = 1;
+    string              environment         = 2;
+    string              instanceType        = 3;
+    int64               capacity            = 4;
+    LambdaInitParams    lambdaInitParams    = 5;
+}
+
+message ClusterMeta {
+    XUUID               algorithmID      = 1;
+    string              logicalID        = 2;
+    string              environment      = 3;
+    int64               capacity         = 4;
+    string              cluster          = 5;
+    repeated string     ip               = 6;
+    bool                autoscale        = 7;
+    bool                unittest         = 8;
+    string              instanceType     = 9;
+    string              algorithmType    = 10;
+    LambdaInitParams    lambdaInitParams = 11;
+}
+
+message Payload {
+    XUUID       algorithmID     = 1;
+    string      requestTopic    = 2;
+    string      returnTopic     = 3;
+    string      errorTopic      = 4;
+    string      deadLetterTopic = 5;
+    int64       instanceCount   = 6;
+}
+
+message InitPayload {
+    string      algorithmID     = 1;
+    string      requestTopic    = 2;
+    string      returnTopic     = 3;
+    string      errorTopic      = 4;
+    string      deadLetterTopic = 5;
+    int64       instanceCount   = 6;
+    string      inboundTopic    = 7;
+    string      outboundTopic   = 8;
+    XUUID       algorithmXUUID  = 9;
+}

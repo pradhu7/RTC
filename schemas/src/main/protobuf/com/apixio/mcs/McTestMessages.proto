@@ -1,0 +1,73 @@
+/**
+ * This file defines the API used to manage tests via the McTest microservice.
+ */
+
+syntax = "proto3";
+
+package com.apixio.mcs.mctest.messages;
+
+enum TestLifecycle {
+  CREATED = 0;
+  SETUP = 1;
+  RUNNING = 2;
+  TEARDOWN = 3;
+  COMPLETED = 4;
+  ERROR = 5;
+}
+
+enum TestExecutorType {
+  UNKNOWN_EXECUTOR = 0;
+  ECC = 1;
+  CEREBRO = 2;
+}
+
+message StartTestRequest {
+  string algorithmId = 1;
+  string creator = 2;
+  string description = 3;
+  string testDataMcTestId = 4;
+  string verificationDataMcTestId = 5;
+  TestExecutorType executorType = 6;
+}
+
+message TestState {
+  int32 id = 1;
+  string algorithmId = 2;
+  string creator = 3;
+  string description = 4;
+  string testDataMcTestId = 5;
+  string verificationDataMcTestId = 6;
+  TestLifecycle lifecycle = 7;
+  TestExecutor executor = 8;
+}
+
+message TestExecutor {
+  TestExecutorType type = 1;
+  string uri = 2;
+}
+
+/**
+ * public String contextId;
+ *   public String s3Exception;
+ *   public long   totalExecutionTimeMs;
+ *   public long   totalMemoryUsageMB;
+ * public Map<String, S3KeyResult> s3Objects = new HashMap<>();  //?? better name for s3Objects??
+ */
+message AutoTestResultMessage {
+  string contextId = 1;
+  string s3Exception = 2;
+  int64 totalExecutionTimeMs = 3;
+  int64 totalMemoryUsageMB = 4;
+  map<string, AutoTestS3KeyResult> s3Objects = 5;
+}
+
+/**
+ * public String processException;
+ * public long   executionTimeMs;
+ * public long   memoryUsageMB;
+ */
+message AutoTestS3KeyResult {
+  string processException = 1;
+  int64 executionTimeMs = 2;
+  int64 memoryUsageMB = 3;
+}

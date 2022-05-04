@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package com.apixio.decisions;
+
+option java_outer_classname = "Decisions";
+
+message Decision {
+
+    // This the format outputted by: https://github.com/Apixio/apx-signalmanager/blob/EN-8599/cerveau-models/src/main/scala/com/apixio/cerveau/model/harvester/DecisionHarvester.scala
+
+    //    case class Decision(
+    //        hcc: String,
+    //        documentId: String,
+    //        mimeType: String,
+    //        patientId: String,
+    //        phase: String,
+    //        pages: Seq[Integer],
+    //        projectId: String,
+    //        rejectReason: String,
+    //        result: String,
+    //        time: Long,
+    //        transactionId: String,
+    //        user: String,
+    //        viewedPages: Seq[ViewedPage]
+    //    )
+
+    string                   hcc                = 1;
+    string                   documentId         = 2;
+    string                   mimeType           = 3;
+    string                   patientId          = 4;
+    string                   phase              = 5;
+    repeated int32           pages              = 6;
+    string                   projectId          = 7;
+    string                   rejectReason       = 8;
+    string                   result             = 9;
+    int64                    time               = 10;
+    string                   transactionId      = 11;
+    string                   user               = 12;
+    repeated ViewedPage      viewedPages        = 13;
+
+
+}
+
+message ViewedPage {
+
+    // This the format outputted by: https://github.com/Apixio/apx-signalmanager/blob/EN-8599/cerveau-models/src/main/scala/com/apixio/cerveau/model/harvester/DecisionHarvester.scala
+
+    //    case class ViewedPage(
+    //        confirmedRead: String,
+    //        confirmedView: String,
+    //        exitTimestamp: String,
+    //        pageNo: String,
+    //        timeSpentOnPage: String,
+    //        timestampEnter: String
+    //    )
+
+    string                   confirmedRead      = 1;
+    string                   confirmedView      = 2;
+    string                   exitTimestamp      = 3;
+    string                   pageNo             = 4;
+    string                   timeSpentOnPage    = 5;
+    string                   timeStampEnter     = 6;
+}
+
+message DecisionsWrapper {
+    repeated Decision       decisions           = 1;
+}

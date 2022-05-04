@@ -1,0 +1,26 @@
+{
+  "generator": [
+    "com.apixio.signalmanager.PlainGenerator", 
+    {
+      "jarVersion": "1.4.0", 
+      "name": "StructuredSuspects", 
+      "version": "1.0.0"
+    }
+  ], 
+  "name": "Suspecting-V22_115", 
+  "sigType": "CATEGORY", 
+  "source": [
+    "com.apixio.ensemble.impl.source.PatientSource", 
+    {
+      "location": {
+        "descriptor": "default"
+      }, 
+      "patientId": {
+        "pattern": "PAT", 
+        "uuid": "f9d66eab-6eaa-4a31-96d6-49b7723eb64b"
+      }
+    }
+  ], 
+  "value": "false", 
+  "wt": 0.5059966
+}

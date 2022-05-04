@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package com.apixio.doctraces;
+
+import "com/apixio/doctraces/Error.proto";
+
+message OcrTrace {
+  int32 attemptNumber = 1; // "attemptNumber": 0,
+  int64 maxMemory = 2; // "maxMemory": 4582277120,
+  int32 childExitCode = 3; // "ocr.child.exitcode": "0",
+  string childExitCodeStr = 4; // "ocr.child.exitcode_str": "ok (0)",
+  int32 childResurrectionCount = 5; // "childResurrectionCount": 1,
+  int32 subprocessMemoryMargin = 6; // "subprocessMemoryMargin": 1024,
+  string status = 7; // "ocrAndTextExtraction.status": "start",
+  string hostName = 8; // "hostName": "10.0.13.6",
+  string pageHtmlStatus = 9; // "page.html.status": "success",
+  int32 totalPages = 10; // "page.totalPages": "146",
+  // Page level data
+  repeated OcrPageTrace pageTraces = 11;
+  repeated Error errors = 12;
+}
+
+
+
+message OcrPageTrace {
+  int32 page = 1;
+
+  int32 millis = 2; // ocr.millis": "2373", AND millis: "2373"
+  int32 letters = 3; // tokens.letters": "157",
+  int32 nonLetterCount = 4; // tokens.nonLetterCount": "8",
+  int32 height = 5; // height": "877",
+  int32 nonLetterRatio = 6; // tokens.nonLetterRatio": "0.2962962962962963",
+  int32 taskMillis = 7;  // ocrTask.millis": "755",
+  int32 numbers = 8;  // tokens.numbers": "3",
+  string textExtractionStatus = 9;  // textExtraction.status": "skipped",
+  int32 dictWords = 10;  // tokens.dictwords": "11",
+  int32 tokensCount = 11;  // tokens.count": "27",
+  int32 outputLength = 12;  // ocr.outputLength": "4386",
+  int32 dpiHorizontal = 13;  // dpi.horizontal": "72.94117647058823",
+  double setDpiHorizontal = 14;  // set.dpi.horizontal": "194.47058823529412",
+  int32 worstLetteres = 15;  // tokens.worst.letters": "157",
+  int32 tokensQaMillis = 16;  // tokens.qaTime": "33",
+  double setDpiVerical = 17;  // set.dpi.vertical": "212.0",
+  string status = 18;  // ocr.status": "done",
+  int32 width = 19;  // width": "620",
+  int32 worstDictWords = 20;  // tokens.worst.dictwords": "11",
+  string tesseractVersion = 21;  // tesseractVersion": "4.0.0",
+  int32 worstWords = 27;  // tokens.worst.words": "27",
+  double dpiMin = 28;  // dpi.min": "72.94117647058823",
+  int32 words = 29; // tokens.words": "27",
+  bool isGood = 30;  // tokens.isOCRGood": "true",
+  int32 worstNumbers = 31;  // tokens.worst.numbers": "3",
+  double dpiVerical = 32;  // dpi.vertical": "79.0",
+
+  repeated Error errors = 33;
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ExternalId.proto";
+
+message ProviderInRole {
+  ExternalId id = 1;
+  string actorRole = 2;
+}

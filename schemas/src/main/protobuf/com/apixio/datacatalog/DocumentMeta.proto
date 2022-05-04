@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/UUID.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/DocumentContent.proto";
+import "com/apixio/datacatalog/DefaultValueWrappers.proto";
+
+message DocumentMeta {
+  UUID uuid = 1;
+  string documentTitle = 2;
+  YearMonthDay documentDate = 3;
+  bool dateAssumed = 4; // dateAssumed comes from AXM Metadata CSV populated by loader configuration. todo: combine with document date?
+  string documentType = 5; //APX Parser DOCUMENT_TYPE
+  ClinicalCode code = 6;
+  repeated ClinicalCode codeTranslations = 7;
+  repeated DocumentContent documentContents = 8;
+  EncounterMetadata encounterMeta = 9;
+  OcrMetadata ocrMetadata = 10;
+  HealthPlanMetadata healthPlanMeta = 11;
+  ContentMetadata contentMeta = 12;
+}
+
+//https://github.com/Apixio/scala-common/blob/dev/src/main/scala/alignment/DocumentMetadata.scala
+// note: Some old legacy datetime formatting
+message EncounterMetadata {
+  // Used in Dataorch templating
+  string documentFormat = 1; // DOCUMENT_FORMAT example: "EPIC_ENCOUNTERNOTE"
+  string documentSignedStatus = 2; //DOCUMENT_SIGNED_STATUS examples: "Signed" / "Addendum"
+  string documentAuthor = 3; // DOCUMENT_AUTHOR // first and last name
+  YearMonthDay documentUpdate = 4; // DOCUMENT_UPDATE // yyyy-mm-dd
+  YearMonthDay encounterDate = 5; // ENCOUNTER_DATE yyyy-mm-dd
+  string providerType = 6; // PROVIDER_TYPE "Physician" / "Nurse Practitioner", etc
+  string providerTitle = 7; // PROVIDER_TITLE "MD" / "NP" / etc
+  string providerId = 8; // PROVIDER_ID
+  YearMonthDay documentSignedDate = 9; //DOCUMENT_SIGNED_DATE example: "2016-05-18"
+
+  ClinicalCode encounterProviderType = 10; // ENCOUNTER_PROVIDER_TYPE indicates provider type for encounter associated with document
+  YearMonthDay encounterStartDate = 11; // ENCOUNTER_DATE_START
+  YearMonthDay encounterEndDate = 12; // ENCOUNTER_DATE_END
+
+  // other epic fields
+  YearMonthDay lastEditTime = 13; // LST_FILED_INST_DTTM
+  YearMonthDay encounterTime = 14; // ENT_INST_LOCAL_DTTM
+  YearMonthDay documentUpdateDate = 15; // DOCUMENT_UPDATE_DATE
+  YearMonthDay entryInstantDate = 16; //ENTRY_INSTANT_DTTM
+  YearMonthDay updatedAuthorDate = 17; //UPD_AUTHOR_INS_DTTM
+  YearMonthDay noteFileDate = 18; // NOTE_FILE_TIME_DTTM
+  YearMonthDay updatedAuthorLocalDate = 19; //UPD_AUT_LOCAL_DTTM
+  YearMonthDay noteFileLocalDate = 20; //NOT_FILETM_LOC_DTTM
+  string encounterId = 21; //ENCOUNTER_ID
+  string encounterName = 22; // ENCOUNTER_NAME
+  string noteType = 23; // NOTE_TYPE
+
+
+  //TODO https://github.com/Apixio/custops/blob/e847820a9da1651d2ffd7f91de4ed42b460c4cd5/integration_tools_37/Utilities/SQL/import_script_modified_2.sql#L542:L621
+  // There is a LOT of metadata. Not going to use it
+}
+
+message OcrMetadata {
+  string status = 1; // ocr.status example: success
+  string resolution = 2; // ocrResolution example: 200
+  int32 childExitCode = 3; // ocr.child.exitcode example: 0
+  string childExitCodeStr = 4; // ocr.child.exitcode_str example: ok (0)
+  int64 timestampMs = 5; // ocr.ts example: 1619959136875
+  string gsVersion = 6; // gsVersion
+  IntWrapper totalPages = 7; //totalPages example: 32
+  IntWrapper availablePages = 8; //availPages example: 32
+  string ocrVersion = 9; // example: 10.0.5. Going forward will be different version
+}
+
+message ContentMetadata {
+
+  LongWrapper docCacheTsMs = 1; //  doccacheelem_s3_ext.ts // timestamp in ms
+  string docCacheLevel = 2; // doccacheelem_s3_ext.level // ALL: "doc"
+  string docCacheFormat = 3; // doccacheelem_s3_ext.format // ALL: "protobuf_base64"
+
+
+  // content extract metadata that comes from non-PDF
+  LongWrapper stringContentMs = 4; // s3_ext.ts.string_content
+  LongWrapper textExtractMs = 5; //s3_ext.ts.text_extracted // epoch ms
+
+  string pipelineVersion = 6; // ex. 10.0.5
+}
+
+
+// TODO: Is this needed?
+// Comes from HealthPlan source system
+message HealthPlanMetadata {
+  ExternalId alternateChartId = 1; //ALTERNATE_CHART_ID configurable output reporting
+  string chartType = 2; // CHART_TYPE
+}
+
+// Not going migrate these metadata fields
+  // Project_Code example: WLC1MCPI15 -- not needed
+  // Project_Type example: Facility Chases
+  // Prov_Last_Name example: MENENDEZ
+  // Prov_First_Name // example: THEODORE
+  // Client_Provider_ID example: 665219
+  // Provider_ID example: 669763
+  // Split example: CentauriUAM294 not needed
+  // Project example: J NOT NEEDED

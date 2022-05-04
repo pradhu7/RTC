@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/CareSite.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+
+message EncounterInfo {
+  ExternalId primaryId = 1;
+  ClinicalCode code = 2;
+  repeated ClinicalCode codeTranslations = 3;
+  YearMonthDay startDate = 4;
+  YearMonthDay endDate = 5;
+  string encounterType = 6;
+  repeated ClinicalCode chiefComplaints = 7;
+  CareSite caresite = 8;
+}

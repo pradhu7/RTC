@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package com.apixio.doctraces;
+
+import "com/apixio/doctraces/Error.proto";
+
+message PagerDocTrace {
+  repeated string renderOrder = 1; // ordered list //"aspose,pdfbox,ghostscript",
+  int32 totalPages = 2; //totalPages "totalPages": 146,
+  string pageConversions = 3; // "page.conversions": "PNG:200+originalSizeCopy",
+
+  repeated PagerPageTrace pageTraces = 4;
+  repeated Error errors = 5;
+}
+
+
+
+message PagerPageTrace {
+  int32 page = 1;
+
+  string render = 2; // renderer": "aspose"
+  repeated BlobInfo blobInfos = 3; // png:200+originalSizeCopy.numBlobs": "2"
+  repeated Error errors = 4;
+}
+
+message BlobInfo {
+  string pgnSize = 1;
+  int32 numBlobs = 2;
+}

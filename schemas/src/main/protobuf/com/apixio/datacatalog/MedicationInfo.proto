@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "MedicationProto";
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+
+message MedicationInfo {
+  string brandName = 1;
+  string genericName = 2;
+  ClinicalCode code = 3;
+  string routeOfAdministration = 4;
+  repeated string ingredients = 5;
+  string strength = 6;
+  string form = 7;
+  string units = 8;
+  repeated ClinicalCode codeTranslations = 9;
+}

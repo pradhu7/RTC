@@ -1,0 +1,31 @@
+{
+  "generator": [
+    "com.apixio.signalmanager.PlainGenerator", 
+    {
+      "jarVersion": "1.4.0", 
+      "name": "DateIsAssumed", 
+      "version": "1.0.0"
+    }
+  ], 
+  "name": "DateIsAssumed", 
+  "sigType": "CATEGORY", 
+  "source": [
+    "com.apixio.ensemble.impl.source.DocumentSource", 
+    {
+      "documentId": {
+        "pattern": "DOC", 
+        "uuid": "642bb4b2-139a-4c01-9160-47213df2a72b"
+      }, 
+      "location": {
+        "descriptor": "default"
+      }, 
+      "pages": 20,
+      "patientId": {
+        "pattern": "PAT", 
+        "uuid": "0070c50b-2466-4bfb-a797-121a34afffe8"
+      }
+    }
+  ], 
+  "value": "true", 
+  "wt": 1.0
+}

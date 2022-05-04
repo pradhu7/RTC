@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+//https://www.medicalbillingandcoding.org/cpt-modifiers/ up to 4 2-Alphanumeric strings
+message CptModifier {
+  string modifier1 = 1;
+  string modifier2 = 2;
+  string modifier3 = 3;
+  string modifier4 = 4;
+}

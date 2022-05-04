@@ -1,0 +1,56 @@
+import org.apache.commons.io.FilenameUtils
+
+def dindTemplate(Closure body) {
+  podTemplate(
+    containers: [
+      containerTemplate(
+        name: 'dind',
+        image: '088921318242.dkr.ecr.us-west-2.amazonaws.com/apixio-devops/dind',
+        ttyEnabled: true,
+        privileged: true,
+        resourceRequestMemory: '2Gi',
+        resourceLimitMemory: '2Gi'
+      )
+    ]
+  ) {
+    body()
+  }
+}
+
+def getProjects() {
+    def projects = [
+        "snapshots/apx-sdk",
+        "releases/apx-sdk",
+    ]
+    return projects
+}
+
+properties(
+  [
+    disableConcurrentBuilds(), 
+    parameters(
+      [
+        // choice(choices: getProjects(), description: '', name: 'PROJECT'),
+        choice(choices: ["snapshots","releases"], description: '', name: 'REPOSITORY'),
+        string(description: 'version of the project to build', name: 'VERSION', trim: true),
+        string(description: 'The branch to use for the docker build.', name: 'BRANCH', defaultValue: "feature/testecc", trim: true)
+      ]
+    )
+  ]
+)
+
+dindTemplate() {
+  node(POD_LABEL) {
+    stage("build apx-sdk container") {
+      checkout scm
+      container('dind') {
+        dir("docker/") {
+          def make_args = "-e VERSION=${params.VERSION.trim()}"
+          docker.withRegistry('https://088921318242.dkr.ecr.us-west-2.amazonaws.com', "ecr:us-west-2:jenkins-ecr") {
+              sh "make ${make_args} build push"
+          }
+        }
+      }  
+    }
+  }
+}

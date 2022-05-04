@@ -1,0 +1,34 @@
+{
+  "generationTime": 1556435811915,
+  "generator": {
+    "className": "com.apixio.ensemble.impl.generators.page.V5",
+    "jarVersion": "1.6.0-apo-drain-2019-04-15-2-SNAPSHOT",
+    "name": "V5",
+    "version": "1.0.1"
+  },
+  "generatorName": "V5",
+  "generatorVersion": "1.0.1",
+  "name": "V5-V22_111",
+  "sigType": "CATEGORY",
+  "source": {
+    "documentId": "4bed93f8-1a30-4a91-8ba8-8b1a38e5002c",
+    "location": {
+      "descriptor": "default"
+    },
+    "pageProps": {
+      "page": 10
+    },
+    "patientId": "ffdc1ab7-a7f8-4be3-a417-2177eb779525",
+    "sourceType": "Page",
+    "wholeDocProps": {
+      "pages": -1
+    },
+    "windowProps": {
+      "centroid": -1,
+      "end": -1,
+      "start": -1
+    }
+  },
+  "value": "false",
+  "weight": 0.00039123307
+}

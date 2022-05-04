@@ -1,0 +1,92 @@
+
+* removed com.apixio.BaseLogic; code should now use com.apixio.restbase.LogicBase (a rename, in that way)
+
+* removed com.apixio.restbase.RedisServices
+
+* added com.apixio.restbase.PersistenceServices:
+  * contains Redis and Cql services
+
+* added com.apixio.restbase.UserServices:
+  * added Users, Tokens services
+  * holder of postInit stuff
+
+* com.apixio.SysServices extends UserServices
+
+* removed all traces of Rules, FilterGroups, Filters, FilterTemplates, RuleTemplates and related files
+
+* cleaned up (hopefully) construction of SysServices, UserServices, etc.
+
+* removed com.apixio.restbase.dao.Persistable; added com.apixio.restbase.DaoBase (sorta the same thing)
+
+* removed com.apixio.restbase.RedisLogicBase
+
+* added cqlDebug to com.apixio.restbase.config.CassandraConfig.  !!!!! requires .yaml changes !!!!!!
+
+* removed one flavor of com.apixio.restbase.dao.BaseEntities constructor (code should now use use one that accepts DaoBase)
+
+* changed constructor of com.apixio.restbase.dao.Tokens to take a DaoBase "seed"
+
+* changed com.apixio.restbase.web.Microfilter so it only needs UserServices as class param
+
+* made postInit() method public (due to changed packages)
+
+* gutted com.apixio.useracct.web.CheckAccountRole  !!!! requires .yaml/code changes to remove this class from filter lists !!!
+
+* created com.apixio.restbase.config.ConfigUtil to help in building up services
+
+* removed com.apixio.useracct.dw.resources.CustomerUtil
+
+* git summary:
+	deleted:    common/src/main/java/com/apixio/BaseLogic.java
+	deleted:    common/src/main/java/com/apixio/customer/buslog/FilterGroupLogic.java
+	deleted:    common/src/main/java/com/apixio/customer/buslog/FilterLogic.java
+	deleted:    common/src/main/java/com/apixio/customer/buslog/FilterTemplateLogic.java
+	deleted:    common/src/main/java/com/apixio/customer/buslog/RuleLogic.java
+	deleted:    common/src/main/java/com/apixio/customer/dao/FilterGroups.java
+	deleted:    common/src/main/java/com/apixio/customer/dao/FilterTemplates.java
+	deleted:    common/src/main/java/com/apixio/customer/dao/Filters.java
+	deleted:    common/src/main/java/com/apixio/customer/dao/Rules.java
+	deleted:    common/src/main/java/com/apixio/restbase/RedisLogicBase.java
+	deleted:    common/src/main/java/com/apixio/restbase/RedisServices.java
+	deleted:    common/src/main/java/com/apixio/restbase/dao/Persistable.java
+	deleted:    common/src/main/java/com/apixio/useracct/buslog/RuleTemplateDTO.java
+	deleted:    common/src/main/java/com/apixio/useracct/buslog/RuleTemplateLogic.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/cmdline/ListOldProjects.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/cmdline/TemplateXfer.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/dw/resources/CustomerRS.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/dw/resources/CustomerUtil.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/dw/resources/FilterRS.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/dw/resources/RuleRS.java
+	deleted:    dw-useracct/src/main/java/com/apixio/useracct/dw/resources/RuleTemplateRS.java
+
+* git status:
+	renamed:    common/src/main/java/com/apixio/restbase/dao/Persistable.java -> common/src/main/java/com/apixio/base/DaoBase.java
+	renamed:    common/src/main/java/com/apixio/BaseLogic.java -> common/src/main/java/com/apixio/base/LogicBase.java
+
+################
+
+TODO:
+
+* move all the setupServices() code out from dw-useracct/src/main/java/com/apixio/useracct/cmdline/*.java into
+  a CmdlineUtil.java
+
+DONE mostly * cleanup imports
+
+DONE? * move java files to better packages...kind of mishmashed right now
+  
+
+################
+
+GENERAL:
+
+* kinda renamed RedisLogicBase to LogicBase (different packages...)
+
+* kinda renamed Persistable to DaoBase (different packages...)
+
+################
+
+NOT NEEDED:  COMPATIBILITY:
+
+* i could re-add com.apixio.restbase.RedisLogicBase as a passthrough to LogicBase
+
+* i could re-add com.apixio.restbase.RedisServices as a passthrough to UserServices

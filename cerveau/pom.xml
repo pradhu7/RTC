@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>apixio</groupId>
+    <artifactId>mono</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>apixio-cerveau-interface${scala.version.suffix}</artifactId>
+  <description>Apixio Cerveau Interfaces</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-ensemble-interface${scala.version.suffix}</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>apixio</groupId>
+          <artifactId>apixio-model-converter${scala.version.suffix}</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.module</groupId>
+          <artifactId>jackson-module-scala_2.11</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-common</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.codahale.metrics</groupId>
+          <artifactId>metrics-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.codahale.metrics</groupId>
+          <artifactId>metrics-annotation</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.kafka</groupId>
+          <artifactId>kafka-clients</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- direct dependency to avoid build issues when usint mvn -T -->
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-model${scala.version.suffix}</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

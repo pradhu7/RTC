@@ -1,0 +1,66 @@
+persistenceConfig:
+
+  jedisConfig:
+    testWhileIdle: true
+    testOnBorrow: true
+    maxTotal: 100
+
+  jedisPool:
+    timeout: 60000
+
+  redisConfig:
+    host: localhost
+    port: 6379
+    keyPrefix: staging-
+
+  cassandraConfig:
+    hosts: localhost
+    binaryPort: 9042
+    keyspaceName: apixio
+    baseDelayMs: 50
+    maxDelayMs: 250
+    readConsistencyLevel: QUORUM
+    writeConsistencyLevel: QUORUM
+    minConnections: 1
+    maxConnections: 2
+
+customerPropertiesConfig:
+  local: false  # this is so that we can run unit tests without using Redis
+
+propertyHelperConfig:
+  prefix: something
+
+storageConfig:
+
+  s3Config:
+    accessKey: shouldBeOverwritten
+    secretKey: shouldBeOverwritten
+
+  apixioFSConfig:
+    mountPoint: S3
+    fromStorageType: S3
+    toStorageTypes: apixio-documents
+
+daoConfig:
+
+  cqlCacheConfig:
+    bufferSize: 100
+
+  globalTableConfig:
+    link: apx_cfLink_new
+    index: apx_cfIndex
+    seq: apx_cfSequenceStore
+    metric: apx_cfMetric
+
+  seqStoreConfig:
+    paths: attributes.sourceType,source.type,attributes.bucketName,attributes.$batchId
+    annotation.paths:
+    noninferred.paths: source.type,attributes.$batchId
+    inferred.paths: attributes.bucketName,attributes.$batchId
+
+  summaryConfig:
+    mergeMinNumThreshold: shouldBeOverwritten
+    mergeMaxNumThreshold: shouldBeOverwritten
+    mergeMinPeriodThresholdInMs: shouldBeOverwritten
+    mergeMaxPeriodThresholdInMs: shouldBeOverwritten
+

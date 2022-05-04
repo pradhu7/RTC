@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+
+message CoverageInfo {
+  int32 sequenceNumber = 1;
+  YearMonthDay startDate = 2; // TODO: use LocalDate in next version of Coverage
+  YearMonthDay endDate = 3;
+  string coverageType = 4;
+  string healthPlanName = 5;
+  ExternalId groupNumber = 6;
+  ExternalId subscriberNumber = 7;
+  ExternalId beneficiaryId = 8;
+
+  YearMonthDay dciStartDate = 9;
+  YearMonthDay dciEndDate = 10;
+}

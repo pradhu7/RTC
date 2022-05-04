@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>apixio-sdk</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+  <artifactId>apixio-fx-defs${scala.version.suffix}</artifactId>
+  <packaging>jar</packaging>
+
+  <description>f(x) definitions and artifacts</description>
+
+  <properties>
+    <!-- test dependencies -->
+    <junit5.version>5.4.1</junit5.version>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-sdk-core${scala.version.suffix}</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-protoc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-ensemble-interface${scala.version.suffix}</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-mcs-common${scala.version.suffix}</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.googlecode.protobuf-java-format</groupId>
+      <artifactId>protobuf-java-format</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- direct dependency to avoid build issues when usint mvn -T -->
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-model${scala.version.suffix}</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/python</directory>
+        <targetPath>${basedir}/target/python</targetPath>
+      </resource>
+      <resource>
+        <directory>src/main/python/apxprotobufs</directory>
+        <targetPath>${basedir}/target/python/apxprotobufs</targetPath>
+      </resource>
+    </resources>
+
+    <testResources>
+      <testResource>
+        <directory>src/test/python</directory>
+        <targetPath>${basedir}/target/python</targetPath>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile-java</id>
+            <configuration>
+               <protoSourceRoot>${project.basedir}/src/main/protobuf</protoSourceRoot>
+            </configuration>
+            <goals>
+              <goal>compile</goal>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

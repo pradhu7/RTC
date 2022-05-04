@@ -1,0 +1,8 @@
+if [ ! -r "$1" ]; then echo "raml file $1 not readable.  Usage: $0 pathToRamlFile"; exit 1; fi
+
+base=$(dirname $0)/..
+cd ${base}
+tar=target/classes
+clp=$(echo ${tar} ${tar}/lib/*.jar | sed 's/ /:/g')
+
+java -cp ${clp} com.apixio.restbase.apiacl.cmdline.Raml2Json $*

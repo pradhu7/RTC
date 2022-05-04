@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "com/apixio/logs/Annotation.proto";
+import "com/apixio/logs/Code.proto";
+import "google/protobuf/wrappers.proto";
+
+message Finding {
+  google.protobuf.StringValue startDos = 1;
+  google.protobuf.StringValue state = 2;
+  google.protobuf.StringValue document = 3;
+  google.protobuf.StringValue endDos = 4;
+  repeated google.protobuf.UInt32Value pages = 5;
+  Code code = 6;
+  repeated Annotation annotations = 7;
+  google.protobuf.StringValue predictedDos = 8;
+  repeated Annotation annotationHistory = 9;
+}

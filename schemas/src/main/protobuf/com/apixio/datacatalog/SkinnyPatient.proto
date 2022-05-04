@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "SkinnyPatientProto";
+
+import "com/apixio/datacatalog/DataCatalogMeta.proto";
+import "com/apixio/datacatalog/PatientMeta.proto";
+import "com/apixio/datacatalog/ParsingDetails.proto";
+import "com/apixio/datacatalog/Source.proto";
+import "com/apixio/datacatalog/BaseObjects.proto";
+import "com/apixio/datacatalog/CodedBaseObjects.proto";
+import "com/apixio/datacatalog/Patient.proto";
+
+/**
+    Skinny Patients: Our "Summary" Objects only have a subset of the data that our Patient container allows
+    Protobuf Design: We can serialize / deserialize data with different protobuf messages if they shares the same pointers
+
+    If Patient.proto has allergies as 8 --> Skinny Allergy Patient needs the same pointer!
+    https://developers.google.com/protocol-buffers/docs/encoding
+
+ */
+
+message Encounters {
+  CodedBasePatient base = 1;
+}
+
+message ClinicalActors {
+  PatientMeta patientMeta = 1;
+  DataCatalogMeta dataCatalogMeta = 2;
+  repeated ClinicalActor clinicalActors = 4;
+  repeated Source sources = 5;
+  repeated ParsingDetails parsingDetails = 6;
+}
+
+message PatientDocuments {
+  CodedBasePatient base = 1;
+  repeated DocumentMetaCBO documents = 2;
+}
+
+message PatientProcedure {
+  CodedBasePatient base = 1;
+  repeated ProcedureCBO procedures = 3;
+}
+
+message PatientFfsClaims {
+  CodedBasePatient base = 1;
+  repeated FfsClaimCBO ffsClaims = 4;
+}
+
+message PatientProblems {
+  CodedBasePatient base = 1;
+  repeated ProblemCBO problems = 5;
+}
+
+message PatientRaClaims {
+  CodedBasePatient base = 1;
+  repeated RaClaimCBO raClaims = 6;
+}
+
+message PatientMao004s {
+  CodedBasePatient base = 1;
+  repeated Mao004CBO mao004s = 7;
+}
+
+message Demographics {
+  BasePatient basePatient = 1;
+  ContactDetails primaryContactDetails = 8;
+  repeated ContactDetails alternateContactDetails = 9;
+  PatientDemographics primaryDemographics = 10;
+  repeated PatientDemographics alternateDemographics = 11;
+}
+
+message PatientCoverage {
+  BasePatient base = 1;
+  repeated Coverage coverage = 12;
+}
+
+message Allergies {
+  CodedBasePatient base = 1;
+  repeated Allergy allergies = 13;
+}
+
+message BiometricValues {
+  CodedBasePatient base = 1;
+  repeated BiometricValue biometricValues = 14;
+}
+
+message SocialHistories {
+  CodedBasePatient base = 1;
+  repeated SocialHistory socialHistories = 15;
+}
+
+message PatientLabResult {
+  CodedBasePatient base = 1;
+  repeated LabResultCBO labResults = 16;
+}
+
+message PatientPrescription {
+  CodedBasePatient base = 1;
+  repeated PrescriptionCBO prescriptions = 17;
+}
+
+message PatientFamilyHistory {
+  CodedBasePatient base = 1;
+  repeated FamilyHistoryCBO familyHistories = 18;
+}
+
+message PatientImmunization {
+  CodedBasePatient base = 1;
+  repeated ImmunizationCBO immunizations = 19;
+}
+
+
+

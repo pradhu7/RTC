@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>mono</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>apixio-sdk</artifactId>
+    <packaging>pom</packaging>
+
+  <properties>
+    <mono.ver>${revision}</mono.ver>
+    <apx.ensemble.forsdk.version>2.16.0</apx.ensemble.forsdk.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-ensemble-data-services${scala.version.suffix}</artifactId><version>${apx.ensemble.forsdk.version}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-ensemble-interface${scala.version.suffix}</artifactId><version>${apx.ensemble.forsdk.version}</version></dependency>
+
+      <dependency><groupId>apixio</groupId><artifactId>apixio-bizlogic${scala.version.suffix}</artifactId>       <version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-common</artifactId>                                <version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-dao${scala.version.suffix}</artifactId>            <version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-datasource${scala.version.suffix}</artifactId>     <version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-entity-common${scala.version.suffix}</artifactId>  <version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-model${scala.version.suffix}</artifactId>          <version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-model-converter${scala.version.suffix}</artifactId><version>${mono.ver}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-security</artifactId>                              <version>${mono.ver}</version></dependency>
+
+      <dependency><groupId>apixio</groupId><artifactId>apixio-fx-defs${scala.version.suffix}</artifactId><version>${revision}</version></dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <!-- library builds -->
+    <module>sdk-util</module>
+    <module>sdk-core</module>
+    <module>sdk-fxdef</module>
+
+    <!-- shaded-jar builds -->
+    <module>sdk-ecc</module>
+    <module>sdk-cmdline</module>
+    <module>sdk-accessors</module>
+    <module>mlcwrappers</module>
+  </modules>
+
+</project>

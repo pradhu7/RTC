@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package com.apixio.apxdata.vkc;
+
+import "com/apixio/messages/MessageMetadata.proto";
+
+option java_outer_classname = "VendorKnownCodesContainer";
+
+message VendorKnownCode {
+
+  string         patientID            = 1;   // required; as supplied by customer
+  messages.XUUID patientXUUID         = 2;   // required; patientID looked up in system
+  string         memberID             = 3;   // optional
+  string         mbi                  = 4;   // optional
+  string         healthExchangeID     = 5;   // optional
+  string         diagnosisType        = 6;   // required; ICD9 or ICD10, as expressed in codingSystemOID
+  string         diagnosisCode        = 7;   // required; code within ICD9/10 with no "."
+  string         renderingProviderNpi = 8;   // optional
+  string         providerType         = 9;   // required; one of ["01", "02", "10", "20", "I", "O", "P"]
+  string         dosStart             = 10;  // required; YYYY-MM-DD
+  string         dosEnd               = 11;  // required; YYYY-MM-DD
+  string         vendorName           = 12;  // required
+  string         vendorDecision       = 13;  // required
+  string         vendorEncounterID    = 14;  // optional
+  string         vendorEncounterName  = 15;  // optional
+  string         vendorFilename       = 16;  // optional
+  repeated int32 vendorPage           = 17;  // optional
+  string         batchName            = 18;  // not supplied by .csv (added during upload process)
+}

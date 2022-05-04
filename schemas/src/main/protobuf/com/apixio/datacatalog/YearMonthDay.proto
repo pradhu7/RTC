@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+message YearMonthDay {
+  uint32 year = 1;
+  uint32 month = 2;
+  uint32 day = 3;
+  int64 epochMs = 4;
+}

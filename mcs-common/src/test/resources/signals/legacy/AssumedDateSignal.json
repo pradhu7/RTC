@@ -1,0 +1,25 @@
+{
+  "generator": {
+    "jarVersion": "1.4.0", 
+    "name": "AssumedDate", 
+    "version": "1.0.0"
+  }, 
+  "name": "AssumedDate", 
+  "sigType": "CATEGORY", 
+  "source": {
+    "doc": {
+      "pattern": "DOC", 
+      "uuidString": "0001bd1b-96b9-43b2-b62c-1e800d7ff020"
+    }, 
+    "loc": {
+      "descriptor": "default"
+    }, 
+    "page": 1, 
+    "pat": {
+      "pattern": "PAT", 
+      "uuidString": "d0d839ea-ed46-4f71-aae4-11407ad43f83"
+    }
+  }, 
+  "value": "2017-01-05T00:00:00.000Z", 
+  "wt": 1.0
+}

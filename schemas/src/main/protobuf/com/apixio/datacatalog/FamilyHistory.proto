@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "FamilyHistoryProto";
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+
+message FamilyHistoryInfo {
+  ClinicalCode code = 1;
+  string familyHistory = 2;
+  repeated ClinicalCode codeTranslations = 3;
+}

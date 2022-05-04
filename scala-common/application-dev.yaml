@@ -1,0 +1,137 @@
+server:
+  rootPath: /api
+  applicationConnectors:
+    - type: http
+      port: 8211
+    - type: https
+      port: 8222
+      keyStorePath: src/main/resources/ui.keystore
+      keyStorePassword: apixio.321
+      validateCerts: false
+  adminConnectors:
+    - type: http
+      port: 9222
+  requestLog:
+    appenders:
+      - type: file
+        currentLogFilename: access/access.current.log
+        archivedLogFilenamePattern: access/access.%d{yyyy-MM-dd_HH}.log
+        archivedFileCount: 10000
+        timeZone: UTC
+apxLogging:
+  fluentHost: localhost
+  prefix: dev.scala-common
+
+logging:
+  level: DEBUG
+  loggers:
+    io.dropwizard: INFO
+  appenders:
+    - type: console
+      threshold: ALL
+      timeZone: UTC
+      target: stdout
+      logFormat: # TODO
+    - type: file
+      currentLogFilename: log/myapplication.log
+      threshold: ALL
+      archive: true
+      archivedLogFilenamePattern: log/myapplication-%d.log
+      archivedFileCount: 5
+      timeZone: UTC
+      logFormat: # TODO
+
+redis:
+  host: redis-1-stg.apixio.com
+  port: 6379
+  prefix: development-
+
+elastic:
+  hosts: elasticsearch-stg.apixio.com:9300
+  cluster: elasticsearch-staging
+
+cql:
+  hosts: 10.1.16.193,10.1.32.153,10.1.48.121
+  binaryPort: 9042
+  keyspace: apixio
+  connections.min: 2
+  connections.max: 2
+  connections.baseDelayMs: 50
+  connections.maxDelayMs: 250
+  localDC: aws-us-west-2
+  username: frontend-stg
+  password: m3PW2195FpARlaBH
+  linkTable: apx_cflink
+  linkTable2: apx_cflink
+  assemblyDataType: apx_cfnassembly
+
+cqlInternal:
+  hosts: 10.1.16.77,10.1.48.254,10.1.32.222
+  binaryPort: 9042
+  keyspace: internal
+  connections.min: 8
+  connections.max: 8
+  connections.baseDelayMs: 50
+  connections.maxDelayMs: 250
+  localDC: aws-us-west-2
+  username: frontend-stg
+  password: m3PW2195FpARlaBH
+
+cqlApplication:
+  hosts: 10.1.32.66,10.1.48.137,10.1.16.127
+  binaryPort: 9042
+  keyspace: application
+  connections.min: 8
+  connections.max: 8
+  connections.baseDelayMs: 50
+  connections.maxDelayMs: 250
+  localDC: aws-us-west-2
+  username: frontend-stg
+  password: m3PW2195FpARlaBH
+
+s3:
+  accessKey: 241733337186382171232V01xKLF7xtFPM5/EFgLUep7+2A==
+  secretKey: 241733337186382171232V01xKLF7xtFPM5/EFgLUep7+2A==
+  container: apixio-documents-test-oregon
+
+acl:
+  cassandraColumnFamily: apx_cfacl_development
+  jsonFile: apiacls.json
+  level: DETAILED
+
+microservices:
+  useracct: https://useraccount-dev.apixio.com:7076
+  tokenizer: https://tokenizer-dev.apixio.com:7075
+  cmp: https://cmp-dev.apixio.com:7087/cmp/v1
+  dataorch: https://data-orchestrator-dev.apixio.com:7085
+  npi: https://npi-service-stg.apixio.com:8443
+  router: https://hcc-opprouter-simplification.apixio.com:8443
+  mapping: https://mapping-stg.apixio.com:8443
+  documentsearch: https://document-search-stg.apixio.com:8443
+  webster: https://webster-stg.apixio.com:443
+  reporting: https://reporting-stg.apixio.com:8443
+
+jdbcProvider:
+  verboseSql:            true
+  connectionUrl:         "jdbc:postgresql://cockroachdb-stg.apixio.com:26257/providers"
+  driverClassname:       "org.postgresql.Driver"
+  username:              "root"
+  password:              "root"
+  maxTotal:              25
+
+application:
+  login: https://accounts-dev.apixio.com/?caller=cmp-local
+  logout: https://accounts-dev.apixio.com/logout/?caller=cmp-local
+
+consul:
+   address: http://consul-stg.apixio.com:8500/v1
+   dc: stg
+   token: 4ee2ce93-cc61-46a7-a2a2-65316101ccb9
+   refreshInterval: 30 #minutes
+   urlTemplate: https://%s-stg.apixio.com:%s%s  #host,port,baseApi
+
+microServiceConfig:
+  existingservice:
+    timeout: 100000
+    resetTimeout: 15000
+    maxFailures: 2

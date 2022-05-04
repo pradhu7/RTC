@@ -1,0 +1,35 @@
+{
+  "generationTime": 1574217115739,
+  "generator": {
+    "className": "com.apixio.ensemble.impl.generators.page.Dictionary",
+    "jarVersion": "1.11.0-snapshot",
+    "name": "Dictionary",
+    "version": "1.2.0",
+    "modelVersion": "wz_add_delta_CRV_to_master_model_20191120_014637"
+  },
+  "name": "SimilarityDictionary-QUALITY_DATE",
+  "sigType": "CATEGORY",
+  "source": {
+    "documentId": "f89576a6-8e07-43c4-bdc7-b2f07ec8b9a6",
+    "pageProps": {
+      "page": 143
+    },
+    "patientId": "9728a3ed-4fe6-4775-b086-a4b8ff2f5ddc",
+    "sourceType": "Page",
+    "location": {
+      "descriptor": "(21,30),67"
+    },
+    "wholeDocProps": {
+      "pages": -1
+    },
+    "windowProps": {
+      "centroid": -1,
+      "end": -1,
+      "start": -1
+    }
+  },
+  "value": "8/12/2019",
+  "weight": 1.0,
+  "generatorVersion": "1.2.0",
+  "generatorName": "Dictionary"
+}

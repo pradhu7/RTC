@@ -1,0 +1,60 @@
+# This publishing config file mimics AssumedDate config.  Note that the details that change between
+# publishing the "same" f(x) implementation are likely:
+#  * URIs
+#  * modelVersion
+#  * version
+#  * snapshot (not sure what this does)
+
+# purely used for convenience/centralization in this file only:
+macros:
+  generator_name:     CAPV_fx
+  artifactory_jars:   "https://repos.apixio.com/artifactory/apixio-release-snapshot-jars"
+  artifactory_models: "https://repos.apixio.com/artifactory/models/models"
+
+
+################################################################
+
+# this gets stored as top/parent ModelCombination metadata:
+meta:
+  name:        "{% core.version.name %}"
+  functionId:  "FX_bfa02043-b3b0-4131-9bd4-26556053546d"
+  entry:       "com.apixio.ensemblesdk.impl.CAPVFx"
+  logicalId:   "{% core.version.name %}:{% core.version.version %}/{% core.version.modelVersion %}"
+  
+# these get added as parts:
+assets:
+  implementation.jar:
+    uri:      "{% macros.artifactory_jars %}/apixio/apixio-fx-impls/0.0.2-SNAPSHOT/apixio-fx-impls-0.0.2-20210713.205054-42.jar"
+    mimeType: application/octet-stream
+
+  model.zip:
+    uri: "{% macros.artifactory_models %}/production_model/10.0.2/production_model_10_0_2.zip"
+
+#  config.yaml:
+#    uri:  "{%macros.artifactory_jars%}/apixio/assumeddate-config.yaml"
+
+# these get added as logical dependencies for the top/parent ModelCombination
+dependencies:
+  - AnnotationConverter_fx:0.0.3/1.0.1-V23
+  - HAR2_fx:0.0.3/1.0.1-V23
+  - SlimLynty_fx:0.0.3/1.0.1-V23
+  - StructSuspects_fx:0.0.3/1.0.1-V23
+
+# this gets stored as top/parent extra_1 JSON
+core:
+  algorithm:
+    type: CAPV
+  version:
+    modelVersion: 1.0.1-V23
+    name: "{% macros.generator_name %}"
+    version: 0.0.3
+  supportedExecutors:
+    - executorType: LAMBDA
+
+# this gets stored as top/parent extra_2 JSON
+search:
+  tags:
+  - FX
+  - SIGNAL_GENERATOR
+  - DOCUMENT_SIGNAL
+  - "{% macros.generator_name %}"

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/ValueAsString.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+
+message VitalSign {
+  ValueAsString value = 1;
+  string unitsOfMeasure = 2;
+  YearMonthDay resultDate = 3;
+  string name = 4;
+  ClinicalCode code = 5;
+  repeated ClinicalCode codeTranslations = 6;
+}
+
+

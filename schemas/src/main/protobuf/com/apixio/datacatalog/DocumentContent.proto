@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/UUID.proto";
+
+message DocumentContent {
+  int64 length = 1;
+  string hash = 2;
+  string mimeType = 3;
+  string uri = 4;
+  UUID parsingDetailsId = 5;
+  UUID sourceId = 6;
+}

@@ -1,0 +1,9 @@
+.idea
+**/.DS_Store
+*/.idea
+**/*.iml
+*/dependency-reduced-pom.xml
+.reviewboardrc
+**/target/
+**/node_modules/
+ramlgen/generated.raml

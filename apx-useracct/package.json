@@ -1,0 +1,29 @@
+{
+  "name": "user-account",
+  "version": "1.0.0",
+  "description": "node module to bump user account version",
+  "main": "bump_version.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Apixio/user-account.git"
+  },
+  "author": "ralemy@apixio.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Apixio/user-account/issues"
+  },
+  "homepage": "https://github.com/Apixio/user-account",
+  "devDependencies": {
+    "glob": "^5.0.14",
+    "lodash": "^3.10.0",
+    "prompt": "^0.2.14",
+    "q": "^1.4.1",
+    "xmldoc": "^0.3.1"
+  }
+}

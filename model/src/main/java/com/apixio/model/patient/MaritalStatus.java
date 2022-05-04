@@ -1,0 +1,14 @@
+package com.apixio.model.patient;
+
+public enum MaritalStatus {
+	ANNULLED,
+	DIVORCED,
+	INTERLOCUTORY,
+	LEGALLY_SEPARATED,
+	MARRIED,
+	POLYGAMOUS,
+	NEVER_MARRIED,
+	DOMESTIC_PARTNER,
+	WIDOWED,
+	UNMARRIED,
+}

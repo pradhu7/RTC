@@ -1,0 +1,26 @@
+{
+  "generator": [
+    "com.apixio.signalmanager.PlainGenerator", 
+    {
+      "jarVersion": "1.4.0", 
+      "name": "SlimLynty", 
+      "version": "1.1.0"
+    }
+  ], 
+  "name": "SlimLynty-V22_19", 
+  "sigType": "CATEGORY", 
+  "source": [
+    "com.apixio.ensemble.impl.source.PatientSource", 
+    {
+      "location": {
+        "descriptor": "default"
+      }, 
+      "patientId": {
+        "pattern": "PAT", 
+        "uuid": "f9d66eab-6eaa-4a31-96d6-49b7723eb64b"
+      }
+    }
+  ], 
+  "value": "proc:2016-10-04", 
+  "wt": 1.0
+}

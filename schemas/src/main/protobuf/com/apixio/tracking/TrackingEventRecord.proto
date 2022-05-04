@@ -1,0 +1,206 @@
+syntax = "proto3";
+
+package com.apixio.tracking;
+import "com/apixio/messages/MessageMetadata.proto";
+
+message TrackingEventRecord {
+
+  enum StateStatuses {
+    SUCCESS = 0;
+    FAILURE = 1;
+    IN_PROGRESS = 2;
+    ABORTED = 3;
+  }
+
+  message State {
+    StateStatuses status = 1;
+    string details = 2;
+  }
+
+  message PathInfo {
+    // nfs, s3, file://, etc
+    string scheme = 1;
+    string host = 2;
+    string path = 3;
+  }
+
+  message CDIEventMetadata {
+    // user is the unix user id/name that executed the command
+    string user = 1;
+    // this is the full command used
+    string command = 2;
+
+  }
+
+  message CDIEvent {
+    enum SubTypes {
+      CHECK_IN = 0;
+      MOVE = 1;
+      ORGANIZE = 2;
+      ADD_TAG = 3;
+      REMOVE_TAG = 4;
+      TRANSFORM = 5;
+      COPY = 6;
+      HASH = 7;
+    }
+    SubTypes subtype = 1;
+    CDIEventMetadata metadata = 2;
+  }
+
+  message LoaderEventMetadata {
+    // user is the unix user id/name that executed the command
+    string user = 1;
+    string job_id = 2;
+    string batch_id = 3;
+    com.apixio.messages.XUUID PDS_ID = 4;
+  }
+
+  message LoaderEvent {
+    enum SubTypes {
+      LOADED = 0;
+      DISCOVERY = 1;
+      VALIDATED = 2;
+    }
+    SubTypes subtype = 1;
+    LoaderEventMetadata metadata = 2;
+  }
+
+  /**
+  need more info on prediction events
+   */
+  message ETLEventMetadata {
+    // user is the unix user id/name that executed the command
+    string user = 1;
+    string job_id = 2;
+    string function_name = 3;
+  }
+
+  // current types are specific to ETL steps that read a document uuid/file
+  message ETLEvent {
+    enum SubTypes {
+      OCR = 0;
+      PAGER = 1;
+      PARSER = 2;
+      CONTENT_EXTRACT = 3;
+    }
+    SubTypes subtype = 1;
+    ETLEventMetadata metadata = 2;
+  }
+
+  message PredictionEventMetadata {
+    // user is the unix user id/name that executed the command
+    string user = 1;
+    string algorithm = 2;
+  }
+
+  message PredictionEvent {
+    enum SubTypes {
+      STARTED = 0;
+      FINISHED = 1;
+    }
+    SubTypes subtype = 1;
+    PredictionEventMetadata metadata = 2;
+  }
+
+  message OpportunityEventMetadata {
+    // user is the unix user id/name that executed the command
+    string user = 1;
+    string execute_host = 3;
+    string work_item_id = 4;
+    string work_unit_id = 5;
+  }
+
+  message OpportunityEvent {
+    // types are related to if the message has been queued to be picked up by workqueue or not
+    // emitted means the opporunity has been put into kafka to be indexed
+    // indexed means the opporunity has been written to elasticsearch
+    enum SubTypes {
+      EMITTED = 0;
+      INDEXED = 1;
+    }
+    SubTypes subtype = 1;
+    OpportunityEventMetadata metadata = 2;
+  }
+
+  /*
+  fileInformation is used to track a unique file. sha512 and fileLength are to help find potential
+  duplicates of the exact same file.
+   */
+  message FileInformation {
+    PathInfo file_path = 2;
+    string sha512 = 3;
+    uint64 file_size = 4;
+    string mime_type = 5;
+    bool is_archive = 6;
+  }
+
+  /*
+  information about a document that has rich metadata associated with it.
+   */
+  message DocumentInformation {
+    string pds_id = 2;
+    string patient_id = 3;
+    string sha512 = 4;
+    string content_type = 5;
+  }
+
+  message Contents {
+    com.apixio.messages.XUUID xuuid = 1;
+    oneof data {
+      FileInformation file_info = 2;
+      DocumentInformation doc_info = 3;
+    }
+  }
+
+  /*
+  information specific to a processing event. used to provide metadata about the event and why it happened
+  Needs information about what the source document was and what it was processed into.
+   */
+  message ProcessEvent {
+    Contents subject = 1;
+    oneof data {
+      CDIEvent cdi_event = 2;
+      LoaderEvent loader_event = 3;
+      PredictionEvent prediction_event = 4;
+      ETLEvent etl_event = 5;
+      OpportunityEvent opportunity_event = 6;
+    }
+    State state = 7;
+    uint32 attempt_number = 8;
+    string code_version = 9;
+    uint32 execute_duration = 10;
+    string execute_host = 11;
+    com.apixio.messages.XUUID from_xuuid = 12;
+    com.apixio.messages.XUUID to_xuuid = 13;
+    com.apixio.messages.XUUID xuuid = 14;
+  }
+
+  /*
+  Information about transfering data. Generally the source or destination should be an organization xuuid.
+  The most common usage of this would be an sftp upload
+   */
+  message TransferEventMetadata {
+    string user = 1;
+    string host = 2;
+    string protocol = 3;
+    uint32 transfer_duration = 4;
+  }
+
+  message TransferEvent {
+    com.apixio.messages.XUUID initiator_xuuid = 1;
+    com.apixio.messages.XUUID receiver_xuuid = 2;
+    Contents subject = 3;
+    TransferEventMetadata metadata = 5;
+    State state = 6;
+    com.apixio.messages.XUUID xuuid = 7;
+  }
+
+  com.apixio.messages.XUUID org_xuuid = 1;
+  uint64 event_timestamp = 2;
+
+  oneof event {
+    ProcessEvent process_event = 3;
+    TransferEvent transfer_event = 4;
+  }
+
+}

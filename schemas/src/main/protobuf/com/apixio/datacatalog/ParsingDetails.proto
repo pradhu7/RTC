@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/UUID.proto";
+
+message ParsingDetails {
+  string uploadBatchId = 1;
+  UUID sourceFileArchiveUUID = 2;
+  string sourceFileHash = 3;
+  string version = 4;
+  int64 parsingDate = 5;
+  string parserType = 6;
+  UUID internalId = 7;
+}

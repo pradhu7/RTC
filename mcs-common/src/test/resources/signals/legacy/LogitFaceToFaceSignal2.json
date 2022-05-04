@@ -1,0 +1,34 @@
+{
+  "generator": [
+    "com.apixio.ensemble.impl.common.Generator", 
+    {
+      "className": "com.apixio.ensemble.impl.generators.page.LogitFaceToFace", 
+      "jarVersion": "1.4.0", 
+      "name": "LogitFaceToFace", 
+      "version": "1.0.0"
+    }
+  ], 
+  "name": "LogitFaceToFace-SUCCESS", 
+  "sigType": "CATEGORY", 
+  "source": [
+    "com.apixio.ensemble.impl.source.PageWindowSource", 
+    {
+      "centroid": 2, 
+      "documentId": {
+        "pattern": "DOC", 
+        "uuid": "000b3191-72ca-4bb6-ae72-22e35d292a95"
+      }, 
+      "endPage": 4, 
+      "location": {
+        "descriptor": "default"
+      }, 
+      "patientId": {
+        "pattern": "PAT", 
+        "uuid": "0070c50b-2466-4bfb-a797-121a34afffe8"
+      }, 
+      "startPage": 1
+    }
+  ], 
+  "value": "true", 
+  "wt": 1.0
+}

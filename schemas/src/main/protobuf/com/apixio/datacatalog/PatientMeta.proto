@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "PatientMetaProto";
+
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/UUID.proto";
+
+message PatientMeta {
+  UUID patientId = 1;
+  ExternalId primaryExternalId = 2;
+  repeated ExternalId externalIds = 3;
+}

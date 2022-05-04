@@ -1,0 +1,90 @@
+daoConfig:
+
+  cqlCacheConfig:
+    bufferSize: 100
+
+storageConfig:
+  s3Config:
+    accessKey: ""
+    secretKey: ""
+    connectionTimeoutMs: 200000
+    socketTimeoutMs: 200000
+
+# this is persistence config that's for the purpose of runtime microservice stuff such as ACLs
+persistenceConfig:
+
+  # this RDB connection is required to use new (Aug 2019) SignalLogic code
+  jdbc_signal_control:
+    verboseSql:            true
+    connectionUrl:         "jdbc:mysql://localhost:3306/algocloud"
+    driverClassname:       "com.mysql.cj.jdbc.Driver"
+    password:              "root"
+    username:              "root"
+    maxTotal:              25
+
+  # this RDB connection is required to use "old" SMAS database tables (projectdataset, etc.)
+  jdbc_signal_docmeta:
+    verboseSql:            true
+    connectionUrl:         "jdbc:mysql://localhost:3306/signalmgmt"
+    driverClassname:       "com.mysql.cj.jdbc.Driver"
+    password:              "root"
+    username:              "root"
+    maxTotal:              25
+
+  jdbc_apxdatadao:
+    verboseSql:            true
+    connectionUrl:         "jdbc:mysql://localhost:3306/apxdatadao"
+    driverClassname:       "com.mysql.cj.jdbc.Driver"
+    password:              "root"
+    username:              "root"
+    maxTotal:              25
+
+  kafka_patientsvc:
+    servers:             "localhost"
+    producer:
+      keySerializer:     "org.apache.kafka.common.serialization.StringSerializer"
+      valueSerializer:   "org.apache.kafka.common.serialization.StringSerializer"
+
+  jedisConfig:
+    testWhileIdle: true
+    testOnBorrow: true
+    maxTotal: 100
+
+  jedisPool:
+    timeout: 60000
+
+  # redisConfig is REALLY ONLY FOR microfilters so they can make direct redis calls
+  #  for efficiency in checking role/status of users
+  redisConfig:
+    host: localhost
+    port: 6379
+    # prefix for user-account/tokenizer keys (NOT for coordinator keys!):
+    keyPrefix: scotts-box
+
+  cassandraConfig_signal:
+    hosts: 127.0.0.1
+    binaryPort: 9042
+    keyspaceName: apixio
+    baseDelayMs: 50
+    maxDelayMs: 5000
+    readConsistencyLevel: LOCAL_ONE
+    writeConsistencyLevel: LOCAL_ONE
+    minConnections: 1
+    maxConnections: 2
+    cqlDebug: false
+    batchSyncEnabled: true
+    localDC: datacenter1
+    username: you
+    password: there
+
+loggingConfig:
+  appName: casadmin
+  defaultLoggerName: casadmin
+  properties:
+    graphite: false
+    graphiteUrl: http://blah
+    graphiteFolderPrefix: cas
+    fluent: true
+    fluent.url: 127.0.0.1
+    fluent.tag: test
+

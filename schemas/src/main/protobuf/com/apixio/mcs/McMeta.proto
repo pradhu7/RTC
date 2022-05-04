@@ -1,0 +1,127 @@
+/**
+ * This file defines the public interface with MCS to store or retrieve model combination metadata
+ * and parts or variants thereof.
+ */
+
+syntax = "proto3";
+
+package com.apixio.mcs.meta;
+
+import "com/apixio/messages/LambdaMessages.proto";
+import "com/apixio/mcs/McTestMeta.proto";
+
+enum CodeMappingVersion {
+  EQUIVALENT = 0; // DEFAULT
+  CANONICAL = 1;
+}
+
+enum Lifecycle {
+  DRAFT = 0;
+  EVALUATED = 1;
+  DISCARDED = 2;
+  ACCEPTED = 3;
+  RELEASED = 4;
+  ARCHIVED = 5;
+}
+
+message FullMeta {
+  string id = 1; // This is the Model Combination XUUID
+  string createdAt = 2; // ISO8601 format; can't use more natural Date here w/o special config
+  bool deleted = 3;
+  string createdBy = 4; // @apixio email address of the creator of this MC
+  string executor = 5 [deprecated = true]; // decommissioned
+  string name = 6 [deprecated = true]; // Legacy name field; use core.name instead
+  string outputType = 7; // unused
+  string product = 8;
+  string version = 9;
+  Lifecycle state = 10; //
+  string pdsId = 11;
+  CoreMeta core = 12;
+  repeated PartMeta parts = 13;
+  SearchMeta search = 14;
+}
+
+message CoreMeta {
+  oneof behaviorMeta {
+    AlgorithmMeta algorithm = 1; // Algorithm type of this MC
+    ModelTestMeta modelTest = 6;
+  }
+  repeated string dependencies = 2; // List of dependencies as MC logical IDs
+  string name = 3; // Also known as logical id
+  GitMeta git = 4;
+  VersionMeta version = 5;
+  CodeMappingVersion mappingVersion = 7;
+
+  // supportedExecutors has the following semantics:
+  // - if empty, MC claims to be independent of execution context. coordinator can choose any.
+  // - if not empty, one of the supported executors MUST be used for execution of the MC.
+  repeated Executor supportedExecutors = 8;
+}
+
+message AlgorithmMeta {
+  messages.AlgorithmType type = 1;
+  string javaClass = 2;
+  bool mock = 3;
+  bool fuzzLocation = 4;
+  repeated PythonServiceConfig pythonServiceConfig = 5;
+}
+
+// If this MC requires a python service to run, it is configured here.
+message PythonServiceConfig {
+  // Name and version of the python package that installs the service
+  string packageName = 1; // e.g. "python-apxensemble"
+
+  // Command used to start the python service.
+  // TODO<twang> : Commmand line parameters (like model.zip location) need documentation
+  string entryPoint = 2; // e.g. "har2service"
+
+  // URL used to connect to the python service once it is running
+  string apiEndpoint = 3; // e.g. "http://localhost:5000"
+}
+
+message GitMeta {
+  string diff = 1;
+  string hash = 2;
+  string log = 3;
+  string tag = 4;
+}
+
+message VersionMeta {
+  string modelVersion = 1; // Also known as weights version, the version of the model.zip
+  string name = 2; // Friendly name of this model combination
+  bool snapshot = 3; // True if snapshot, false otherwise
+  string version = 4; // Also known as jar version, the source code version
+}
+
+message PartMeta {
+  string createdAt = 1;
+  string createdBy = 2;
+  string md5Digest = 3;
+  string mimeType = 4;
+  string modelId = 5;
+  string name = 6;
+  string s3Path = 7;
+  PartMetaExtended core = 8;
+}
+
+message SearchMeta {
+  string engine = 1;
+  repeated string tags = 2;
+  string variant = 3;
+}
+
+message PartMetaExtended {
+  string uri = 1; // URI of the resource or service that created this part
+  TestPartCoreMeta testPartMeta = 2; // Test metadata if this is a test part
+}
+
+enum ExecutorType {
+  AUTO = 0;
+  SPARK = 1;
+  LAMBDA = 2;
+}
+
+message Executor {
+  ExecutorType executorType = 1;
+  string executorVersion = 2;    // Should be a semantic version.
+}

@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "google/protobuf/timestamp.proto";
+import "com/apixio/messages/MessageMetadata.proto";
+
+
+
+/*
+ * SenderID was "source" in old logging schema. e.g. "hcc-browswer", "hcc-router", etc.
+ * in kafka messages its also different, here we will have
+ *  component_name => source
+ *  logger_name => name_of_logger_in_source
+ *
+ *  EG. ("cerebro", "DocSignalFlow")
+ */
+message LoggerID {
+    string componentName = 1;
+    string loggerName    = 2;
+}
+
+/*
+ * these are taken largely from the Log4J set of log levels, we have added Event as the first
+ * level after Unspecified (which means "off" in log4j) as the most important log we have as
+ * Event == data_we_want_to_keep, following that the most important logs are notifications
+ * of a FATAL or ERROR event. These are not meant purely as a cutoff as in other logging systems,
+ * but they certainly can be used that way
+ */
+enum LogLevel {
+    UNSPECIFIED_LOG_LEVEL = 0;
+    EVENT                 = 1;
+    FATAL                 = 2;
+    ERROR                 = 3;
+    WARN                  = 4;
+    INFO                  = 5;
+    DEBUG                 = 6;
+    TRACE                 = 7;
+}
+
+/*
+ * We have a log type in the header so that in the event someone downstream wanted to
+ * reconstitute the log using protobuf, they can. The consumer would have to inspect the
+ * json log and get the type and then use the type to use the appropriate
+ */
+enum LogType {
+    UNSPECIFIED_LOG_TYPE  = 0;
+    APX_CEREBRO_LOG       = 1;
+}
+
+message LogHeader {
+    messages.XUUID            logID      = 1;  // ID for tracking, an XUUID
+    LogType                   logType    = 2;
+    LogLevel                  logLevel   = 3;  //
+    LoggerID                  loggerID   = 4;  // what kind of client sent this, XUUID
+    string                    hostFqdn   = 5;  // which host sent this, XUUID
+    google.protobuf.Timestamp dateTime   = 6;
+    int64                     time       = 7;  // just an integer representation of the datetime
+}
+
+message Network {
+    string                    clientIP        = 2;
+    string                    destinationIP   = 3;
+    int32                     port            = 4;
+    int32                     bytesRead       = 5;
+    int32                     bytesWritten    = 6;
+}
+
+message Http {
+    string                    fullUrl         = 1;
+    int32                     statusCode      = 2;
+    string                    referer         = 3;
+    string                    userAgent       = 4;
+}
+
+message Performance {
+    int64                     durationNS      = 1;
+}
+
+message User {
+    messages.XUUID            codingOrgID    = 1;
+    string                    codingOrgName  = 2;
+    string                    sessionID      = 3;    // weird format vk5v8d4i2aqrj84sufcgir6fus99x5jy
+    string                    name           = 4;
+}
+
+
+
+

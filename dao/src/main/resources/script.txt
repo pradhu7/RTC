@@ -1,0 +1,50 @@
+## Creating key space
+
+create keyspace apixio
+  with placement_strategy = 'NetworkTopologyStrategy'
+  and strategy_options = {us-west : 1}
+  and durable_writes = true;
+  
+create keyspace apixio
+  with placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy'
+   and strategy_options = {replication_factor:1}
+   and durable_writes = true;
+
+## Creating column family
+use apixio;
+
+create column family nethra_test
+with column_type = 'Standard'
+and comparator = 'UTF8Type'
+and default_validation_class = 'BytesType'
+and key_validation_class = 'BytesType'
+and read_repair_chance = 0.1
+and dclocal_read_repair_chance = 0.0
+and gc_grace = 864000
+and min_compaction_threshold = 10
+and max_compaction_threshold = 64
+and replicate_on_write = true
+and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
+and caching = 'KEYS_ONLY'
+and bloom_filter_fp_chance = 0.1
+and compression_options = {'sstable_compression' : ''};
+
+CREATE TABLE cf ( 
+         rowkey text, 
+         col text,
+         d blob,
+         PRIMARY KEY (rowkey, col)
+         ) WITH
+         comment = 'table with dynamic columns' AND
+         caching = 'KEYS_ONLY' AND
+         bloom_filter_fp_chance = 0.1 AND
+         read_repair_chance = 0.1 AND
+         dclocal_read_repair_chance = 0.0 AND
+         gc_grace_seconds = 864000 AND
+         replicate_on_write = 'true' AND
+         compaction = {
+                          'class' :  'LeveledCompactionStrategy',
+                          'sstable_size_in_mb' : 256,  'tombstone_compaction_interval' : 1, 'tombstone_threshold' : 0.2 
+                        } AND
+         compression = {'sstable_compression' : ''};
+

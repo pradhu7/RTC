@@ -1,0 +1,35 @@
+{
+    "name": "V5-V22_70",
+    "sigType": "CATEGORY",
+    "value": "false",
+    "source": [
+        "com.apixio.ensemble.impl.source.PageWindowSource",
+        {
+            "documentId": {
+                "pattern": "DOC",
+                "uuid": "f8becc71-a213-4c10-a043-0545f91f1b9c"
+            },
+            "patientId": {
+                "pattern": "PAT",
+                "uuid": "0009511c-f2e0-4562-abae-201d75d3054c"
+            },
+            "centroid": 1,
+            "startPage": 1,
+            "endPage": 3,
+            "location": {
+                "descriptor": "default"
+            }
+        }
+    ],
+    "generator": [
+        "com.apixio.ensemble.impl.common.Generator",
+        {
+            "name": "V5",
+            "version": "1.0.1",
+            "className": "com.apixio.ensemble.impl.generators.page.V5",
+            "modelVersion": "production_model_9_0_2",
+            "jarVersion": "1.7.8--5829c1358189e7f32495f8847983eb5462a9d54a--`2019-10-30T23:07:24.715Z`"
+        }
+    ],
+    "wt": 7.876461e-07
+}

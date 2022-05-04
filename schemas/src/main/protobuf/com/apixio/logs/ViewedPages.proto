@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "google/protobuf/wrappers.proto";
+
+message ViewedPages {
+  google.protobuf.UInt32Value pageNo = 1;
+  google.protobuf.StringValue timeSpentOnPage = 2;
+  google.protobuf.BoolValue confirmedView = 3;
+  google.protobuf.StringValue exitTimestamp = 4;
+  google.protobuf.StringValue timestampEnter = 5;
+  google.protobuf.BoolValue confirmedRead = 6;
+}

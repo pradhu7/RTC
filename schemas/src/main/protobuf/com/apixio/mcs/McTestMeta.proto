@@ -1,0 +1,29 @@
+/**
+ * This file defines extensions to the MC meta schema to support unit and integration test data.
+ */
+
+syntax = "proto3";
+
+package com.apixio.mcs.meta;
+
+enum TestScope {
+  UNKNOWN_SCOPE = 0;
+  COMBINER_UNIT = 1;
+  INTEGRATION = 2;
+}
+
+enum TestDataType {
+  UNKNOWN_TEST_TYPE = 0;
+  SIGNALS = 1;
+  PREDICTIONS = 2;
+  DOCUMENT_CSV = 3;
+}
+
+message ModelTestMeta {
+  TestScope scope = 1;
+}
+
+message TestPartCoreMeta {
+  TestDataType dataType = 1;
+  int32 dataVersion = 2;
+}

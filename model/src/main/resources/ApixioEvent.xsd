@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.apixio.com/Event" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:apixio="http://www.apixio.com/Event" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+<annotation>
+    <appinfo>
+        <jaxb:globalBindings>
+            <jaxb:javaType name="java.util.Date" xmlType="dateTime" parseMethod="com.apixio.event.adapters.ApixioCustomAdapters.parseDate" printMethod="com.apixio.event.adapters.ApixioCustomAdapters.printDate" />
+        </jaxb:globalBindings>
+    </appinfo>
+</annotation>
+    <complexType name="EventType">
+    	<sequence>
+    		<element name="Subject" type="apixio:ReferenceType"></element>
+    		<element name="Fact" type="apixio:FactType"></element>
+            <element name="Source" type="apixio:ReferenceType"></element>
+            <element name="Evidence" type="apixio:EvidenceType"></element>
+    		<element name="Attributes" type="apixio:AttributesType"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="ReferenceType">
+    	<sequence>
+    		<element name="Uri" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+
+    <element name="Event" type="apixio:EventType"></element>
+
+    <complexType name="CodeType">
+    	<sequence>
+    		<element name="Code" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="CodeSystem" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="CodeSystemName" type="string" maxOccurs="1" minOccurs="0"></element>
+    		<element name="CodeSystemVersion" type="string" maxOccurs="1" minOccurs="0"></element>
+    		<element name="DisplayName" type="string" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="TimeRangeType">
+    	<sequence>
+    		<element name="StartTime" type="dateTime" maxOccurs="1" minOccurs="0"></element>
+    		<element name="EndTime" type="dateTime" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="EvidenceType">
+    	<sequence>
+    		<element name="Inferred" type="boolean" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Source" type="apixio:ReferenceType"
+    			maxOccurs="1" minOccurs="0">
+    		</element>
+    		<element name="Attributes" type="apixio:AttributesType" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="AttributesType">
+    	<sequence>
+    		<element name="Attribute" type="apixio:AttributeType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="AttributeType">
+    	<sequence>
+    		<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Value" type="string" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="FactType">
+    	<sequence>
+    		<element name="Code" type="apixio:CodeType" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Time" type="apixio:TimeRangeType" maxOccurs="1" minOccurs="0"></element>
+    		<element name="Values" type="apixio:AttributesType" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

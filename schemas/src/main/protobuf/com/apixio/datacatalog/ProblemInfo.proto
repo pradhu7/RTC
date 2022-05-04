@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/ResolutionStatus.proto";
+
+message ProblemInfo {
+  string temporalStatus = 1;
+  ResolutionStatus resolutionStatus = 2;
+  YearMonthDay startDate = 3;
+  YearMonthDay endDate = 4;
+  YearMonthDay diagnosisDate = 5;
+  string severity = 6;
+  string name = 7;
+  ClinicalCode code = 8;
+  repeated ClinicalCode codeTranslations = 9;
+  ProblemOrigin origin = 10;
+  bool deleteIndicator = 11;
+}
+
+enum ProblemOrigin {
+  PROBLEM = 0;
+  RA_CLAIMS = 1;
+  RAPS = 2;
+  MAO_004 = 3;
+}

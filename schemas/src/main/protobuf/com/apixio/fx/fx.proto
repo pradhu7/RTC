@@ -1,0 +1,111 @@
+
+// contains decls that capture f(x) signature/data info.
+// these declarations need to be able to support all runtime needs with respect to
+// locating the function via reflection, creating the args for the invocation,
+// and actually invoking the method.
+
+// for locating via reflection, method name and exact JVM-level class names of all
+// parameters are required.
+//
+// supported logical types and their JVM-level class names:
+//
+//  * integer:  int.class (as compared to Integer.class)
+//  * long:  long.class
+//  * ...
+
+syntax = "proto3";
+
+package com.apixio.sdk.protos;
+option java_outer_classname = "FxProtos";
+
+// this just tags the low-level type; for all but scalar types the rest of the type info will
+// be held in the corresponding "Info" message
+enum FxTag {
+  // Scalar types
+  INT     = 0;
+  LONG    = 1;
+  FLOAT   = 2;
+  DOUBLE  = 3;
+  STRING  = 4;
+  BOOLEAN = 5;
+
+  // Enum requires list of string identifiers; see EnumInfo
+  ENUM = 6;
+
+  // Container is a reference to another Message and requires name, map of field->type, and "struct" flag;
+  // see ContainerInfo
+  CONTAINER = 7;
+
+  // Sequence is a reference to another Message; see SequenceInfo
+  SEQUENCE = 8;
+
+  // Map is a reference to another Message; see MapInfo
+  MAP = 9;
+}
+
+// this gets converted to a protobuf "enum" construct
+message EnumInfo {
+  string name = 1;
+  repeated string identifiers = 2;
+}
+
+// this gets converted to a protobuf construct, either "message" with a one-to-one
+// for the fields (for isStruct=true), or a wrapper "message" whose sole field
+// is a "oneof" with all the fields under it
+message ContainerInfo {
+  string name = 1;
+  bool isStruct = 2;
+  map<string, FxType> fields = 3;
+}
+
+// this gets converted to a protobuf "repeated" construct
+message SequenceInfo {
+  FxType ofType = 1;
+}
+
+// this gets converted to a protobuf "map" construct; note that this needs to be
+// handled specially as protobuf doesn't allow a repeated map
+message MapInfo {
+  FxType toType = 1;
+}
+
+// this is the real type entity as it has tag+extraInfo
+message FxType {
+
+  FxTag tag = 1;
+  oneof info {
+    EnumInfo      enumInfo      = 2;
+    ContainerInfo containerInfo = 3;
+    SequenceInfo  sequenceInfo  = 4;
+    MapInfo       mapInfo       = 5;
+  }
+
+}
+
+// ^^^^^ all the above messages should NOT be treated as top-level persistable messages and
+// should NEVER be persisted separately from FxDef or FxImpl
+
+// an actual (abstract) f(x) definition.  this is a top-level persistable message
+message FxDef {
+  int32  messageVersion      = 1;       // meaning the "schema" of this FxDef Message
+  string name                = 2;
+  FxType returns             = 3;
+  repeated FxType parameters = 4;
+}
+
+
+// an implementation of an f(x).
+// this is a top-level persistable message
+message FxImpl {
+
+  int32 messageVersion = 1;       // meaning the "schema" of this FxImpl Message
+  FxDef fxDef          = 2;
+
+  // these are not required if the FxImpl is hosted by MCS:
+  string implUrl            = 3;
+  string entryName          = 4;
+  map<string,string> assets = 5;  // assets must NOT include implUrl!
+
+  // constraints are 
+
+}

@@ -1,0 +1,9 @@
+if [ ! -r "$1" ]; then echo "mvn-generated generated.raml file $1 not readable.  Usage: $0 pathToGenerated.raml pathToDoc.ram"; exit 1; fi
+if [ ! -r "$2" ]; then echo "human-maintained user-account.raml file $2 not readable.  Usage: $0 pathToGenerated.raml pathToDoc.ram"; exit 1; fi
+
+base=$(dirname $0)/..
+cd ${base}
+tar=target/classes
+clp=$(echo ${tar} ${tar}/lib/*.jar | sed 's/ /:/g')
+
+java -cp ${clp} com.apixio.restbase.apiacl.cmdline.CheckDoc $*

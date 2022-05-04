@@ -1,0 +1,1415 @@
+#%RAML 0.8
+title: Please type API title here
+baseUri: http://example.com
+protocols: [ HTTP ]
+/aclat: 
+  description: Internal service.
+  post: 
+    description: |
+      create a new AccessType with the given name.
+      
+       API Details:
+      must be called with ROOT role (=> token required)
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  get: 
+    description: Returns all AccessTypes with all their detail
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{typeName}: 
+    get: 
+      description: Returns all properties of the given role in the form of a JSON object.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      description: |
+        DELETEs the given AccessType.  This is a somewhat destructive operation (it can be recovered
+         from, however, by recreating the type and adding it back to the Operations).
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/aclop: 
+  description: |
+    Internal service.  A Operation is a high-level construct such as "CanCodeFor" and
+     is verb-ish in nature.  Operations are defined by the application and not the
+     lower-level services.  They are referenced externally by their unique name (as
+     compared to their XUUID) since they are not frequently created and are managed
+     by application developers.
+    
+     A Operation has a name, a description, and a list of AccessTypes that really define
+     what it means using the lower-level (service-level) constructs.
+    
+     The URL model is that a Operation is a collection:
+    
+      POST /aclp:                   creates a new Operation resource; can include List<AccessType>
+      POST /aclp/{operationName}   adds an AccessType to the given resource
+      GET  /aclp/{operationName}   returns name, desc, list of AccessTypes (names)
+  post: 
+    description: |
+      create a new Operation with the given name.
+      
+       API Details:
+      must be called with ROOT role (=> token required)
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  get: 
+    description: Returns all Operations with all their details.
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{opName}: 
+    get: 
+      description: Returns all properties of the given Operation in the form of a JSON object.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      description: |
+        DELETEs the given Operation.  This is an EXTREMELY DESTRUCTIVE operation as it deletes
+         ALL access control information related to the Operation, including permissions granted
+         to entities.  There is no recovery from this aside from database restore.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/auths: 
+  description: |
+    AuthRS exposes the RESTful authentication service.  Entry points are:
+    
+      POST /auths; params are email and password (for now)
+  post: 
+    description: |
+      Usage pattern:
+      
+        1.  call with id (e.g., email address) and password and without token
+        2.  call with code and token to complete second factor authorization
+      
+       authCheck microfilter needs to be configured with this path so that token-less
+       requests can be dispatched to it
+      
+       API Details:
+      no token required if email/password present
+      all roles allowed (if token is present)
+    queryParameters: 
+      int: 
+        type: boolean
+      ttl: 
+        type: integer
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{id}: 
+    delete: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/batches: 
+  description: Internal service.
+  /extract: 
+    description: Internal service.
+    /pds/{pdsId}: 
+      description: Internal service.
+      get: 
+        description: Get available event extract batches for a patient data set.
+        queryParameters: 
+          includeBad: 
+            type: boolean
+            default: false
+          start: 
+            type: integer
+            default: 0
+          end: 
+            type: integer
+            default: 0
+          sourceSystem: 
+            default: ""
+          modelVersion: 
+            default: ""
+        responses: 
+          200: 
+            description: 'List of Extract Batch JSON Objects: [{id:"extractBatchId", name:"pipelineBatchName", desc:"desc", pds:"pdsId", startDate:timestamp, closeDate:timestamp, bad:true/false, completenessRatio:#.#, parentUploadBatch:"uploadBatchId", sourceSystem:"sourceSystem", healthPlan:"healthPlan", modelVersion:"version", pipelineVersion:"3.4.5"},...]'
+            body: 
+              application/json: 
+    /project/{projectId}: 
+      get: 
+        description: Get available event extract batches for a project.
+        responses: 
+          200: 
+            description: 'List of Extract Batch JSON Objects: [{id:"extractBatchId", name:"pipelineBatchName", desc:"desc", pds:"pdsId", startDate:timestamp, closeDate:timestamp, bad:true/false, completenessRatio:#.#, parentUploadBatch:"uploadBatchId", sourceSystem:"sourceSystem", healthPlan:"healthPlan", modelVersion:"version", pipelineVersion:"3.4.5"},...]'
+            body: 
+              application/json: 
+    /{batchId}: 
+      get: 
+        description: Get Event Extract Batch By ID.
+        queryParameters: 
+          pds: 
+            default: ""
+          updateCompleteness: 
+            type: boolean
+            default: true
+        responses: 
+          200: 
+            description: 'Upload Batch JSON Object: {id:"extractBatchId", name:"pipelineBatchName", desc:"desc", pds:"pdsId", startDate:timestamp, closeDate:timestamp, bad:true/false, completenessRatio:#.#, parentUploadBatch:"uploadBatchId", sourceSystem:"sourceSystem", healthPlan:"healthPlan", modelVersion:"version", pipelineVersion:"#.#.#"}'
+            body: 
+              application/json: 
+      put: 
+        description: Update existing Extract Batch.
+        queryParameters: 
+          pds: 
+            default: ""
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /upload: 
+    description: ""
+    /pds/{pdsId}: 
+      get: 
+        description: Get available upload batches for a patient data set.
+        queryParameters: 
+          includeBad: 
+            type: boolean
+            default: false
+          start: 
+            type: integer
+            default: 0
+          end: 
+            type: integer
+            default: 0
+        responses: 
+          200: 
+            description: 'List of Upload Batch JSON Objects: [{id:"extractBatchId", name:"pipelineBatchName", desc:"desc", pds:"pdsId", startDate:timestamp, closeDate:timestamp, bad:true/false, completenessRatio:#.#, parentUploadBatch:"uploadBatchId", sourceSystem:"sourceSystem", healthPlan:"healthPlan", modelVersion:"version", pipelineVersion:"#.#.#"},...]'
+            body: 
+              application/json: 
+    /{batchId}: 
+      get: 
+        description: Get Upload Batch By ID.
+        queryParameters: 
+          pds: 
+            default: ""
+          updateCompleteness: 
+            type: boolean
+            default: true
+        responses: 
+          200: 
+            description: 'UploadBatch JSON Object: {id:"uploadBatchId", name:"pipelineBatchName", desc:"desc", pds:"pdsId", startDate:timestamp, closeDate:timestamp, bad:true/false, completenessRatio:#.#, pipelineVersions:["#.#.#"]}'
+            body: 
+              application/json: 
+      put: 
+        description: Update existing Upload Batch.
+        queryParameters: 
+          pds: 
+            default: ""
+        responses: 
+          200: 
+            body: 
+              application/json: 
+/debug: 
+  description: Internal Sys (privileged) entity RESTful Service.
+  /acl: 
+    description: Internal Sys (privileged) entity RESTful Service.
+    /lowlevel: 
+      description: Internal Sys (privileged) entity RESTful Service.
+      get: 
+        responses: 
+          200: 
+            body: 
+              text/plain: 
+    /orgs: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              text/plain: 
+/grants/{subject}/{operation}: 
+  description: |
+    RESTful API to manage/query Grants.  
+    
+     Because these methods are protected by ACL checks, any User can call into them.
+    
+     Some of these methods must specify constraints on ("downline") subjects and objects.  These
+     constraints are specified in the HTTP body and is a stringified JSON object.  There are
+     several types of constraints:
+    
+       * wildcard/any:  can be used for either subject or object constraint
+       * member of usergroup:  used for subject
+       * member of set:  used for object
+  put: 
+    description: Attempts to grant the right to allow the subject to add permission on the operation.
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  delete: 
+    description: Attempts to grant the right to allow the subject to add permission on the operation.
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+/passpolicies: 
+  description: Internal service.
+  get: 
+    description: Returns password policy details for all password policies.
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  post: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{policyName}: 
+    get: 
+      description: Returns the password policy details.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/patientdatasets: 
+  description: |
+    RESTful endpoints to manage PatientDataSet resources.  A PatientDataSet historically
+     was known as a Customer, which was termed a CustomerOrg in CareOptimizer so the
+     XUUID prefix is "O_" (for Organization).
+    
+     PatientDataSets can either be attached (associated) with
+     a Customer-type of Organization or can be unassociated.  Once associated, this association
+     must be removed before the PDS can be associated with another Organization.
+  post: 
+    description: |
+      Creates a new PatientDataSet entity.  The required input JSON is:
+      
+        { "name": "thename",
+          "description": "thedescription",
+          "owningOrgID": "XUUID of owningOrg" }
+      
+       The newly created PDS is returned as a JSOn object with the form:
+      
+        {'coID': 'Some long'
+         'description': 'yoyo',
+         'externalID': 'Some int',
+         'id': 'O_61d89e25-e438-450e-8326-72dfb211fd91',
+         'isActive': False
+         'name': 'Some PDS',
+         'ownerOrg': 'UO_6ececf9e-2b54-4acf-893c-4c947a14d238'}
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  get: 
+    description: |
+      Returns the list of all PatientDataSets, with the option of returning just those
+       that are NOT associated with a PDS-type Organization.  The list of newly
+       created PDS objects as a JSON list.  Each JSON object has the form:
+      
+        { id: 'O_61d89e25-e438-450e-8326-72dfb211fd91',
+         isActive: true,
+         description: 'yoyo',
+         name: 'Some PDS' }
+    queryParameters: 
+      unowned: 
+        type: boolean
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /propdefs: 
+    post: 
+      description: |
+        Creates a new property definition.  The input HTTP entity body must be of the form
+        
+          {"name": "auniquename", "type":"one of [STRING, BOOLEAN, INTEGER, DOUBLE, DATE]" }
+        
+         Arbitrary (string) metadata on the type is specified by appending a ":" and the metadata
+         to the type.  For example:
+        
+         {"name": "count", "type":"INTEGER:immutable" }
+        
+         The metadata string is not returned in GET:/patientdataset/propdefs unless the "meta"
+         query parameter is set to true:
+        
+          GET /patientdatasets/propdefs?meta=true
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    get: 
+      description: |
+        Returns a list of all property definition.  The returned JSON is of the form
+        
+          [ {"propname": "proptype"}, ... ]
+        
+         where "propname" is really the actual property name (which was supplied as the "name"
+         JSON field during the creation) and "proptype" is the type (ditto).  For example:
+        
+          [ {"count": "INTEGER"} ]
+        
+         If the query parameter "meta" is set to true, then the metadata string is included
+         in the returned type:
+        
+          [ {"count": "INTEGER:immutable"} ]
+      queryParameters: 
+        meta: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      delete: 
+        description: |
+          Deletes the given property definition.  All property values across all patient data set
+           entities are also removed.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /properties: 
+    get: 
+      description: |
+        Gets all properties of all patient data set entities.  The JSON return structure is
+         as follows:
+        
+          { { "object1ID" : { "prop1": "value1", "prop2": "value2", ...} },
+            { "object2ID" : { "prop1": "value1", "prop2": "value2", ...} },
+            ... }
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      get: 
+        description: |
+          Gets a single property across all patient data set entities.  The JSON return structure is
+           as follows:
+          
+            { "object1ID": "value1",
+              "object2ID": "value2",
+              ... }
+          
+           where the values are for the given property.  If an object has never had the value
+           set on it, that object ID won't be included in the returned JSON.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /{pdsID}: 
+    get: 
+      description: |
+        Gets information about the given PatientDataSet.  The information is returned
+         as a JSON object with the form:
+        
+          { id: 'O_61d89e25-e438-450e-8326-72dfb211fd91',
+           isActive: true,
+           description: 'yoyo',
+           name: 'Some PDS' }
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      description: |
+        Updates information about the given PatientDataSet.  The required input JSON is:
+        
+          { "name": "thename", "description": "thedescription" }
+        
+         Both fields are optional (but obviously it makes sense to supply at least one of them).
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /activate: 
+      post: 
+        description: |
+          Activates the given PatientDataSet.  The input HTTP entity body must be
+           like:
+          
+            { "primary_assign_authority": "theassignauthority" }
+          
+           A successful activation will have created the required Cassandra column families
+           and will have set the properties that other (outside this service) code uses.
+          
+           Should the activation was successful, the call would return a HTTP 200.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /deactivate: 
+      post: 
+        description: Deactivates the given PatientDataSet.  No HTTP entity body is expected.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /properties: 
+      get: 
+        description: |
+          Returns the full set of properties (name and value) that have been added to the
+           given patient data set.  The returned JSON structure will look like:
+          
+            { "name1": "value1", "name2": "value2", ...}
+          
+           where "name1" is the actual name of the property, etc.  For example:
+          
+            { "count": 35 }
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{name}: 
+        put: 
+          description: |
+            Adds the given property to the given patient data set entity.  The input HTTP entity
+             must be of the form:
+            
+              {"value": "theactualvalue"}
+            
+             The name of the property must have already been added via a request to
+             POST:/patientdatasets/propdefs and the value must be able to be interpreted
+             as valid within the given type.  For example, if the type of "count" is
+             "INTEGER", then the value specified in the HTTP entity body must be able to
+             be parsed as a Java int.
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          description: |
+            Removes the given property from the given patient data set entity.
+            
+             The name of the property must have already been added via a request to
+             POST:/patientdatasets/propdefs.
+          responses: 
+            200: 
+              body: 
+                application/json: 
+/perms: 
+  description: |
+    RESTful API to manage/query Permissions.
+    
+     This is meant to be a fairly minimal (initially) API that allows testing, adding, and removing
+     of permissions.  It does not yet allow generalized querying (e.g., "who has rights on this object?").
+    
+     As these methods are protected by ACL checks, any User can call into them.
+  /{operation}/{object}: 
+    description: |
+      RESTful API to manage/query Permissions.
+      
+       This is meant to be a fairly minimal (initially) API that allows testing, adding, and removing
+       of permissions.  It does not yet allow generalized querying (e.g., "who has rights on this object?").
+      
+       As these methods are protected by ACL checks, any User can call into them.
+    get: 
+      description: |
+        Checks if the currently logged in user (caller) can perform Operation on the Object
+         and returns OK if allowed and FORBIDDEN if not allowed.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /{subject}/{operation}/{object}: 
+    get: 
+      description: |
+        Checks if the Subject can perform Operation on the Object and returns OK if allowed
+         and FORBIDDEN if not allowed.  For convenience, if the value of subject is an email
+         address, a user lookup is done.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      description: |
+        Attempts to add the permission such that the Subject can perform Operation on the Object.
+         Returns OK if the addition of the permission was allowed and and FORBIDDEN if not allowed.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      description: |
+        Attempts to remove the permission such that the Subject can not perform Operation on the Object.
+         Returns OK if the removal of the permission was allowed and and FORBIDDEN if not allowed.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/projects: 
+  description: Internal service.
+  get: 
+    queryParameters: 
+      orgID: 
+      pdsID: 
+      type: 
+      inactive: 
+      properties: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  post: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /propdefs/{bag}: 
+    post: 
+      description: |
+        Creates a new property definition.  The input HTTP entity body must be of the form
+        
+          {"name": "auniquename", "type":"one of [STRING, BOOLEAN, INTEGER, DOUBLE, DATE]" }
+        
+         Allowed values of {bag} are:  "gen", "phase", and "hcc".
+        
+         Arbitrary (string) metadata on the type is specified by appending a ":" and the metadata
+         to the type.  For example:
+        
+         {"name": "count", "type":"INTEGER:immutable" }
+        
+         The metadata string is not returned in GET:/uorgs/propdefs unless the "meta"
+         query parameter is set to true:
+        
+          GET:/projects/{bag}/propdefs?meta=true
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    get: 
+      description: |
+        Returns a list of all property definition.  The returned JSON is of the form
+        
+          [ {"propname": "proptype"}, ... ]
+        
+         where "propname" is really the actual property name (which was supplied as the "name"
+         JSON field during the creation) and "proptype" is the type (ditto).  For example:
+        
+          [ {"count": "INTEGER"} ]
+        
+         If the query parameter "meta" is set to true, then the metadata string is included
+         in the returned type:
+        
+          [ {"count": "INTEGER:immutable"} ]
+        
+         Allowed values of {bag} are:  "gen", "phase", and "hcc".
+      queryParameters: 
+        meta: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      delete: 
+        description: |
+          Deletes the given property definition.  All property values across all projects
+           entities are also removed.
+          
+           Allowed values of {bag} are:  "gen", "phase", and "hcc".
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /properties/{bag}: 
+    get: 
+      description: |
+        Gets all properties of all project entities.  The JSON return structure is
+         as follows:
+        
+          { { "object1ID" : { "prop1": "value1", "prop2": "value2", ...} },
+            { "object2ID" : { "prop1": "value1", "prop2": "value2", ...} },
+            ... }
+        
+         Allowed values of {bag} are:  "gen", "phase", and "hcc".
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      get: 
+        description: |
+          Gets a single property across all project entities.  The JSON return structure is
+           as follows:
+          
+            { "object1ID": "value1", 
+              "object2ID": "value2",
+              ... }
+          
+           where the values are for the given property.  If an object has never had the value
+           set on it, that object ID won't be included in the returned JSON.
+          
+           Allowed values of {bag} are:  "gen", "phase", and "hcc".
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /users/{userID}: 
+    get: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /{projID}: 
+    get: 
+      queryParameters: 
+        properties: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /members: 
+      get: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{userID}: 
+        put: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /properties/{bag}: 
+      get: 
+        description: |
+          Returns the full set of properties (name and value) that have been added to the
+           given project.  The returned JSON structure will look like:
+          
+            { "name1": "value1", "name2": "value2", ...}
+          
+           where "name1" is the actual name of the property, etc.  For example:
+          
+            { "count": 35 }
+          
+           Allowed values of {bag} are:  "gen", "phase", and "hcc".
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{name}: 
+        put: 
+          description: |
+            Adds the given property to the given project entity.  The input HTTP entity
+             must be of the form:
+            
+              {"value": "theactualvalue"}
+            
+             The name of the property must have already been added via a request to
+             POST:/projects/propdefs/{bag} and the value must be able to be interpreted
+             as valid within the given type.  For example, if the type of "count" is
+             "INTEGER", then the value specified in the HTTP entity body must be able to
+             be parsed as a Java int.
+            
+             Allowed values of {bag} are:  "gen", "phase", and "hcc".
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          description: |
+            Removes the given property from the given project entity.
+            
+             The name of the property must have already been added via a request to
+             POST:/projects/propdefs/{bag}.
+            
+             Allowed values of {bag} are:  "gen", "phase", and "hcc".
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /roles: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /users: 
+      delete: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{userID}: 
+        delete: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        /roles: 
+          get: 
+            responses: 
+              200: 
+                body: 
+                  application/json: 
+          /{role}: 
+            put: 
+              body: 
+                application/json: 
+              responses: 
+                200: 
+                  body: 
+                    application/json: 
+            delete: 
+              body: 
+                application/json: 
+              responses: 
+                200: 
+                  body: 
+                    application/json: 
+/rolesets: 
+  description: Internal service.
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  post: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{nameID}: 
+    post: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{role}: 
+      put: 
+        description: aaa
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+/texts: 
+  get: 
+    queryParameters: 
+      content: 
+        type: boolean
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{blobID}: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/uorgs: 
+  description: |
+    RESTful endpoints to manage Organization resources.  An Organization entity
+     can have members (e.g., Users who are employees) and it can have Users who
+     are assigned Roles within the organization.  Users who are assigned roles
+     do NOT need to be members of that organization.
+    
+     Organizations have a type; this type is one of System, Vendor, and Customer.
+     Each type has its own set of roles.  Roles that are conceptually the same
+     across the different types (e.g., "ADMIN") are actually distinct as they
+     could have different privileges associated with them.
+    
+     Organizations of type "Customer" can also own one or more PatientDataSets.
+    
+     Finally, the system supports adding custom properties to organization entities.
+  get: 
+    description: |
+      Returns all properties of the given organization in the form of a JSON object.  It does
+       NOT return user lists.
+    queryParameters: 
+      properties: 
+        type: boolean
+      type: 
+      inactive: 
+        type: boolean
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  post: 
+    description: |
+      Creates a new Organization entity.  The input HTTP entity JSON must be like:
+      
+        { "name": "organizationname", "description": "thedescription",
+          "type": "one of [System, Vendor, Customer]",
+          "externalID":  "client-defined identifier" }
+      
+       A successful creation will return a JSON object with the submitted information
+       along with an XUUID identifier:
+      
+        { "id": "UO_958e517d-6c4f-4747-b54f-9f0c285b8599",
+          "name": "organizationname", "description": "thedescription",
+          "type": "one of [System, Vendor, Customer]",
+          "externalID":  "client-defined identifier" }
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /propdefs: 
+    post: 
+      description: |
+        Creates a new property definition.  The input HTTP entity body must be of the form
+        
+          {"name": "auniquename", "type":"one of [STRING, BOOLEAN, INTEGER, DOUBLE, DATE]" }
+        
+         Arbitrary (string) metadata on the type is specified by appending a ":" and the metadata
+         to the type.  For example:
+        
+         {"name": "count", "type":"INTEGER:immutable" }
+        
+         The metadata string is not returned in GET:/uorgs/propdefs unless the "meta"
+         query parameter is set to true:
+        
+          GET uorgss/propdefs?meta=true
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    get: 
+      description: |
+        Returns a list of all property definition.  The returned JSON is of the form
+        
+          [ {"propname": "proptype"}, ... ]
+        
+         where "propname" is really the actual property name (which was supplied as the "name"
+         JSON field during the creation) and "proptype" is the type (ditto).  For example:
+        
+          [ {"count": "INTEGER"} ]
+        
+         If the query parameter "meta" is set to true, then the metadata string is included
+         in the returned type:
+        
+          [ {"count": "INTEGER:immutable"} ]
+      queryParameters: 
+        meta: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      delete: 
+        description: |
+          Deletes the given property definition.  All property values across all organization
+           entities are also removed.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /properties: 
+    get: 
+      description: |
+        Gets all properties of all organization entities.  The JSON return structure is
+         as follows:
+        
+          { { "object1ID" : { "prop1": "value1", "prop2": "value2", ...} },
+            { "object2ID" : { "prop1": "value1", "prop2": "value2", ...} },
+            ... }
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      get: 
+        description: |
+          Gets a single property across all organization entities.  The JSON return structure is
+           as follows:
+          
+            { "object1ID": "value1", 
+              "object2ID": "value2",
+              ... }
+          
+           where the values are for the given property.  If an object has never had the value
+           set on it, that object ID won't be included in the returned JSON.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /{orgID}: 
+    get: 
+      description: |
+        Returns all properties of the given organization in the form of a JSON object.  It does
+         NOT return user lists.
+      queryParameters: 
+        properties: 
+          type: boolean
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      description: |
+        updateOrg updates ALL of the properties of an Org with the values given in the
+         parameters.  If the property doesn't exist in the Map<> the ...
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /members: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{userID}: 
+        put: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /patientdatasets: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{pdsID}: 
+        put: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /properties: 
+      get: 
+        description: |
+          Returns the full set of properties (name and value) that have been added to the
+           given organization.  The returned JSON structure will look like:
+          
+            { "name1": "value1", "name2": "value2", ...}
+          
+           where "name1" is the actual name of the property, etc.  For example:
+          
+            { "count": 35 }
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{name}: 
+        put: 
+          description: |
+            Adds the given property to the given organization entity.  The input HTTP entity
+             must be of the form:
+            
+              {"value": "theactualvalue"}
+            
+             The name of the property must have already been added via a request to
+             POST:/uorgs/propdefs and the value must be able to be interpreted
+             as valid within the given type.  For example, if the type of "count" is
+             "INTEGER", then the value specified in the HTTP entity body must be able to
+             be parsed as a Java int.
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          description: |
+            Removes the given property from the given organization entity.
+            
+             The name of the property must have already been added via a request to
+             POST:/uorgs/propdefs.
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /roles: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{roleName}: 
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        /{userID}: 
+          put: 
+            description: Assign the given user the given role within the given org
+            responses: 
+              200: 
+                body: 
+                  application/json: 
+          delete: 
+            description: Assign the given user the given role within the given org
+            responses: 
+              200: 
+                body: 
+                  application/json: 
+/users: 
+  description: Internal User entity RESTful Service.
+  get: 
+    queryParameters: 
+      orgID: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  post: 
+    description: |
+      create a new account with the given email address.  A side effect of
+       successful creation is an email that is sent to the email address.
+       This email has an activation link that the user must click on in order
+       to verify the email address.  No access is granted to the user until
+       that link is clicked on.
+      
+       This is also the method used to resend a verification link for a new
+       account that hasn't yet had its email address verified.  (There is
+       no other good place for this from a RESTful perspective...).  This
+       "resend verification email" is triggered by a URL parameter of
+       "resendOnly=true".
+      
+       API Details:
+      must be called with ADMIN role (=> token required)
+    queryParameters: 
+      resendOnly: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /cproperties: 
+    post: 
+      description: |
+        Implementation of #1.  HTTP entity body is JSON that gets mapped to Map<String,String> where
+         there are 2 fields:  "name" and "type".  Name must be unique within User custom properties
+         and type (when uppercased) must be one of the enum values in PropertyType.
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    get: 
+      description: Implementation of #2.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      delete: 
+        description: Implementation of #3
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /forgot: 
+    post: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /me: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /passpolicy: 
+      get: 
+        description: |
+          Returns the user's password policy details.  An empty JSON object is returned
+           if there is no password policy for the user.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /{detail}: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      put: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /priv/{userID}: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /properties: 
+    get: 
+      description: "Implementation of #7:  aggregate query to get all custom properties across all Users."
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      get: 
+        description: "Implementation of #8:  aggregate query to get a single custom property across all Users."
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /token: 
+    get: 
+      description: Get token details, including the user ID
+      responses: 
+        200: 
+          description: token
+          body: 
+            application/json: 
+  /{userID}: 
+    get: 
+      description: Returns all properties of the given user in the form of a JSON object.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /activation: 
+      put: 
+        description: set activation state of a user
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            description: 200 ok with no body if succeeds
+            body: 
+              application/json: 
+    /org: 
+      get: 
+        description: Returns the org to which the user is assigned
+        responses: 
+          200: 
+            description: array of json objects for orgs to which this user is assigned, or an empty array
+            body: 
+              application/json: 
+    /pass_email: 
+      post: 
+        description: Sends a reset password email
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            description: 200 ok, no message body.
+            body: 
+              application/json: 
+    /passpolicy: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /properties: 
+      get: 
+        description: Implementation of #6.  Get all custom properties on the given object
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{name}: 
+        put: 
+          description: Implementation of #4
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          description: Implementation of #5
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /roles: 
+      get: 
+        description: Returns the roles to which the given user has been assigned.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /{detail}: 
+      get: 
+        description: Returns the given property of the user in a JSON object.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /{userid}/{detail}: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+/util/version: 
+  description: |
+    @author lschneider
+     created on 6/17/15.
+    
+     place to put version endpoint
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+/verifications: 
+  description: Internal service.
+  /{id}: 
+    description: Internal service.
+    /forgot: 
+      description: Internal service.
+      get: 
+        description: |
+          Return information from a "forgot password" Verify link that the client can use
+           to do things like restrict new password contents.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      post: 
+        description: 'Validate that the "reset password" link is valid and issue a token if it is'
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /valid: 
+      post: 
+        responses: 
+          200: 
+            body: 
+              application/json: 

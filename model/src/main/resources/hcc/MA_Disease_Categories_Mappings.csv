@@ -1,0 +1,87 @@
+hcc,hcc_cat
+1,Infection
+2,Infection
+6,Infection
+8,Neoplasm
+9,Neoplasm
+10,Neoplasm
+11,Neoplasm
+12,Neoplasm
+17,Diabetes
+18,Diabetes
+19,Diabetes
+21,Metabolic
+22,Metabolic
+23,Metabolic
+27,Liver
+28,Liver
+29,Liver
+33,Gastrointestinal
+34,Gastrointestinal
+35,Gastrointestinal
+39,Musculoskeletal
+40,Musculoskeletal
+46,Blood
+47,Blood
+48,Blood
+51,Cognitive
+52,Cognitive
+54,Substance Abuse
+55,Substance Abuse
+56,Substance Abuse
+57,Psychiatric
+58,Psychiatric
+59,Psychiatric
+60,Psychiatric
+70,Spinal
+71,Spinal
+72,Spinal
+73,Neurological
+74,Neurological
+75,Neurological
+76,Neurological
+77,Neurological
+78,Neurological
+79,Neurological
+80,Neurological
+82,Arrest
+83,Arrest
+84,Arrest
+85,Heart
+86,Heart
+87,Heart
+88,Heart
+96,Heart
+99,Cerebrovascular Disease
+100,Cerebrovascular Disease
+103,Cerebrovascular Disease
+104,Cerebrovascular Disease
+106,Vascular
+107,Vascular
+108,Vascular
+110,Lung
+111,Lung
+112,Lung
+114,Lung
+115,Lung
+122,Eye
+124,Eye
+134,Kidney
+135,Kidney
+136,Kidney
+137,Kidney
+138,Kidney
+157,Skin
+158,Skin
+159,Skin
+161,Skin
+162,Skin
+166,Injury
+167,Injury
+169,Injury
+170,Injury
+173,Injury
+176,Complications
+186,Transplant
+188,Openings
+189,Amputation

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+message ClinicalCode {
+  string system = 1;
+  string systemOid = 2;
+  string code = 3;
+  string systemVersion = 4;
+  string displayName = 5;
+}

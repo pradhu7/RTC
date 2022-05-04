@@ -1,0 +1,28 @@
+{
+  "Statement": [
+    {
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "Terraform0"
+    },
+    {
+      "Action": [
+        "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
+        "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "%s"
+      ],
+      "Sid": "Terraform1"
+    }
+  ],
+  "Version": "2012-10-17"
+}

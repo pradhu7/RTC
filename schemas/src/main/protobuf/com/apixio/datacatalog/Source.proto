@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/Organization.proto";
+import "com/apixio/datacatalog/UUID.proto";
+
+
+message Source {
+  string system = 1;
+  string type = 2;
+  Organization organization = 3;
+  int64 creationDate = 4;
+  UUID clinicalActorId = 5;
+  UUID parsingDetailsId = 6;
+  UUID internalId = 7;
+}

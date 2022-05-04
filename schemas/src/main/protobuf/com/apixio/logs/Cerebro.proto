@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "google/protobuf/timestamp.proto";
+import "com/apixio/messages/MessageMetadata.proto";
+import "com/apixio/logs/Common.proto";
+import "com/apixio/messages/Cerveau.proto";
+
+
+enum CerebroLogType {
+    UNSPECIFIED                    = 0;
+    CEREBRO_CONTROLSET_TRACKING    = 1;
+    CEREBRO_DOCUMENT_TRACKING      = 2;
+    CEREBRO_PATIENT_TRACKING       = 3;
+    CEREBRO_PROJECT_TRACKING       = 4;
+}
+
+enum DocumentEventType {
+    DOCUMENT_SIGNALS_READY         = 0;  // These are mirror of MessageType from package messages
+    DOCUMENT_SIGNALS_REQUEST       = 1;
+    DOCUMENT_PREDICTIONS_REQUEST   = 2;
+    DOCUMENT_SIGNALS_RESPONSE      = 3;
+    DOCUMENT_PREDICTIONS_SUCCESS   = 4;
+    DOCUMENT_PREDICTIONS_FAILURE   = 5;
+    DOCUMENT_PREDICTIONS_NULL      = 6;
+    DOCUMENT_PREDICTIONS_HEARTBEAT = 7;
+    DOCUMENT_PREDICTIONS_PUBLISHED = 8;
+    DOCUMENT_LAMBDA_SIGNALS_READY  = 9;
+
+}
+
+enum PatientEventType {
+    PATIENT_READY                  = 0;
+    PATIENT_SIGNALS_REQUEST        = 1;
+    PATIENT_PREDICTIONS_REQUEST    = 2;
+    PATIENT_SIGNALS_SUCCESS        = 3;
+    PATIENT_SIGNALS_HEARTBEAT      = 4;
+    PATIENT_SIGNALS_FAILURE        = 5;
+    PATIENT_SIGNALS_NULL           = 6;
+    PATIENT_PREDICTIONS_SUCCESS    = 7;
+    PATIENT_PREDICTIONS_FAILURE    = 8;
+    PATIENT_PREDICTIONS_NULL       = 9;
+    PATIENT_PREDICTIONS_HEARTBEAT  = 10;
+    PATIENT_PREDICTIONS_PUBLISHED  = 11;
+    PATIENT_DEMOGRAPHICS_READY     = 12;
+    PATIENT_ELIGIBILITY_READY      = 13;
+    PATIENT_PREDICTIONS_GENERATED = 14; // for hcc complete
+    PATIENT_SIGNALS_GENERATED    = 15;  // for hcc complete
+}
+
+enum ControlSetEventType {
+    NEW_CONTROLSET                 = 0;  // this set is mirror of ControlSetEventType
+    PAUSE_PUBLISHING               = 1;
+    START_PUBLISHING               = 2;
+    PAUSE_PROCESSING               = 3;
+    START_PROCESSING               = 4;
+    CLOSE_CONTROLSET               = 5;
+
+}
+
+enum ProjectEventType {
+    PROJECT_SIGNALS_READY = 0;
+    CODER_DECISIONS_READY = 1;
+    PROJECT_PREDICTIONS_SUCCESS = 2;
+    PROJECT_PREDICTIONS_PUBLISHED = 3;
+    PROJECT_PREDICTIONS_HEARTBEAT = 4;
+    PROJECT_HEARTBEAT = 5;
+
+
+}
+
+
+/*
+enum TrackingEventType {
+    DOCUMENT_SIGNALS_READY         = 0;  // These are mirror of MessageType from package messages
+    DOCUMENT_SIGNALS_REQUEST       = 1;
+    DOCUMENT_PREDICTIONS_REQUEST   = 2;
+    DOCUMENT_SIGNALS_RESPONSE      = 3;
+    DOCUMENT_PREDICTIONS_SUCCESS   = 4;
+    DOCUMENT_PREDICTIONS_FAILURE   = 5;
+    DOCUMENT_PREDICTIONS_HEARTBEAT = 6;
+    DOCUMENT_PREDICTIONS_PUBLISHED = 7;
+    PATIENT_READY                  = 8;
+    PATIENT_SIGNALS_REQUEST        = 9;
+    PATIENT_PREDICTIONS_SUCCESS    = 10;
+    PATIENT_SIGNALS_SUCCESS        = 11;
+    PATIENT_SIGNALS_HEARTBEAT      = 12;
+    PATIENT_SIGNALS_FAILURE        = 13;
+    PATIENT_PREDICTIONS_SUCCESS    = 14;
+    PATIENT_PREDICTIONS_FAILURE    = 15;
+    PATIENT_PREDICTIONS_HEARTBEAT  = 16;
+    PATIENT_PREDICTIONS_PUBLISHED  = 17;
+    PATIENT_DEMOGRAPHICS_READY     = 18;
+    PATIENT_ELIGIBILITY_READY      = 19;
+    NEW_CONTROLSET                 = 20;  // this set is mirror of ControlSetEventType
+    PAUSE_PUBLISHING               = 21;
+    START_PUBLISHING               = 22;
+    PAUSE_PROCESSING               = 23;
+    START_PROCESSING               = 24;
+    CLOSE_CONTROLSET               = 25;
+
+}
+*/
+
+message ControlSetTrackingLog {
+    ControlSetEventType  eventType= 1;
+    oneof controSetID {
+        messages.XUUID docsetID = 2;
+        messages.XUUID patsetID = 3;
+        messages.XUUID projectID = 4;
+    }
+}
+
+message DocumentTrackingLog {
+    messages.XUUID      documentID    = 1;
+    messages.XUUID      controlSetID  = 2;
+    messages.XUUID      modelID       = 3;
+    DocumentEventType   eventType     = 4;
+}
+
+
+message PatientTrackingLog {
+    messages.XUUID     patientID     = 1;
+    messages.XUUID     controlSetID  = 2;
+    messages.XUUID     modelID       = 3;
+    PatientEventType   eventType     = 4;
+}
+
+message ProjectTrackingLog {
+    messages.XUUID projectID = 1;
+    messages.XUUID controlSetID = 2;
+    messages.XUUID modelID = 3;
+    ProjectEventType eventType = 4;
+}
+
+
+message ApxCerebroLog {
+    LogHeader              header      = 1;
+    Network                network     = 2;
+    Performance            performance = 3;
+    User                   user        = 4;
+    CerebroLogType         logType     = 5; // tells us what is in the payload
+    oneof payload {
+        ControlSetTrackingLog    controlSetTracking = 6;
+        DocumentTrackingLog      documentTracking   = 7;
+        PatientTrackingLog       patientTracking    = 8;
+        ProjectTrackingLog       projectTracking    = 9;
+    }
+}
+

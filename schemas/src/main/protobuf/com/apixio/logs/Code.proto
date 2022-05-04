@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "google/protobuf/wrappers.proto";
+
+message Code {
+  google.protobuf.StringValue c = 1;
+  google.protobuf.StringValue s = 2;
+  google.protobuf.StringValue d = 3;
+}

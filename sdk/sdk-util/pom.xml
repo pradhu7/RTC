@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>apixio-sdk</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>apixio-sdk-util${scala.version.suffix}</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+      <dependency>
+	<groupId>apixio</groupId>
+	<artifactId>apixio-protoc</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>apixio</groupId>
+        <artifactId>apixio-dao${scala.version.suffix}</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>com.google.protobuf</groupId>
+	<artifactId>protobuf-java</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>com.google.protobuf</groupId>
+	<artifactId>protobuf-java-util</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>com.googlecode.protobuf-java-format</groupId>
+	<artifactId>protobuf-java-format</artifactId>
+      </dependency>
+
+    </dependencies>
+
+</project>

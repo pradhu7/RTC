@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ocrextraction>
+    <metadata/>
+    <pages>
+        <numPages>1</numPages>
+        <page>
+            <pageNumber>1</pageNumber>
+            <plainText>&lt;pre&gt;patient has diabetes&lt;/pre&gt;</plainText>
+            <imgType>TXT</imgType>
+        </page>
+    </pages>
+</ocrextraction>

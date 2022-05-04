@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+message Name {
+  repeated string givenNames = 1;
+  repeated string familyNames = 2;
+  repeated string prefixes = 3;
+  repeated string suffixes = 4;
+  string nameType = 5; //Enum in model com.apixio.model.patient.NameType
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>mono</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+
+    <artifactId>apixio-dataload-bizlogic${scala.version.suffix}</artifactId>
+    <name>apixio-dataload-bizlogic${scala.version.suffix}</name>
+    <description>The business logic backing our OCR pipeline</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-model${scala.version.suffix}</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-compiler</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.trove4j</groupId>
+                    <artifactId>trove4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Here, we are including the Apixio fork of `ghost4j`,
+              which was modified to not log to disk, as we process
+              PHI, and cannot allow PHI to log to disk.
+              Note: This is *not* excluding `jna`, as we *want*
+              the older version in order to avoid a curious
+              ghost4j bug relating to ABI incompatibilities. See:
+              https://github.com/nguyenq/tess4j/issues/35 for an
+              example and more details. -->
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>ghost4j</artifactId>
+            <version>1.0.0.2</version>
+        </dependency>
+
+        <!-- Declaring `pdfbox` first, as `tess4j` imports its own
+             `pdfbox`. This is a belt-and-suspenders approach, as
+             `tess4j` *also* has an explicit exclude, so it will
+             require *both* this ordering *and* the exclude to be
+             broken before the "wrong" `pdfbox` version gets
+             imported. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>4.3.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.pdfbox</groupId>
+                    <artifactId>pdfbox</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ghost4j</groupId>
+                    <artifactId>ghost4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>jna</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Test dependencies: -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+</project>

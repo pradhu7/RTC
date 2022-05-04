@@ -1,0 +1,249 @@
+################################################################
+# dropwizard configuration:
+server:
+  applicationConnectors:
+    - type: http
+      port: 8076
+      bindHost: 127.0.0.1
+  adminConnectors:
+    - type: http
+      port: 9076
+
+
+################################################################
+# "globalConfig" refers to configuration that is shared across ALL projects that
+# conform to the new API & token/security model.  The term "global" is not meant to
+# imply global to just a single project.  Note that the request filter construct
+# capability is also global in the same way.
+
+microserviceConfig:
+
+  persistenceConfig:
+
+    jedisConfig:
+      testWhileIdle: true
+      testOnBorrow: true
+      maxTotal: 100
+      maxWaitMillis: 10000
+
+    jedisPool:
+      timeout: 60000
+
+    redisConfig:
+      host: redis-1-stg.apixio.com
+      port: 6379
+      keyPrefix: development-
+
+    # required for new customer creation/activation
+    cassandraConfig_science:
+      hosts: 10.1.16.193,10.1.32.154,10.1.48.111
+      binaryPort: 9042
+      keyspaceName: apixio
+      baseDelayMs: 50
+      maxDelayMs: 250
+      readConsistencyLevel: LOCAL_QUORUM
+      writeConsistencyLevel: LOCAL_QUORUM
+      minConnections: 1
+      maxConnections: 2
+      cqlMonitor: true
+      localDC: aws-us-west-2
+      username:  useraccount-stg
+      password:  YDmCX3M4RBkoHJDM
+
+    # required for new customer creation/activation
+    cassandraConfig_internal:
+      hosts: 10.1.16.77,10.1.48.254,10.1.32.222
+      binaryPort: 9042
+      keyspaceName: internal
+      baseDelayMs: 50
+      maxDelayMs: 250
+      readConsistencyLevel: LOCAL_QUORUM
+      writeConsistencyLevel: LOCAL_QUORUM
+      minConnections: 1
+      maxConnections: 2
+      cqlMonitor: true
+      localDC: aws-us-west-2
+      username:  useraccount-stg
+      password:  YDmCX3M4RBkoHJDM
+
+    # required for new customer creation/activation
+    cassandraConfig_application:
+      hosts: 10.1.32.66,10.1.48.137,10.1.16.127
+      binaryPort: 9042
+      keyspaceName: application
+      baseDelayMs: 50
+      maxDelayMs: 250
+      readConsistencyLevel: LOCAL_QUORUM
+      writeConsistencyLevel: LOCAL_QUORUM
+      minConnections: 1
+      maxConnections: 2
+      cqlMonitor: true
+      localDC: aws-us-west-2
+      username:  useraccount-stg
+      password:  YDmCX3M4RBkoHJDM
+
+  logging:
+    level: INFO
+    loggers:
+      com.apixio: DEBUG
+    appenders:
+      - type: console
+      - type: file
+        threshold: INFO
+        logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+        currentLogFilename: ./application.log
+        archivedLogFilenamePattern: ./application-%d{yyyy-MM-dd}.log
+        archivedFileCount: 7
+        timeZone: UTC
+
+  loggingConfig:
+    appName: useraccount
+    defaultLoggerName: global
+    properties:
+      graphite: false
+      # graphite.url: graphite-stg.apixio.com
+      # graphite.folderPrefix: staging.useraccount
+      fluent: true
+      fluent.url: localhost
+      fluent.tag: staging
+
+  # externalMaxTTL and internalMaxTTL specify the number of seconds after token
+  # creation when the token is destroyed, regardless of activity.
+  # externalActivityTimeout is the number of seconds after last activity after which
+  # the token is destroyed.  Example: externalMaxTTL=86400 forces a logout after a
+  # day, even with constant activity, whereas externalActivityTimeout=600 logs out
+  # after 10 minutes of inactivity even if it could otherwise be kept alive for a
+  # day.  internalMaxTTL and externalActivityTimeout are required and externalMaxTTL
+  # is optional.
+  tokenConfig:
+    internalMaxTTL: 60
+    externalMaxTTL: 86400
+    externalActivityTimeout: 1800
+
+  ################ RESTful API access control
+
+  apiaclConfig:
+    # apiAclDefs: /Users/jgodwin/repos/workspace/useracc-repo/apx-useracct/dw-useracct/src/main/resources/apiacls.json
+    apiAclDefs: ./src/main/resources/apiacls.json
+    aclColumnFamilyName: apx_cfAcl_development
+    aclDebug: access
+    aclHpCacheTimeout: 10000
+
+  ################ filter configuration
+
+  # all request filters take configuration with the structure of a map from string to
+  # object, where the object can be whatever structure is needed (e.g., a list or
+  # map...).  One required map key is "filterClass" which refers to a class that
+  # extends com.apixio.web.Microfilter
+
+  # only 1 main filter is supported; this pattern indicates which URL requests
+  # actually get filtered: (Note: static bundles might affect this design here)
+
+  filterConfig:
+    filterUrlPattern:
+      - "/*"
+
+  # requestFilters is the list of web filters that will be applied in the listed order
+  # to each and every request coming in to the server:
+
+    requestFilters:
+      - com.apixio.restbase.web.RequestTimer
+      - com.apixio.restbase.web.RedisTransaction
+      - com.apixio.restbase.web.ValidateToken
+      # the microfilters after this expect the user on the thread...
+      # this won't fail if there is no token:
+      - com.apixio.useracct.web.AttachUser
+      - com.apixio.restbase.web.AclChecker
+
+    com.apixio.restbase.web.ValidateToken:
+      authCookieName: ApxToken             # MUST match what's in tokenizer.yaml etc
+      tokenType:  INTERNAL
+      # publicURLs lists the prefixes of the URL requests that don't require a token
+      publicURLs:
+        - /auths
+        - /verifications
+        - /users/forgot
+        - /users/me/password
+        - /users/unlockaccount
+        - /util
+      partialAuthURLs:
+        - /users
+        - /auths/codeVerification
+        - /auths/status
+
+################################################################
+################################################################
+## This section is for configuration constructs that are specific
+## to the user account service.
+################################################################
+################################################################
+
+# authConfig.internalIP is a Java regular expression (parseable by
+# java.util.regex.Pattern.compile) that defines which IP addresses are from the
+# internal network.  Note that the backslash character needs to be escaped; for
+# example, to treat localhost IP as internal network, the value should be (in
+# quotes): "127\\.0\\.0\\..*".
+#
+# internalAuthTTL is the default number of seconds that an internal (request)
+# token will be valid for.  This TTL is not extended by activity.
+#
+# maxFailedLogins is the number of failed logins (i.e., login failues in a
+# row) that are allowed before setting the account to the locked-out state.
+# If the value is 0 then there is no max.
+#
+# failedLoginDelayFactor gives # of seconds to delay after a failed login, using
+# the formula:  delaySeconds = #-of-failed-logins * failed-auth-delay-factor
+authConfig:
+#  internalIP: "127\\.0\\.0\\..*"
+  internalIP: ""
+  internalAuthTTL: 1200
+  maxFailedLogins: 5
+  failedLoginDelayFactor: .5
+  authCookieName: ApxToken
+
+# verifyLinkConfig.linkTimeout is the number of seconds from link creation that a
+# user can click on the link and activate an account (if it's not already active).
+# verifyLinkConfig.urlBase is the base URL prefix that is BROWSER-ACCESSIBLE that
+# will be used in forming the link that is sent in the activation email to the user.
+# Note that it's intended that the webserver that handles that URL is NOT the same
+# as the RESTful server that is hosing the UserAccount service!
+verifyLinkConfig:
+  linkTimeout: 604800
+  urlBase: "https://accounts-dev.apixio.com/validate/"
+
+# resetLinkConfig.linkTimeout is the number of seconds from link
+# creation that a user can click on the link and reset a password.
+# resetLinkConfig.urlBase is the base URL prefix that is
+# BROWSER-ACCESSIBLE that will be used in forming the link that is
+# sent in the reset password email to the user.  Note that it's
+# intended that the webserver that handles that URL is NOT the same as
+# the RESTful server that is hosing the UserAccount service!
+
+resetLinkConfig:
+  linkTimeout: 172800
+  urlBase: "https://accounts-dev.apixio.com/forgot/"
+
+unlockLinkConfig:
+  linkTimeout: 600
+  urlBase: https://accounts-dev.apixio.com/
+
+
+emailConfig:
+  defaultSender: noreply@apixio.com
+  smtpHost:      "smtp.gmail.com"
+  smtpPort:      "587"
+  smtpUsername:  "donotreply@apixio.com"
+  smtpPassword:  "apx.mail47"
+  imageBase:     "https://s3.amazonaws.com/apixio-static/images/"
+  templates:     /emailTemplates
+  javaMailProperties:
+    "mail.smtp.auth": true
+    "mail.smtp.starttls.enable": true
+
+
+messengerConfig:
+  serviceType: AWSSNS
+  encryptedAccessKey: "2518120970855950587104V01xqe9ASI16qh0eo7CKrHVrOfa4PUfQ33af8Rb2/naJ23c="
+  encryptedSecretAccessKey: "241797474286674164752V01xCpnnrK1UyWO4/KER2VN3RhDm92hhI4rGcYgMYi3RHmq23RvXXPcSohAE6YkWvQaX"
+  region: us_west_2
+  messageType: Promotional

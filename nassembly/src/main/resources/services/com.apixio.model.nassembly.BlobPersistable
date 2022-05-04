@@ -1,0 +1,4 @@
+com.apixio.nassembly.extractedtext.ExtractedTextBlobPersistableImpl
+com.apixio.nassembly.extractedtext.StringContentBlobPersistableImpl
+com.apixio.nassembly.cleantext.OcrCleanTextBlobPersistableImpl
+com.apixio.nassembly.cleantext.NonOcrCleanTextBlobPersistableImpl

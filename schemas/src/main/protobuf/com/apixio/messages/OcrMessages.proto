@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package com.apixio.messages;
+
+import "com/apixio/messages/MessageMetadata.proto";
+
+/*
+
+This file defines the messages that are used to communicate events in our
+Ocr processing Service
+
+Each message has standard (i.e., common across all message types) envelope info
+along with type-specific data.
+
+Types of messages:
+
+1.  OcrRequest
+    Signals the start of OCR or pager operation or both for a documentID belonging to a pds
+
+2.  OcrReponse
+    Signals the completion status of the OCR or pager operation documentID belonging to a pds
+
+3.  OcrPageRequest
+    Signals the start of OCR spark application for a documentID and pageNumber belonging to a pds
+
+4.  OcrPageResponse
+    Signals the completion status of OCR spark application for a documentID and pageNumber belonging to a pds
+
+5.  OcrMergeRequest
+    Signals the start for a spark OCR merge operation documentID belonging to a pds
+
+6. OcrMergeResponse
+    Signals the completion status of spark OCR merge operation for a documentID belonging to a pds
+
+*/
+
+enum Operation {
+  PAGER = 0; // Pager operation - image rendering and persistence.
+  OCR = 1;   // OCR operation - HOCR generation and persistence.
+}
+
+enum OcrStatus {
+  FULLY_SUCCEEDED = 0; // all pages succeeded.
+  PARTIALLY_SUCCEEDED = 1; // some pages succeeded, some failed.
+  FAILED = 2; // all pages failed or document failed.
+}
+
+message OcrRequest {
+  MessageHeader header     = 1;
+  XUUID         documentID = 2;
+  XUUID         pdsID      = 3;
+  repeated Operation operations = 4;
+  bool recompute = 5;
+  bytes context = 6; // pass through encrypted context info.
+  string batchName = 7;
+}
+
+message OcrResponse {
+  MessageHeader header     = 1;
+  XUUID         documentID = 2;
+  XUUID         pdsID      = 3;
+  Result result = 4;
+  bytes context = 5; // unmodified context info.
+  string batchName = 6;
+}
+
+message Result {
+  Operation operation = 1;
+  OcrStatus status = 2;
+  oneof metadata {
+    OcrMeta ocrMeta = 3;
+    PagerMeta pagerMeta = 4;
+  }
+}
+
+message OcrMeta {
+  string status = 1; // ocr.status
+  string resolution = 2; // ocrResolution
+  int64 timestampMs = 3; // ocr.ts
+  int32 totalPages = 4; // totalPages
+  int32 availablePages = 5; // availPages
+  int64 stringContentMs = 6; // s3_ext.ts.string_content
+  string errorMessage = 7; // ocr.error.msg
+}
+
+message PagerMeta {
+  int64 timestampMs = 1;
+  int32 totalPages = 2;
+  int32 availablePages = 3;
+  string errorMessage = 4;
+}
+
+message OcrPageRequest {
+  MessageHeader header = 1;
+  XUUID         documentID = 2;
+  XUUID         pdsID = 3;
+  int32         pageNumber = 4;
+  int32         pageCount = 5;
+  repeated Operation operations = 6;
+  int32         retry = 7;
+  bool          recompute = 8;
+}
+
+message OcrPageResponse {
+  MessageHeader header = 1;
+  XUUID          documentID = 2;
+  XUUID          pdsID = 3;
+  int32          pageNumber = 4;
+  int32          pageCount = 5;
+  Operation      operation = 6;
+  bool         status = 7;
+  int32         retry = 8;
+  string errorMessage = 9;
+  bool          recompute = 10;
+}
+
+message OcrMergeRequest {
+  MessageHeader header = 1;
+  XUUID         documentID = 2;
+  XUUID         pdsID = 3;
+  int32         pageCount = 4;
+  int32         retry = 5;
+  bool          recompute = 6;
+}
+
+message OcrMergeResponse {
+  MessageHeader header = 1;
+  XUUID         documentID = 2;
+  XUUID         pdsID = 3;
+  int32         pageCount = 4;
+  bool          status = 5;
+  int32         retry = 6;
+  string        errorMessage = 7;
+  bool          recompute = 8;
+}

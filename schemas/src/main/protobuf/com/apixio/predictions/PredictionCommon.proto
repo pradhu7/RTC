@@ -1,0 +1,80 @@
+// This file has been renamed from Common.proto to avoid a namespace conflict with Logs common.proto
+syntax = "proto3";
+
+package com.apixio.predictions.predictionbin;
+
+import "google/protobuf/timestamp.proto";
+
+message CategoryAttribute {
+     string name = 1;
+     string value = 2;
+     float weight = 3;
+}
+
+message NumericAttribute {
+     string name = 1;
+     double value = 2;
+     float weight = 3;
+}
+
+message NumericFloatAttribute {
+    string name = 1;
+    float value = 2;
+    float weight = 3;
+}
+
+message DateAttribute {
+     string name = 1;
+     google.protobuf.Timestamp value = 2;
+     float weight = 3;
+}
+
+message Code {
+     string code = 1;
+     string system = 2;
+     string systemName = 3;
+     string systemVersion = 4;
+     string displayName = 5;
+}
+
+message Source {
+     DocumentXUUID documentId = 1;
+     PatientXUUID patientId = 2;
+     uint32 page = 3;
+     double weight = 4;
+     double predictionConfidence = 5;
+}
+
+message DateOfService {
+    google.protobuf.Timestamp startDate = 1;
+    google.protobuf.Timestamp endDate = 2;
+}
+
+message XUUID {
+  string xuuid = 1;
+}
+
+message DocumentXUUID {
+  string xuuid = 1;
+}
+
+message PatientXUUID {
+     string xuuid = 1;
+}
+
+message DocsetXUUID {
+    string xuuid = 1;
+}
+
+enum ModelEngine
+{
+    MA = 0;
+    CR = 1;
+    QUALITY = 2;
+}
+
+enum ModelVariant
+{
+    V22 = 0;
+    V23 = 1;
+}

@@ -1,0 +1,28 @@
+--extra-index-url https://repos.apixio.com/artifactory/api/pypi/apixio-pypi/simple 
+python-apxsdk
+requests==2.26.0
+altgraph==0.17.2
+apxlogging==1.0.7
+apxprotobufs>=11.1.10
+certifi==2021.5.30
+charset-normalizer==2.0.6
+click==8.0.1
+flake8==3.9.2
+Flask==2.0.1
+fluent-logger==0.10.0
+graypy==2.1.0
+idna==3.2
+importlib-metadata==4.8.1
+itsdangerous==2.0.1
+Jinja2==3.0.1
+macholib==1.15.2
+MarkupSafe==2.0.1
+mccabe==0.6.1
+msgpack==1.0.2
+six==1.16.0
+typing-extensions==3.10.0.2
+urllib3==1.26.7
+Werkzeug==2.0.1
+zipp==3.5.0
+
+# or.. if you build a pip package for apx-sdk, you can specify that here

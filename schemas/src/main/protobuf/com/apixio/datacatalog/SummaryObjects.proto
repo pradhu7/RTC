@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/DataCatalogMeta.proto";
+import "com/apixio/datacatalog/EncounterInfo.proto";
+import "com/apixio/datacatalog/UUID.proto";
+import "com/apixio/datacatalog/CodedBaseObjects.proto";
+import "com/apixio/datacatalog/Source.proto";
+import "com/apixio/datacatalog/ParsingDetails.proto";
+import "com/apixio/datacatalog/ClinicalActorInfo.proto";
+import "com/apixio/datacatalog/PatientMeta.proto";
+import "com/apixio/datacatalog/ContactInfo.proto";
+import "com/apixio/datacatalog/BaseObjects.proto";
+import "com/apixio/datacatalog/CoverageInfo.proto";
+import "com/apixio/datacatalog/AllergyInfo.proto";
+import "com/apixio/datacatalog/ProcedureInfo.proto";
+import "com/apixio/datacatalog/ProblemInfo.proto";
+import "com/apixio/datacatalog/VitalSign.proto";
+import "com/apixio/datacatalog/SocialHistoryInfo.proto";
+import "com/apixio/datacatalog/DemographicsInfo.proto";
+import "com/apixio/datacatalog/LabResult.proto";
+import "com/apixio/datacatalog/Mao004.proto";
+import "com/apixio/datacatalog/RiskAdjustmentClaim.proto";
+import "com/apixio/datacatalog/DocumentMeta.proto";
+import "com/apixio/datacatalog/Prescription.proto";
+import "com/apixio/datacatalog/FfsClaim.proto";
+import "com/apixio/datacatalog/FamilyHistory.proto";
+import "com/apixio/datacatalog/Immunization.proto";
+
+message BaseSummary {
+  DataCatalogMeta dataCatalogMeta = 1;
+  PatientMeta patientMeta = 2;
+  repeated ParsingDetails parsingDetails = 3;
+  repeated Source sources = 4;
+}
+
+message CodedBaseSummary {
+  DataCatalogMeta dataCatalogMeta = 1;
+  PatientMeta patientMeta = 2;
+  repeated ParsingDetails parsingDetails = 3;
+  repeated Source sources = 4;
+  repeated Encounter encounters = 5;
+  ClinicalActor primaryActor = 6;
+  repeated ClinicalActor supplementaryActors = 7;
+}
+
+message AllergySummary {
+  CodedBaseSummary base = 1;
+  AllergyInfo allergyInfo = 2;
+}
+
+message ProcedureSummary {
+  CodedBaseSummary base = 1;
+  ClinicalCode supportingDiagnosisCode = 2;
+  ProcedureInfo procedureInfo = 3;
+}
+
+message FfsClaimSummary {
+  CodedBaseSummary base = 1;
+  ClinicalCode supportingDiagnosisCode = 2;
+  FfsClaim ffsClaim = 3;
+}
+
+message ProblemSummary {
+  CodedBaseSummary base = 1;
+  ProblemInfo problemInfo = 2;
+}
+
+message RaClaimSummary {
+  CodedBaseSummary base = 1;
+  RiskAdjustmentClaim raClaim = 2;
+}
+
+message Mao004Summary {
+  CodedBaseSummary base = 1;
+  Mao004 mao004 = 2;
+}
+
+message EncounterSummary {
+  BaseSummary base = 1;
+  ClinicalActor primaryActor = 2;
+  repeated ClinicalActor supplementaryActors = 3;
+  EncounterInfo encounterInfo = 4;
+  UUID internalId = 5;
+}
+
+message ClinicalActorSummary {
+  DataCatalogMeta dataCatalogMeta = 1;
+  ClinicalActorInfo clinicalActorInfo = 2;
+  repeated ParsingDetails parsingDetails = 3;
+  repeated Source sources = 4;
+  UUID internalId = 5;
+}
+
+message PatientClinicalActorSummary {
+  BaseSummary base = 1;
+  ClinicalActorInfo clinicalActorInfo = 2;
+  UUID internalId = 3;
+}
+
+message BiometricValueSummary {
+  CodedBaseSummary base = 1;
+  VitalSign vitalSign = 2;
+}
+
+message ContactDetailsSummary {
+  BaseSummary base = 1;
+  ContactInfo contactInfo = 2;
+}
+
+message SocialHistorySummary {
+  CodedBaseSummary base = 1;
+  SocialHistoryInfo socialHistoryInfo = 2;
+}
+
+message DemographicsSummary {
+  BaseSummary base = 1;
+  DemographicsInfo demographicsInfo = 2;
+}
+
+message LabResultSummary {
+  CodedBaseSummary base = 1;
+  LabResultInfo labResultInfo = 2;
+}
+
+message PrescriptionSummary {
+  CodedBaseSummary base = 1;
+  PrescriptionInfo prescriptionInfo = 2;
+}
+
+message DocumentMetaSummary {
+  CodedBaseSummary base = 1;
+  DocumentMeta documentMeta = 2;
+}
+
+message CoverageSummary {
+  BaseSummary base = 1;
+  CoverageInfo coverageInfo = 2;
+}
+
+message FamilyHistorySummary {
+  CodedBaseSummary base = 1;
+  FamilyHistoryInfo familyHistoryInfo = 2;
+}
+
+message ImmunizationSummary {
+  CodedBaseSummary base = 1;
+  ImmunizationInfo immunizationInfo = 2;
+}

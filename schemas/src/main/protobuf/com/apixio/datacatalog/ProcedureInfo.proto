@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "ProcedureProto";
+
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/DataOrigin.proto";
+import "com/apixio/datacatalog/Anatomy.proto";
+import "com/apixio/datacatalog/CptModifier.proto";
+
+message ProcedureInfo {
+  YearMonthDay performedOn = 1;
+  YearMonthDay endDate = 2;
+  string procedureName = 3;
+  ClinicalCode code = 4;
+  repeated ClinicalCode codeTranslations = 5;
+  bool deleteIndicator = 6;
+  Anatomy bodySite = 7;
+  string interpretation = 8;
+  DataOrigin dataOrigin = 9; // What raw data the procedure came from
+  CptModifier cptModifier = 10;
+}
+

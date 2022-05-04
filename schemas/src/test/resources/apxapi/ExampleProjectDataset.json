@@ -1,0 +1,59 @@
+{
+  "createdAt": [
+    2019,
+    10,
+    7,
+    17,
+    9,
+    37
+  ],
+  "createdBy": "rwenzel@apixio.com",
+  "dataType": "FULL_CHART",
+  "dbId": 866,
+  "docPatMap": null,
+  "documentDateOverride": null,
+  "documentUuids": null,
+  "eligibilityDates": [
+    {
+      "endDate": "2018-12-31T00:00:00.000Z",
+      "startDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "endDate": "2019-12-31T00:00:00.000Z",
+      "startDate": "2019-01-01T00:00:00.000Z"
+    }
+  ],
+  "models": [
+    {
+      "engine": "MA",
+      "mcid": "B_1c73857a-c261-4f83-9517-c586b2c4a451",
+      "variant": "V22"
+    },
+    {
+      "engine": "MA",
+      "mcid": "B_a78470d1-38cd-4b71-b5ec-6634ab606dc2",
+      "variant": "V23"
+    }
+  ],
+  "numberOfItems": 4618,
+  "patientUuids": null,
+  "pdsUuid": {
+    "id": "O_00000000-0000-0000-0000-000010001057",
+    "type": "O",
+    "uuid": "00000000-0000-0000-0000-000010001057"
+  },
+  "projectDataSetName": "DS_globalhealth_20jan_app_id_b2_2",
+  "projectDataSetType": "DOC_SET",
+  "projectDataSetUuid": {
+    "id": "DS_18d470d4-cdec-41cc-b179-e87426292905",
+    "type": "DS",
+    "uuid": "18d470d4-cdec-41cc-b179-e87426292905"
+  },
+  "projectUuid": {
+    "id": "PRHCC_c1396853-f42c-4d25-8cbe-7477d8761fd1",
+    "type": "PRHCC",
+    "uuid": "c1396853-f42c-4d25-8cbe-7477d8761fd1"
+  },
+  "requireEligibility": true,
+  "state": "ACTIVE"
+}

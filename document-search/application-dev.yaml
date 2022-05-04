@@ -1,0 +1,106 @@
+application:
+  encryptedDatabasePath: ./db
+  sql:
+    host: jdbc:sqlite:db/completeness.db
+    poolInitialSize: 5
+    poolMaxSize: 30
+    connectionTimeoutMillis: 3000
+
+apxLogging:
+  fluentHost: localhost
+  prefix: staging.documentsearch
+
+cql:
+  hosts: 10.1.16.193,10.1.32.153,10.1.48.121
+  localDC: aws-us-west-2
+  binaryPort: 9042
+  keyspace: apixio
+  connections.min: 8
+  connections.max: 8
+  connections.baseDelayMs: 50
+  connections.maxDelayMs: 250
+  consistencylevel.read: LOCAL_QUORUM
+  consistencylevel.write: LOCAL_QUORUM
+  linkTable: apx_cflink
+  linkTable2: apx_cflink
+  username: frontend-stg
+  password: m3PW2195FpARlaBH
+
+cqlInternal:
+  hosts: 10.1.16.77,10.1.48.254,10.1.32.222
+  binaryPort: 9042
+  keyspace: internal
+  connections.min: 8
+  connections.max: 8
+  connections.baseDelayMs: 50
+  connections.maxDelayMs: 250
+  localDC: aws-us-west-2
+  username: frontend-stg
+  password: m3PW2195FpARlaBH
+
+cqlApplication:
+  hosts: 10.1.32.66,10.1.48.137,10.1.16.127
+  binaryPort: 9042
+  keyspace: application
+  connections.min: 8
+  connections.max: 8
+  connections.baseDelayMs: 50
+  connections.maxDelayMs: 250
+  localDC: aws-us-west-2
+  username: frontend-stg
+  password: m3PW2195FpARlaBH
+
+s3:
+  accessKey: 241762458224057865248V01xxWw/ktJ+fS0nvf4KuZ+THfdiqwUxoWuzagUl4YuKxb0=
+  secretKey: 2518107259905518262208V01xyvWoXHE2NLd+LaDfHvp+PVJ8Cmx9Q+/gvVfX8Oo73xXsoDzfjGPIh4p5W2pUI82b
+  container: apixio-documents-test-oregon
+
+redis:
+  host: redis-1-stg.apixio.com
+  port: 6379
+  prefix: development-
+
+acl:
+  cassandraColumnFamily: apx_cfacl_development
+  jsonFile: apiacls.json
+  level: DETAILED
+
+server:
+  minThreads: 16
+  maxThreads: 512
+  rootPath: /
+  applicationConnectors:
+    - type: http
+      port: 8223
+    - type: https
+      port: 8222
+      keyStorePath: src/main/resources/ui.keystore
+      keyStorePassword: apixio.321
+      validateCerts: false
+      validatePeers: false
+  adminConnectors:
+    - type: http
+      port: 8444
+
+logging:
+  level: INFO
+  loggers:
+    com.apixio.application.documentsearch.DocumentSearchService: DEBUG
+  appenders:
+    - type: console
+    - type: file
+      threshold: INFO
+      logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+      currentLogFilename: ./application.log
+      archivedLogFilenamePattern: ./application-%d{yyyy-MM-dd}.log
+      archivedFileCount: 7
+      timeZone: UTC
+
+consul:
+   address: http://10.1.4.214:8500/v1
+   dc: stg
+   token: 4ee2ce93-cc61-46a7-a2a2-65316101ccb9
+   refreshInterval: 1 #minutes
+   urlTemplate: https://%s-stg.apixio.com:%s%s # %s,%s,%s = host,port,baseApi
+
+elastic: {}

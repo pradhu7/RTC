@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "com/apixio/logs/Code.proto";
+import "google/protobuf/wrappers.proto";
+
+message Annotation {
+  google.protobuf.StringValue dos = 1;
+  google.protobuf.StringValue signatureAttestation = 2;
+  google.protobuf.BoolValue winner = 3;
+  google.protobuf.StringValue encounterType = 4;
+  google.protobuf.StringValue rejectReason = 5;
+  google.protobuf.StringValue timestamp = 6;
+  google.protobuf.StringValue project = 7;
+  google.protobuf.StringValue phase = 8;
+  google.protobuf.StringValue dosEnd = 9;
+  google.protobuf.BoolValue confirmed = 10;
+  google.protobuf.StringValue dosStart = 11;
+  repeated google.protobuf.UInt32Value pages = 12;
+  Code code = 13;
+  google.protobuf.BoolValue reviewFlag = 14;
+  google.protobuf.StringValue comment = 15;
+  google.protobuf.StringValue org = 16;
+  google.protobuf.StringValue user = 17;
+  google.protobuf.StringValue flaggedForReview = 18;
+  google.protobuf.BoolValue changed = 19;
+  Icd icd = 20;
+  google.protobuf.StringValue page = 21;
+  google.protobuf.StringValue result = 22;
+  google.protobuf.StringValue dateOfService = 23;
+  google.protobuf.StringValue searchText = 24;
+}
+
+message Icd {
+  google.protobuf.StringValue displayName = 1;
+  google.protobuf.StringValue hcc = 2;
+  google.protobuf.StringValue codeSystem = 3;
+  google.protobuf.StringValue codeSystemName = 4;
+  google.protobuf.StringValue code = 5;
+  google.protobuf.StringValue codeSystemVersion = 6;
+  google.protobuf.StringValue label = 7;
+  google.protobuf.StringValue type = 8;
+  google.protobuf.StringValue value = 9;
+  google.protobuf.StringValue selected = 10;
+  repeated google.protobuf.StringValue hccs = 11;
+}
+

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.apixio.doctraces;
+
+import "com/apixio/doctraces/Error.proto";
+
+message ParserTrace {
+  string parsingDetails = 1; //TODO: Import ParsingDetailsProto from datacatalog
+  string patientKey = 2;
+  repeated Error errors = 3;
+
+}

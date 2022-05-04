@@ -1,0 +1,80 @@
+[
+  {
+    "c": "0111",
+    "d": "Inpatient Admit Through Discharge",
+    "o": ["I"],
+    "v": "2016"
+  },
+  {
+    "c": "0114",
+    "d": "Inpatient Interim-Last Claim",
+    "o": ["I"],
+    "v": "2016"
+  },
+  {
+    "c": "0116",
+    "d": "Inpatient Adjustment of Prior Claim",
+    "o": ["I"],
+    "v": "2016"
+  },
+  {
+    "c": "0117",
+    "d": "Inpatient Replacement of Prior Claim",
+    "o": ["I"],
+    "v": "2016"
+  },
+  {
+    "c": "0131",
+    "d": "hospital outpatient admit through discharge",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "0132",
+    "d": "hospital outpatient interim- first claim",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "0133",
+    "d": "hospital outpatient interim- continuing claim",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "0134",
+    "d": "hospital outpatient interim-last claim",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "0136",
+    "d": "hospital outpatient adjustment of prior claim",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "0137",
+    "d": "hospital outpatient replacement of prior claim",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "071*",
+    "d": "Clinical Rural Health",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "076*",
+    "d": "Community Mental Health Centers",
+    "o": ["O"],
+    "v": "2016"
+  },
+  {
+    "c": "077*",
+    "d": "Federally Qualified Health Centers",
+    "o": ["O"],
+    "v": "2016"
+  }
+]

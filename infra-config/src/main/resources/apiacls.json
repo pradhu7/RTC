@@ -1,0 +1,270 @@
+// Note that Java-style comments are allowed in this file :-)
+
+// The structure of the JSON object declared here is a list of objects, where each object
+// has three required keys with string values and zero (allowed, but pretty meaningless)
+// to three keys with object values.  The three required keys are:
+//
+//  * "api-id":    a human-defined and hopefully useful identifier to management of APIs
+//  * "api-name":  a description of the API; not used internally
+//  * "api-url":   a structured string that is used when matching a request URL against
+//                 the list of protected API definitions.
+//
+// The value for "api-url" has the form:
+//
+//    {method} : {url-spec}
+//
+// where {method} is a comma separated list of HTTP verbs or the wildcard "*".  For example,
+// a legal value for {method} is "GET,POST".
+//
+// {url-spec} is a list of "/"-separated list of url components where each component except
+// the first can be a placeholder, which is denoted by curly braces around a name identifier.
+// The {url-spec} must start with a leading "/" and the final element can be the wildcard
+// "*".  Request URLs are matched against the full "api-url" by first matching the HTTP
+// method ("*" will match any/all HTTP methods), and if that's successful, then the request
+// URL components are matched one by one against the {url-spec} components.  For each non-placeholder
+// component (call these "static" components), the corresponding request URL component must
+// match exactly.  Each placeholder component will match anything and the actual value will be
+// remembered (useful for the "url-component" extractor, described below).  If the {url-spec}
+// ends with the wildcard "*" component, any trailing component in the request URL will match,
+// with the caveat that it won't match a nil (missing) component.  For example, if the {url-spec}
+// is GET:/users/* and the request URL is GET:/users, the request URL will NOT match as it has
+// no component after /users.  This is desirable because it can be useful to distinguish between, say,
+// *:/users/* (which could be allowed for everyone) and *:/users (which could be used for
+// creation and listing of users, which could be privileged operations).
+//
+// When attempting to match the URL for an actual HTTP request, the method (GET, PUT, ...) is
+// used to select the set of {url-spec}s.  That list of {url-spec}s is traversed in order of
+// declaration (which means that order here CAN be significant); each URL template is matched
+// against the actual request URL by starting at the left-most component of both URLs and
+// checking if each one matches.  A static component in the URL template must match exactly,
+// and a placeholder will always match, as long as the corresponding actual URL component
+// exists.  The overall best matching template is defined as the one that has the most components
+// matched and that has the largest number of static components (in the case of a tie, the first
+// one declared is considered best).  This means that, for example, if there are two templates
+//
+//   1.  /users/{userID}/password
+//   2.  /users/me/password
+//
+// and the request is /users/me/password, the second template will be the best match.
+//
+// The three keys with object values define the ACL checks to be made when a request
+// URL matches the value for "api-url".  If there are no such ACL check keys, then ALL requests
+// to that URL will be disallowed.  Otherwise, ALL defined ACL checks must allow the request
+// for the request to be allowed (i.e., an implicit "and" operation is done).  If one of the
+// allowed types of ACL checks is not specified, then the request won't be denied due to
+// lack of it being explicitly allowed (unless no ACl checks are defined).
+//
+// The three types of ACL checks allowed/supported are (the types are the JSON object key names)
+//
+//  * "state-config":  checks if the user making the request has a particular account state
+//  * "role-config":   (DEPRECATED) checks if the user making the request has a particular account role
+//  * "permission-config":  checks if the [subject, operation, object] permission is allowed
+//
+// Note that both "state-config" and "role-config" allow an internal implicit "or" operation that
+// will allow the request if the user state (or role) matches any of what's defined.
+//
+// In all three cases the value of the JSON object key is an object, where the details of the object
+// are dependent on the type:
+//
+//  * for "state-config" the value must be a JSON object like:  { "{state}": "[allowed,deny]" }
+//  * for "role-config"  the value must be a JSON object like:  { "{role}": "[allowed,deny]" }
+//  * for "permission-config" the value must be a JSON object like this:
+//         { "subject": "{subject}", "operation": "{operation}", "object": "{object}" }
+//
+//    --OR-- the JSON object must be an "and" or "or" construct, like one of the following:
+//
+//         {"or" : [ condition1, condition2, ... ] }
+//
+//         {"and" : [ condition1, condition2, ... ] }
+//
+//    where 'condition1', 'condition2', etc., are the normal {"subject": "...", "object": "..."} object.
+//
+// For both "state-config" and "role-config", the {state} or {role} value can be either a wildcard "*"
+// or a comma-separated list of valid enum values (for state:  [NEW, ACTIVE, CLOSED, DISABLED, ... ], and
+// for role:  [ROOT, USER]).
+//
+// "permission-config" is much more complex.  All three of the "subject", "operation", and "object" subkeys
+// define an "extractor" that extracts the value from the actual request that is used when making the ACL
+// system "hasPermission" call (that requires subject, operation, object).  The general form of an extractor
+// is a string that has a name followed by a ":" and that is followed by extractor-type-specific parameters.
+// If there is no ":" character then the extractor type is defined to be "const".
+//
+// The allowed extractor types, along with their parameters, are:
+//
+//  "const":  the extracted value is the given constant (meaning that no value is extracted from the request)
+//  "http-method":  the extracted value is the HTTP method, translated via the NAME=VALUE map that
+//                  is the extractor parameter.  Map entries are separated by commas.
+//  "token":  the extracted value is the User attached to the request thread; no extractor parameter allowed
+//  "url-element":  the extracted value is the actual request value for the given URL component matched;
+//                  a single parameter is required:  the name (in curly braces) of the URL component
+//  "query-param":  the extracted value is the value of the given query parameter; the name of the
+//                  query parameter is the value in the extractor param
+//  "json-path":  the extracted value is taken from the HTTP entity body (which must be a parseable
+//                JSON object) where that entity body is "walked" via the dotted-path that is the
+//                extractor parameter
+//  "class":  the extracted value is the returned String from invoking the method "extract" of an
+//            instance of the given (Java) class.  This class must implement the com.apixio.restbaes.apiacl.perm.Extractor
+//            interface
+//
+// Extractors can be chained together, so that the output of extractor1 is passed as an input to extractor2.
+// To specify this, the value for the key must start with "[" and end with "]" (denotes a list of extractors)
+// and each (sub) extractor is separated from the next by the ";" character.
+//
+// Putting all the above together, one rather twisted example is:
+//
+//    { "api-id":   "TestACL-1",
+//      "api-name": "A rather complete protected API",
+//      "api-url":  "GET,POST,PUT:/twisted/{someID}/aStaticElement/*",
+//      "state-config": { "NEW,ACTIVE": "allow" },
+//      "role-config": { "USER": "allow" },
+//      "permission-config": {
+//          "subject":   "token:",                  // note that the ":" makes it a non-const
+//          "operation": "query-param:theOperation",
+//          "object":    "[url-element:{someID}; class:com.apixio.extractors.CoolExtractor]"
+//          }
+//
+// and another one is:
+//
+//    { "api-id":   "TestACL-1",
+//      "api-name": "A rather complete protected API",
+//      "api-url":  "GET,POST,PUT:/twisted/{someID}/aStaticElement/*",
+//      "state-config": { "*": "allow" },
+//      "permission-config": {
+//          "subject":    "",
+//          "operation":  "http-method:POST=create,PUT=update,DELETE=delete,GET=read"
+//          "object":    "json-path:the.path.to.the.value"   // => http entity body must be like {"the":{"path":{"to":{"the":"value"}}}}
+//          }
+
+[
+  {
+    "api-id": "InfraConfig-Access-1",
+    "api-name": "Get SFTP Servers",
+    "api-url": "GET:/api/v1/sftp",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "readSftpServers",
+      "object": "*"
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-2",
+    "api-name": "Get Users in SFTP",
+    "api-url": "GET:/api/v1/sftp/{sftpServer}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "readSftpServers",
+      "object": "*"
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-3",
+    "api-name": "Get SFTP User",
+    "api-url": "GET:/api/v1/sftp/{sftpServer}/users",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "readSftpUsers",
+      "object": "*"
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-3",
+    "api-name": "Get SFTP User",
+    "api-url": "GET:/api/v1/sftp/{sftpServer}/users/{sftpUser}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "readSftpUsers",
+      "object": "*"
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-4",
+    "api-name": "Create/Update SFTP User",
+    "api-url": "PUT,POST,PATCH:/api/v1/sftp/{sftpServer}/users/{sftpUser}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "or": [
+        {
+          "subject": "token:",
+          "operation": "createSftpUsers",
+          "object": "*"
+        },
+        {
+          "subject": "token:",
+          "operation": "updateSftpUsers",
+          "object": "*"
+        }
+      ]
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-5",
+    "api-name": "Delete SFTP User",
+    "api-url": "DELETE:/api/v1/sftp/{sftpServer}/users/{sftpUser}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "deleteSftpUsers",
+      "object": "*"
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-6",
+    "api-name": "Validate Password",
+    "api-url": "POST:/api/v1/sftp/{sftpServer}/users/{sftpUser}/validate/password",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "or": [
+        {
+          "subject": "token:",
+          "operation": "createSftpUsers",
+          "object": "*"
+        },
+        {
+          "subject": "token:",
+          "operation": "updateSftpUsers",
+          "object": "*"
+        }
+      ]
+    }
+  },
+  {
+    "api-id": "InfraConfig-Access-7",
+    "api-name": "Validate ssh key",
+    "api-url": "POST:/api/v1/sftp/{sftpServer}/users/{sftpUser}/validate/sshkey",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "or": [
+        {
+          "subject": "token:",
+          "operation": "createSftpUsers",
+          "object": "*"
+        },
+        {
+          "subject": "token:",
+          "operation": "updateSftpUsers",
+          "object": "*"
+        }
+      ]
+    }
+  }
+]

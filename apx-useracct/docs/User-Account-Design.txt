@@ -1,0 +1,352 @@
+April 16, 2014
+
+Design and Implementation notes for the Tokenizer and User Account services
+---------------------------------------------------------------------------
+
+Document Overview
+-----------------
+
+This document describes the design and implementation of two dropwizard-based
+services: the tokenizer and the user account services.
+
+Each service is a separate process that provides a RESTful API to either an edge
+server or an internal service.  Currently the API calls are made over HTTP and not
+HTTPS.  The services can run on the same machine or on different machines.
+
+The tokenizer service is a service used by edge servers to validate tokens and to
+exchange external tokens for internal tokens.  It also tracks usage of external
+tokens for purposes of intrusion detection.
+
+The user account service is an internal service that authenticates users (creating
+external tokens) and provides general user CRUD operations.
+
+
+Assumed system/network architecture
+-----------------------------------
+
+The Apixio RESTful service model was designed assuming a particular network/system
+topology:
+
+* "edge" servers are exposed to the Internet at large and therefore need to be
+  hardened against attacks.  Edge servers are allowed ONLY to talk over HTTP to
+  internal services and are NOT allowed to talk to lower-level services such as
+  databases, etc., as those lower-level services don't deal with token validity, etc.
+  A web server that presents an HTML-based front end for the user is the prototypical
+  edge server.
+
+* internal servers/services are NOT exposed directly to the Internet and can and do
+  communicate with lower-level services such as databases.  Internal services MUST
+  validate tokens presented to their RESTful APIs.
+
+
+Directory Structure and Conventions
+-----------------------------------
+
+The user-account/tokenizer system is contained within a single git repository and is
+built by maven using modules.  There are three modules:
+
+* common:  this is the code that is used by both the tokenizer and the user account
+  service.  It is also contains the code that is needed by other RESTful services
+
+* dw-tokenizer:  this is the dropwizard-compatible code that produces a dropwizard
+  service that exposes two APIs relevant to token validation and exchange.
+
+* dw-useracct:  this is the dropwizard-compatible code that produces a
+  dropwizard-compatible service that exposes APIs for CRUD operations on users and
+  for authentication-related operations.
+
+The directory structure is the standard maven structure and the Java code package
+structure under the the com.apixio.{service} is as follows:
+
+* config:  contains the yaml-compatible POJOs for configuration
+* dao:  contains the Data Access Object classes
+* dw/resources:  contains the JAX-RS annotated RESTful service entry points
+* dw:  contains dropwizard-compatible code
+* entity:  contains the persisted entity classes
+* web:  contains microfilters
+
+
+Service Configuration
+---------------------
+
+Dropwizard service configuration is done via a .yaml file, the path to which is
+specified on the command line that starts up the service.  There is some global
+configuration within the .yaml that must be specified for all services, and there is
+some per-service configuration.  The global configuration consists of:
+
+* Redis connection information.  Since all internal services communicate directly
+  with redis to check token validity, all services MUST use the same redis connection
+  information.  This redis configuration is read by dropwizard and ends up creating
+  some POJOs that are used by the system.
+
+* Microfilter information.  Microfilters (described in more detail below) perform the
+  token validation checks and other commonly done operations (such as logging, or
+  timing requests).  Because all internal services must check token validity, each
+  service must have some configuration of microfilters.
+
+The per-service configuration is contained within the same .yaml file and the service
+can do whatever it wants regarding that configuration (meaning that either a general
+structure such as Map<String, Object> can be used or POJOs can be used).
+
+
+Microfilters
+------------
+
+Microfilters are a lightweight form of the standard Servlet Container web filter,
+with a few differences:
+
+* .yaml-read configuration is poked in via a method
+
+* doFilter is split into explicit beforeDispatch and afterDispatch methods
+
+While it was certainly possible to use the web filters directly, the configuration
+for that is more generic and less optimal when done via yaml.
+
+Microfilters are invoked via a simple dispatcher that is actually a web filter.
+
+
+Access specifiers for user-based microfilters
+---------------------------------------------
+
+Two of the coded microfilters deal specifically with user object information and
+allow easy filtering of requests based on user role and user state (new, active,
+etc.).  In order to specify the checks made by these microfilters the configuration
+uses a simple list of access specifiers.  These access specifiers are of the form:
+
+  {VERB} {PREFIX}: {ACCESS},...
+
+where VERB is one of [GET, POST, PUT, DELETE] (a subset of the HTTP methods), PREFIX
+is the beginning of the URL that is to be access-controlled without the host:port/
+part, and ACCESS is of the form:
+
+  {ITEM}={PERMISSION}
+
+where ITEM is one of [NO_USER, USER, ADMIN, ROOT] for checking roles, and one of
+[NO_USER, NEW, ACTIVE, CLOSED, DISABLED, AUTO_LOCKOUT] for checking user state.
+PERMISSION is one of [+, allow, -, deny].
+
+The special item NO_USER means that no token was presented so no user is associated
+with the request.
+
+Additionally, ITEM can either be "*", which means to match all of the type, or can
+start with "~" to mean "all but".
+
+Some example specifiers:
+
+  POST /users: *=allow
+
+which means allow all roles or states to post to /users  
+
+  PUT  /users: ~NEW=allow
+
+which means to allow all but NEW users to PUT to /users.
+
+
+Structural Layers
+-----------------
+
+The code is layered to provide reasonable points of reuse of function.  It defines
+the typical layers (listed from the "bottom" up):
+
+* entities: these are the persistable data items.  Redis is used for persistence and
+  the entity model was taken from the coordinator system (which was the first to use
+  Redis persistence in Apixio).  Some Java classes from the coordinator were copied
+  to this project (!).  These files SHOULD be eventually located in the apixio-common
+  project and used by both coordinator and user account.  All entity classes are
+  located in an "entity" package (e.g., com.apixio.restbase.entity).
+
+* DAOs: this is the typical data access object pattern, where a singleton is created
+  that has the responsibility to perform CRUD operations on entities.  The naming
+  convention is to pluralize the entity name, so the DAO class for managing User
+  entities is Users.  In contrast to other parts of the overall Apixio system, the
+  DAO classes do NOT provide any business/app logic.
+
+* Business logic: this layer, contained within the "buslog" package(s) is the layer
+  above the DAO level and provides application level semantics.  For example, when a
+  user is created, verification links need to be created and emails need to be sent
+  out.  It is an explicit intent of the system architecture that something other than
+  RESTful services (described next) can call into the business logic.
+
+* RESTful services: this layer is the touch point with the Jersey dispatch system,
+  and will be the only code in the system that has the JAX-RS annotations (e.g.,
+  @Path, @POST, etc.).  The class naming convention is to have a suffix of "RS"
+  (e.g., UserRS.java).  These files live under the "resources" subpackage of the "dw"
+  (dropwizard) package as a nod to how resources are to be explicitly added during
+  dropwizard app setup.
+
+Because dropwizard forces an initialization paradigm that is not Inversion-of-Control
+based (meaning, for example, Spring IoC and all of its benefits are not immediately
+compatible with it), the code forces a centralization of all the above implementation
+"service" objects to be collected into a single uber-service object called
+SysServices.  Initialization of the system creates a SysServices and collects
+singletons of all the DAOs, business logic objects, and utility objects.  It then
+formally exposes this SysServices instance during request processing.
+
+
+Entity Model
+------------
+
+As mentioned above, the entity model in the system was borrowed from the coordinator
+project.  It relies on Redis as the persistence mechanism.  It is an explicitly-coded
+model instead of an annotation-based model of persistable fields.  At the bottom-most
+level where it interacts with Redis, field values are saved as Strings and collected
+into a Map which is then persisted as a Redis HASH type.
+
+Entities have a unique ID that is a UUID with a "type" prefix letter, where this
+letter is strictly used for visually identifying the type.  For example, all user
+entities will have an ID that starts with a "U" (for user).  Entity IDs do NOT
+include the redis-level key prefix.
+
+The entity ID is intended to be part of the RESTful resource URL which is why the key
+prefix is not part of the ID.
+
+Entities have a formalized concept of a property.  An entity property is something
+that is visible to the RESTful client and the formalization of it allows for
+automatic transfer of property values between the various layers of the system.  For
+example, User has a "firstName" property and the string "firstName" is expected to be
+what the REST client specifies when retrieving and/or updating a user's first name,
+as in the following request:
+
+  PUT /users/me/firstName
+
+As firstName is a persistable attribute of a User, it needs to be carried down from
+the RESTful services layer (e.g., from the code in UserRS.java) down to the entity
+level (User.java).  The generalized entity property code does this automatically for
+the simple properties (note that something like a user password is not a simple
+property as it can't just be set--setting it requires the current password to be
+specified at the same time).
+
+Internally each layer has its own representation of the attributes of an entity:
+
+* the entity itself exposes its attributes as bean setter/getter methods
+
+* the business logic layer exposes a Data Transfer POJO that currently has just
+ public fields
+
+* and the RESTful layer has either a JSON object (which could be Map<String, Object> or a
+POJO) or a application/x-www-form-urlencoded set of parameters that can be mapped to
+either a POJO or Map<String, Object>
+
+While properties could have been captured in something like Map<String, Object> that
+was passed down from REST level to entity level, it would lose type information and
+is somewhat cumbersome outside of REST usage (e.g., compare "new UserParams(...)"
+with "new HashMap<>(); map.put(...); ...").
+
+
+Token Model
+-----------
+
+One of the most important, if not the most important, reason for the overall system
+architecture is to provide a greater level of security that is more resistant to
+attacks.  The concept of tokens is key to that.
+
+There are two types of tokens:
+
+* external:  external tokens are opaque identifiers that are created during
+  authentication of a user and are passed back out to some agent outside the edge
+  server for long-term storage (e.g., stored as a session cookie value in a
+  browser).  The entity ID for external tokens starts with a "T" (for token) and 
+  is followed by the letter "A" (first letter of the alphabet for the first type of token).
+
+* internal:  internal tokens are also opaque identifiers but are created on demand by
+  an edge server responding to a request and are deleted at the end of the request
+  processing.  The entity ID for internal tokens also starts with a "T" and is followed
+  by the letter "B".
+
+The system captures both types of token within a single entity, called Token.  Tokens
+have a type (external, internal) and a time-to-live that is managed differently for
+the two types:
+
+* the TTL for external tokens is automatically extended when it is validated.  There
+  is an optional maxTTL that limits the overall life of the token.
+
+* the TTL for internal tokens is short and fixed at creation time and is not extended
+  when it is validated.  
+
+The TTL value that Redis associates with a key is lost when a SET operation is done
+so the Tokens DAO intercepts all writes of tokens and recalculates, as necessary, the
+TTL and issues the TTL command after the update in order to preserve the TTL.
+
+Token validation is done differently for edge servers and for internal services.
+Edge servers MUST pass the external token into the tokenizer to validate it.  If the
+token is still valid, an internal token is created and returned.
+
+Internal services MUST configure the ValidateToken microfilter.  If an internal token
+presented is not valid, the request is rejected before dispatched via Jersey/JAX-RS.
+
+The tokenizer uses the same ValidateToken microfilter but it is configured to work
+with external tokens, whereas the configuration of ValidateToken for internal
+services must specify internal token testing.
+
+In order to (try to) support intrusion detection, the tokenizer maintains a use count
+on each external token.  It bumps up this count when an edge server validates the
+token and receives an internal token, and it bumps down that cound when the edge
+server deletes the internal token.  The Tokens DAO handles this increment/decrement
+by using a separate Redis key for the external token, where the value of that key is
+a simple integer value.  In order to not pollute the Redis keyspace, a TTL is put on
+this key; this TTL matches the TTL of the external token so when the main Redis key
+is expired, this use count key is also expired.
+
+All presentation of tokens (token IDs, to be precise) from the client calling into
+the RESTful service is expected via the HTTP "Authorization:" header.  The format is:
+
+  Authorization: Apixio {TOKENID}
+
+Regarding HTTP headers, internal services are reachable only from edge servers so the
+immediate client IP and User-Agent presented to the internal services will be that of
+the edge server.  Session hijacking detection will be done (not yet coded) by
+monitoring IP address and User-Agent changes over the lifetime of the external
+token.  To do this at all the edge server MUST forward its client's IP address and
+User-Agent.  The IP address SHOULD be contained within the HTTP header
+
+  X-Forwarded-For
+
+(which is the de-facto standard), while the User-Agent SHOULD be contained within
+the HTTP header
+
+  X-Forwarded-User-Agent
+
+
+RESTful Service Conventions
+---------------------------
+
+Both the tokenizer and the user account services expose APIs that accept data either
+application/json format or application/x-www-form-urlencoded.  Both return data only
+in application/json format.
+
+Not all APIs need to accept data, but for those that do, the pattern to support both
+formats is for the JSON method to accept either a POJO that has no logic other than
+setters/getters or a Map<String, String>, and for the x-www-form-urlencoded method
+to convert its explicit set of parameters (or a MultivalueMap<> that grabs all form
+parameters) to the same format (POJO or Map<>).
+
+The common method then acts as the translator between the REST level and the business
+logic level:  it makes a call to the business logic method that actually performs the
+operation (e.g., creating a user), wrapping that call in a try/catch block, where the
+catch block translates the error to the required JSON return format.
+
+Recall that the purpose of the business logic is to allow non-RESTful access into the
+application logic; viewing the system in this way means that the only thing the REST
+level can do is to translate from JSON/form to business-logic constructs, and convert
+errors and exceptions back into JSON.
+
+
+
+User Account REST Service
+-------------------------
+
+The functionality exposed by the User Account service is:
+
+* create user:  
+
+* authenticate user and logout user:
+
+* verify email address:
+
+* update user:
+
+* create organization:
+
+* update organization:
+
+

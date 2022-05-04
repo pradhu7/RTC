@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/BillingInfo.proto";
+import "com/apixio/datacatalog/ProcedureInfo.proto";
+
+// FfsClaimsExtended is the same data, but instead of metadata, some values are top level
+message FfsClaim {
+  ProcedureInfo procedureInfo = 1;
+  BillingInfo billingInfo = 2;
+}

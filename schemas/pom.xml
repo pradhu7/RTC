@@ -1,0 +1,265 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>apixio</groupId>
+    <artifactId>mono</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>apixio-protoc</artifactId>
+  <packaging>jar</packaging>
+
+  <description>Compiled Protobuf classes for Kafka messags, Signals, Predictions and Logs</description>
+
+  <properties>
+    <!-- test dependencies -->
+    <junit5.version>5.4.1</junit5.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+
+    <!-- junit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.12.2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.googlecode.protobuf-java-format</groupId>
+      <artifactId>protobuf-java-format</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.12.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <targetPath>${basedir}/target/python</targetPath>
+      </resource>
+      <resource>
+        <directory>src/main/python</directory>
+        <targetPath>${basedir}/target/python</targetPath>
+      </resource>
+      <resource>
+        <directory>src/main/python/apxprotobufs</directory>
+        <targetPath>${basedir}/target/python/apxprotobufs</targetPath>
+      </resource>
+      <resource>
+        <directory>src/main/python/packaging</directory>
+        <targetPath>${basedir}/target/python-package</targetPath>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <testResources>
+      <testResource>
+        <directory>src/test/python</directory>
+        <targetPath>${basedir}/target/python</targetPath>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile-java</id>
+            <goals>
+              <goal>compile</goal>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compile-python-package</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/python-package/apxschemas</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>compile-python</goal>
+              <goal>test-compile-python</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compile-python-other</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/python/apxprotobufs</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>compile-python</goal>
+              <goal>test-compile-python</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>snapshot-to-dev</id>
+            <goals><goal>regex-property</goal></goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <name>python_version</name>
+              <regex>-SNAPSHOT</regex>
+              <value>${project.version}</value>
+              <replacement>\.dev</replacement>
+              <failIfNoMatch>false</failIfNoMatch>
+            </configuration>
+          </execution>
+          <execution>
+            <id>remove-dashes</id>
+            <goals><goal>regex-property</goal></goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <name>python_version</name>
+              <regex>(.*?)-([A-Za-z0-9]+)(.*)</regex>
+              <value>${python_version}</value>
+              <replacement>$1$3+$2</replacement>
+              <failIfNoMatch>false</failIfNoMatch>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-init-py</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <workingDirectory>${project.build.directory}/python-package</workingDirectory>
+              <arguments>
+                <argument>${project.basedir}/fixup-imports.sh</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>
+          ${project.build.directory}/python-package
+              </workingDirectory>
+              <arguments>
+                <argument>setup.py</argument>
+                <argument>sdist</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-local</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <workingDirectory>
+          ${project.build.directory}/python-package
+              </workingDirectory>
+              <arguments>
+                <argument>-l</argument>
+                <argument>-c</argument>
+                <argument>pip install dist/*.tar.gz</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>publish-remote</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <workingDirectory>
+          ${project.build.directory}/python-package
+              </workingDirectory>
+              <arguments>
+                <argument>-c</argument>
+                <argument>python -m pip install wheel;python setup.py sdist bdist_wheel upload -r artifactory</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

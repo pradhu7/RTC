@@ -1,0 +1,40 @@
+# this config is intended to be reusable for multiple publishing operations (publishing different f(x) impls)
+
+# used for all MCS interactions:
+mcs:
+  serverUrl:  "{% $MCS_SERVER %}"
+  socketTimeoutMs:          1000000
+  connectTimeoutMs:         1000000
+  connectionRequestTimeout: 1000000
+
+# used for all fetched assets:
+cache:
+  directory:  /tmp/uricache.publish
+  options:  VERBOSE                # from UriCacheManager.Option enum: NO_MKDIR, NONE
+
+# basicauths is a list of logical service IDs where each ID has a top-level key for
+# it that has subkeys of uriPrefix (matched against URIs in *.publish files),
+# username, and password.  The yaml structure of this is hacked due to internal
+# limitations of translations to a dotted path, so the main value is just the list
+# of identifiers which then are taken to be the top level keys that have the real
+# info.  sigh
+basicauths:
+  - artifactory
+  - github
+
+# used if URIs refer to https://repos.apixio.com/
+artifactory:
+  uriPrefix:  https://repos.apixio.com/
+  username: "{% $ARTIFACTORY_USERNAME %}"
+  password: "{% $ARTIFACTORY_PASSWORD %}"
+
+github:
+  uriPrefix:  https://raw.githubusercontent.com/Apixio/
+  username: "{% $GITHUB_USERNAME %}"
+  password: "{% $GITHUB_TOKEN %}"     # this is a personal token created/fetched via https://github.com/settings/tokens; it must have "repo" rights ("Full control of private repositories")
+
+# used if the URIs refer to s://
+s3:
+  accessKeyUnencrypted:  "..."
+  secretKeyUnencrypted:  "..."
+

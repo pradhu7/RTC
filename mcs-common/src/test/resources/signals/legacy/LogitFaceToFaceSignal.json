@@ -1,0 +1,27 @@
+{
+  "generator": {
+    "jarVersion": "1.4.0", 
+    "name": "LogitFaceToFace", 
+    "version": "1.0.0"
+  }, 
+  "name": "LogitFaceToFace", 
+  "sigType": "CATEGORY", 
+  "source": {
+    "centroid": 2, 
+    "documentId": {
+      "pattern": "DOC", 
+      "uuidString": "0001bd1b-96b9-43b2-b62c-1e800d7ff020"
+    }, 
+    "endPage": 4, 
+    "location": {
+      "descriptor": "default"
+    }, 
+    "patientId": {
+      "pattern": "PAT", 
+      "uuidString": "d0d839ea-ed46-4f71-aae4-11407ad43f83"
+    }, 
+    "startPage": 1
+  }, 
+  "value": "false", 
+  "wt": 0.11844382
+}

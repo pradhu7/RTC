@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="ocrextraction">
+    <xs:annotation>
+      <xs:documentation>all the extractions from ocr go here</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata" type="documentMetaData"/>
+        <xs:element name="pages">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="numPages" type="xs:integer"/>
+              <xs:element maxOccurs="unbounded" name="page" type="page"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="documentMetaData">
+    <xs:sequence>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="date" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="author" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="extractedText">
+    <xs:sequence>
+      <xs:element name="content" type="xs:string"/>
+      <xs:element name="time" type="xs:string"/>
+      <xs:element minOccurs="0" name="errorMessage" type="xs:normalizedString"/>
+      <xs:element name="status" type="statusCode"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="page" final="restriction">
+    <xs:sequence>
+      <xs:element name="pageNumber" type="xs:integer" nillable="false"/>
+      <xs:element name="plainText" type="xs:normalizedString" nillable="1" minOccurs="0"/>
+      <xs:element name="extractedText" type="extractedText" nillable="false"/>
+      <xs:element name="imgType" block="restriction">
+        <xs:simpleType>
+          <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="image/png"/>
+            <xs:enumeration value="image/jpeg"/>
+            <xs:enumeration value="application/pdf"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="imgContent" type="xs:base64Binary" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="statusCode" final="restriction">
+    <xs:restriction base="xs:normalizedString">
+      <xs:enumeration value="SUCCESS"/>
+      <xs:enumeration value="ERROR"/>
+      <xs:enumeration value="PAGETIMEOUT"/>
+      <xs:enumeration value="PAGETEXTTHRESHOLD"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

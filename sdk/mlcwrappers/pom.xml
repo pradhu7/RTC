@@ -1,0 +1,282 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>apixio-sdk</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>apixio-mlc-wrappers${scala.version.suffix}</artifactId>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency><groupId>ch.qos.logback</groupId><artifactId>logback-core</artifactId><version>1.2.3</version></dependency>
+<!--      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-java-sdk</artifactId><version>1.7.4</version></dependency> -->
+      <dependency><groupId>com.esotericsoftware.kryo</groupId><artifactId>kryo</artifactId><version>2.24.0</version></dependency>
+      <dependency><groupId>com.typesafe</groupId><artifactId>config</artifactId><version>1.3.3</version></dependency>
+      <dependency><groupId>net.sf.jwordnet</groupId><artifactId>jwnl</artifactId><version>1.4_rc3</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-math3</artifactId><version>3.6.1</version></dependency>
+      <dependency><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient-cache</artifactId><version>4.2.6</version></dependency>
+      <dependency><groupId>org.apache.lucene</groupId><artifactId>lucene-core</artifactId><version>8.8.2</version></dependency>
+      <dependency><groupId>org.apache.lucene</groupId><artifactId>lucene-analyzers-common</artifactId><version>8.8.2</version></dependency>
+      <dependency><groupId>org.apache.lucene</groupId><artifactId>lucene-analyzers</artifactId><version>8.8.2</version></dependency>
+      <dependency><groupId>org.joda</groupId><artifactId>joda-convert</artifactId><version>1.8.1</version></dependency>
+      <dependency><groupId>org.json4s</groupId><artifactId>json4s-ast_2.11</artifactId><version>3.6.7</version></dependency>
+      <dependency><groupId>org.json4s</groupId><artifactId>json4s-core</artifactId><version>3.6.5</version></dependency>
+      <dependency><groupId>org.json4s</groupId><artifactId>json4s-core_2.11</artifactId><version>3.6.5</version></dependency>
+      <dependency><groupId>org.jsoup</groupId><artifactId>jsoup</artifactId><version>1.14.2</version></dependency>
+      <dependency><groupId>org.msgpack</groupId><artifactId>msgpack</artifactId><version>0.6.8</version></dependency>
+      <dependency><groupId>org.scala-lang.modules</groupId><artifactId>scala-java8-compat_2.11</artifactId><version>0.9.0</version></dependency>
+      <dependency><groupId>org.scala-lang.modules</groupId><artifactId>scala-xml_2.11</artifactId><version>1.3.0</version></dependency>
+
+      <!-- for scala 2.12: -->
+      <dependency><groupId>org.scala-lang.modules</groupId><artifactId>scala-xml_2.12</artifactId><version>1.3.0</version></dependency>
+      <dependency><groupId>org.scala-lang.modules</groupId><artifactId>scala-java8-compat_2.12</artifactId><version>0.9.0</version></dependency>
+      <dependency><groupId>org.json4s</groupId><artifactId>json4s-core_2.12</artifactId><version>3.6.5</version></dependency>
+      <dependency><groupId>org.json4s</groupId><artifactId>json4s-ast_2.12</artifactId><version>3.6.7</version></dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+    <dependencies>
+
+      <!-- parallel maven builds (e.g., using -T2C) will fail if there are no needed artifacts in
+	   $HOME/.m2/repositories without making these transitive deps (that are from ensemble artifacts)
+	   explicit.  This might be due to the circular dependencies currently in the deps -->
+      <dependency><groupId>apixio</groupId><artifactId>apixio-bizlogic${scala.version.suffix}</artifactId></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-nassembly${scala.version.suffix}</artifactId></dependency>
+
+        <dependency>
+	  <groupId>apixio</groupId>
+	  <artifactId>apixio-ensemble-generators${scala.version.suffix}</artifactId>
+	  <version>${apx.ensemble.forsdk.version}</version>
+        </dependency>
+
+        <dependency>
+	  <groupId>apixio</groupId>
+	  <artifactId>apixio-ensemble-combiners${scala.version.suffix}</artifactId>
+	  <version>${apx.ensemble.forsdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-sdk-interface${scala.version.suffix}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-fx-defs${scala.version.suffix}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-dao${scala.version.suffix}</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.codahale.metrics</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-joda</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sourceforge.owlapi</groupId>
+                    <artifactId>owlapi-apibinding</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.codahale.metrics</groupId>
+                    <artifactId>metrics-annotation</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.codahale.metrics</groupId>
+                    <artifactId>metrics-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-server</artifactId>
+                </exclusion>
+<!--
+                <exclusion>
+                    <groupId>javax.inject</groupId>
+                </exclusion>
+-->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>aopalliance</groupId>
+                    <artifactId>aopalliance</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.jpountz.lz4</groupId>
+                    <artifactId>lz4</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>classworlds:classworlds</exclude>
+                                    <exclude>junit:junit</exclude>
+                                    <exclude>jmock:*</exclude>
+                                    <exclude>org.apache.maven:lib:tests</exclude>
+                                    <exclude>org.bouncycastle:*</exclude>
+                                    <exclude>com.codahale.metrics:*</exclude>
+                                </excludes>
+                            </artifactSet>
+
+                            <!-- This is needed so MLeap can read its own config file, without Maven overwriting this stuff
+                         Ref => https://mleap-docs.combust.ml/getting-started/mleap.html -->
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                            </transformers>
+
+                            <filters>
+                                <filter>
+                                    <artifact>*:*:*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.jsoup</pattern>
+                                    <shadedPattern>com.apixio.shaded.org.jsoup</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>org.clearnlp</pattern>
+                                    <shadedPattern>com.apixio.shaded.org.clearnlp</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>net.jpountz.lz4</pattern>
+                                    <shadedPattern>com.apixio.shaded.net.jpountz.lz4</shadedPattern>
+                                </relocation>
+                            
+                                <relocation>
+                                    <pattern>org.json4s</pattern>
+                                    <shadedPattern>com.apixio.shaded.org.json4s</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>com.google.thirdparty</pattern>
+                                    <shadedPattern>com.apixio.shaded.thirdparty</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>com.fasterxml.shaded.jackson</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>org.codehaus.jackson</pattern>
+                                    <shadedPattern>org.codehaus.shaded.jackson</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>com.carrotsearch.hppc</pattern>
+                                    <shadedPattern>com.carrotsearch.shaded.hppc</shadedPattern>
+                                </relocation>
+
+                                <relocation>
+                                    <pattern>com.codahale.metrics</pattern>
+                                    <shadedPattern>com.apixio.shaded.codahale.metrics</shadedPattern>
+                                </relocation>
+                            </relocations>
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

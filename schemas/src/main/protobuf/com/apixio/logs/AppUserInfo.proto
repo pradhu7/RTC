@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "google/protobuf/wrappers.proto";
+
+message AppUserInfo {
+  google.protobuf.StringValue coder_org_type = 1 [json_name = "coder_org_type"];
+  google.protobuf.StringValue user_agent = 2 [json_name = "user_agent"];
+  google.protobuf.StringValue coding_org_id = 3 [json_name = "coding_org_id"];
+  google.protobuf.StringValue session = 4;
+  google.protobuf.StringValue lastTS = 5;
+  google.protobuf.StringValue coding_org_name = 6 [json_name = "coding_org_name"];
+  google.protobuf.StringValue expiration = 7;
+  google.protobuf.StringValue user = 8;
+}

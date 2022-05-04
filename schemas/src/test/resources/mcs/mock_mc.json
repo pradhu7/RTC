@@ -1,0 +1,84 @@
+{
+  "core": {
+    "algorithm": {
+      "javaClass": "com.apixio.ensemble.impl.combiners.MockV22EventTypeCombiner",
+      "mock": true,
+      "type": "ENSEMBLE"
+    },
+    "dependencies": [
+      "MockPageSignal:0.0.1/0.0.0",
+      "MockPatientSignal:0.0.3/0.0.0"
+    ],
+    "git": {
+      "diff": "diff --git a/cli/config.yml b/cli/config.yml\nindex 1cc6115..22712bc 100644\n--- a/cli/config.yml\n+++ b/cli/config.yml\n@@ -33,10 +33,12 @@ microserviceConfig:\n   # defaults to current user's home directory\n   catalog_service_local_cache_dir: /tmp/mcsblobs\n \n+  model_file_cache_dir: /tmp/mcs_model_file_cache\n+\n   storageConfig:\n     s3Config:\n-      accessKey: \"\"\n-      secretKey: \"\"\n+      accessKey: \"2518141757975113538496V01xoe2RwKhOPE3rzr5Lb8Ieybpm2rk45gPUK6zr9Xr2ooI=\"\n+      secretKey: \"241797756735436792064V01xGRktODd8Yim9K1QGo3PV3ReCJTeMKWs3Q2meo4PSa+JUqUyK9jjnc9UlzS8M3Eqg\"\n       connectionTimeoutMs: 20000\n       socketTimeoutMs: 200000\n \n@@ -62,9 +64,9 @@ microserviceConfig:\n       timeout: 60000\n \n     redisConfig:\n-      host: localhost\n+      host: redis-1-stg.apixio.com\n       port: 6379\n-      keyPrefix: localhostTest\n+      keyPrefix: development-\n \n   loggingConfig:\n     appName: apx-modelcatalog-client-poc\n",
+      "hash": "04999df525140e7047ecabe502d9d4ee52d476c3",
+      "log": "04999df525140e7047ecabe502d9d4ee52d476c3 Open 1.1.2-SNAPSHOT\n",
+      "tag": "1.0.4-16-g04999df"
+    },
+    "name": "MockV22EventTypeCombiner:0.0.1",
+    "version": {
+      "name": "MockV22EventTypeCombiner",
+      "snapshot": true,
+      "version": "0.0.1"
+    }
+  },
+  "createdAt": "2019-09-24T00:32:46Z",
+  "createdBy": "jwong@apixio.com",
+  "deleted": false,
+  "executor": "",
+  "id": "B_c4df7e92-a004-4b76-ba08-b59d7490534a",
+  "name": "mock_combiner_v22",
+  "outputType": "",
+  "parts": [
+    {
+      "core": null,
+      "createdAt": "2019-09-09T21:24:42Z",
+      "createdBy": "jwong@apixio.com",
+      "md5Digest": "CAC174B2EDAAD0A7CEF62CED96BA0AEB",
+      "mimeType": "application/x-yaml; charset=UTF-8",
+      "modelId": "B_c4df7e92-a004-4b76-ba08-b59d7490534a",
+      "name": "DOC_1_SIGNALS.json.",
+      "s3Path": "s3://apixio-smasmodels/modelblobs/B_c4df7e92-a004-4b76-ba08-b59d7490534a/config.yaml",
+      "search": null
+    },
+    {
+      "core": {
+        "uri": "https://repos.apixio.com/artifactory/apixio-release-snapshot-jars/apixio/apixio-ensemble-testing/2.3.5-SNAPSHOT/apixio-ensemble-testing-2.3.5-SNAPSHOT-jar-with-dependencies.jar"
+      },
+      "createdAt": "2019-09-09T21:24:49Z",
+      "createdBy": "jwong@apixio.com",
+      "md5Digest": "154B330D5512741A640BAF8C11628206",
+      "mimeType": "application/java-archive",
+      "modelId": "B_c4df7e92-a004-4b76-ba08-b59d7490534a",
+      "name": "implementation.jar",
+      "s3Path": "s3://apixio-smasmodels/modelblobs/B_c4df7e92-a004-4b76-ba08-b59d7490534a/implementation.jar",
+      "search": null
+    },
+    {
+      "core": null,
+      "createdAt": "2019-09-09T21:24:49Z",
+      "createdBy": "jwong@apixio.com",
+      "md5Digest": "CFDC011041ACD5F229F2F3D338586F01",
+      "mimeType": "application/zip",
+      "modelId": "B_c4df7e92-a004-4b76-ba08-b59d7490534a",
+      "name": "model.zip",
+      "s3Path": "s3://apixio-smasmodels/modelblobs/B_c4df7e92-a004-4b76-ba08-b59d7490534a/model.zip",
+      "search": null
+    }
+  ],
+  "pdsId": null,
+  "product": "",
+  "search": {
+    "engine": "MA",
+    "tags": [
+      "COMBINER",
+      "ENSEMBLE",
+      "MOCK",
+      "MOCK_EVENT_TYPE_COMBINER",
+      "QA_ONLY"
+    ],
+    "variant": "V22"
+  },
+  "state": "DRAFT",
+  "version": null
+}

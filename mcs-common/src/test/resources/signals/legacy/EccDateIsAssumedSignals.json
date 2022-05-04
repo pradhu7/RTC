@@ -1,0 +1,79 @@
+[ {
+  "name" : "DateIsAssumed",
+  "sigType" : "CATEGORY",
+  "value" : "true",
+  "source" : {
+    "pages" : 0,
+    "doc" : {
+      "pattern" : "DOC",
+      "uuidString" : "1069f691-9aaa-4372-8270-9319623d0449"
+    },
+    "pat" : {
+      "pattern" : "PAT",
+      "uuidString" : "7cd84aac-0a32-4fb8-bacc-64665c005c59"
+    },
+    "loc" : {
+      "descriptor" : "default"
+    }
+  },
+  "generator" : {
+    "name" : "DateIsAssumed",
+    "version" : "1.0.0",
+    "className" : "com.apixio.ensemble.impl.generators.patient.DateIsAssumed",
+    "modelVersion" : "",
+    "jarVersion" : "1.7.1--8531d4580729501e3315c67fd195fe0e45f5ee92--`2019-07-09T21:07:45.515Z`"
+  },
+  "wt" : 1.0
+}, {
+  "name" : "DateIsAssumed",
+  "sigType" : "CATEGORY",
+  "value" : "true",
+  "source" : {
+    "pages" : 0,
+    "doc" : {
+      "pattern" : "DOC",
+      "uuidString" : "a4e333f9-2bfa-4701-8f56-30780731e59c"
+    },
+    "pat" : {
+      "pattern" : "PAT",
+      "uuidString" : "7cd84aac-0a32-4fb8-bacc-64665c005c59"
+    },
+    "loc" : {
+      "descriptor" : "default"
+    }
+  },
+  "generator" : {
+    "name" : "DateIsAssumed",
+    "version" : "1.0.0",
+    "className" : "com.apixio.ensemble.impl.generators.patient.DateIsAssumed",
+    "modelVersion" : "",
+    "jarVersion" : "1.7.1--8531d4580729501e3315c67fd195fe0e45f5ee92--`2019-07-09T21:07:45.515Z`"
+  },
+  "wt" : 1.0
+}, {
+  "name" : "DateIsAssumed",
+  "sigType" : "CATEGORY",
+  "value" : "true",
+  "source" : {
+    "pages" : 0,
+    "doc" : {
+      "pattern" : "DOC",
+      "uuidString" : "1c3f7e73-109e-4357-828a-c6bc8729fc59"
+    },
+    "pat" : {
+      "pattern" : "PAT",
+      "uuidString" : "7cd84aac-0a32-4fb8-bacc-64665c005c59"
+    },
+    "loc" : {
+      "descriptor" : "default"
+    }
+  },
+  "generator" : {
+    "name" : "DateIsAssumed",
+    "version" : "1.0.0",
+    "className" : "com.apixio.ensemble.impl.generators.patient.DateIsAssumed",
+    "modelVersion" : "",
+    "jarVersion" : "1.7.1--8531d4580729501e3315c67fd195fe0e45f5ee92--`2019-07-09T21:07:45.515Z`"
+  },
+  "wt" : 1.0
+} ]

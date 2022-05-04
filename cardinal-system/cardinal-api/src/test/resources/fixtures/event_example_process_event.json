@@ -1,0 +1,48 @@
+{
+  "items": [
+    {
+      "org_xuuid": {
+        "type": "O",
+        "uuid": "92E66488-4098-43F4-B808-98D8638D98CA"
+      },
+      "event_timestamp": "123456",
+      "process_event": {
+        "state": {
+          "status": "SUCCESS",
+          "details": "string"
+        },
+        "cdi_event": {
+          "subtype": "COPY",
+          "metadata": {
+            "user": "string",
+            "command": "string"
+          }
+        },
+        "from_xuuid": {
+          "type": "DOC",
+          "uuid": "92E66488-4098-43F4-B808-98D8638D98CA"
+        },
+        "to_xuuid": {
+          "type": "DOC",
+          "uuid": "92E66488-4098-43F4-B808-98D8638D98CA"
+        },
+        "attempt_number": 0,
+        "code_version": "string",
+        "execute_duration": 0,
+        "execute_host": "string",
+        "subject": {
+          "xuuid": {
+            "type": "DOC",
+            "uuid": "92E66488-4098-43F4-B808-98D8638D98CA"
+          },
+          "doc_info": {
+            "sha512": "0e3e75234abc68f4378a86b3f4b32a198ba301845b0cd6e50106e874345700cc6663a86c1ea125dc5e92be17c98f9a0f85ca9d5f595db2012f7cc3571945c123",
+            "pds_id": "string",
+            "patient_id": "string",
+            "content_type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "documentId": "4bed93f8-1a30-4a91-8ba8-8b1a38e5002c",
+  "location": {
+    "descriptor": "default"
+  },
+  "pageProps": {
+    "page": 15
+  },
+  "patientId": "ffdc1ab7-a7f8-4be3-a417-2177eb779525",
+  "sourceType": "Page",
+  "wholeDocProps": {
+    "pages": -1
+  },
+  "windowProps": {
+    "centroid": -1,
+    "end": -1,
+    "start": -1
+  }
+}

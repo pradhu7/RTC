@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <prerequisites>
+    <maven>3.5.0</maven>
+  </prerequisites>
+
+  <groupId>apixio</groupId>
+  <artifactId>mono</artifactId>
+  <packaging>pom</packaging>
+  <version>${revision}</version>
+
+  <name>Apixio Mono Repository</name>
+  <profiles>
+    <profile>
+      <id>scala-2.11</id>
+      <properties>
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.12</scala.version>
+        <scala.version.suffix></scala.version.suffix>
+      </properties>
+      <activation>
+        <property>
+          <name>scala-2.11</name>
+        </property>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-versions</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <bannedDependencies>
+                      <excludes combine.children="append">
+                        <exclude>*:*_2.13</exclude>
+                        <exclude>*:*_2.12</exclude>
+                        <exclude>*:*_2.10</exclude>
+                        <exclude>org.scala-lang:scala-compiler:(,2.11),[2.12,)</exclude>
+                      </excludes>
+                    </bannedDependencies>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>scala-2.12</id>
+      <properties>
+        <scala.binary.version>2.12</scala.binary.version>
+        <scala.version>2.12.12</scala.version>
+        <scala.version.suffix>_${scala.binary.version}</scala.version.suffix>
+      </properties>
+      <activation>
+        <property>
+          <name>scala-2.12</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-versions</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <bannedDependencies>
+                      <excludes combine.children="append">
+                        <!--
+                        <exclude>*:*_2.13</exclude>
+                        <exclude>*:*_2.11</exclude>
+                        <exclude>*:*_2.10</exclude>
+                        <exclude>org.scala-lang:scala-compiler:(,2.12),[2.13,)</exclude>
+                        -->
+                      </excludes>
+                    </bannedDependencies>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>regex-property</id>
+                <goals>
+                  <goal>regex-property</goal>
+                </goals>
+                <configuration>
+                  <name>maven.deploy.skip</name>
+                  <value>${project.artifactId}</value>
+                  <regex>^(?!.*_2.12).*$</regex>
+                  <replacement>true</replacement>
+                  <failIfNoMatch>false</failIfNoMatch>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>IntegrationTests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest-maven-plugin</artifactId>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <properties>
+    <revision>11.5.2-SNAPSHOT</revision>    <!-- Version for ALL artifacts built by this pom.xml+modules -->
+    <!-- repository location -->
+    <nexus.url>https://repos.apixio.com/artifactory</nexus.url>
+
+    <!-- distribution management -->
+    <release.repo.id>apixio.releases.build</release.repo.id>
+    <release.repo.url>${nexus.url}/releases</release.repo.url>
+
+    <snapshot.repo.id>apixio.snapshots.build</snapshot.repo.id>
+    <snapshot.repo.url>${nexus.url}/snapshots</snapshot.repo.url>
+
+    <thirdparty.repo.id>apixio.thirdparty</thirdparty.repo.id>
+    <thirdparty.repo.url>${nexus.url}/thirdparty</thirdparty.repo.url>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+
+
+    <java-version>1.8</java-version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
+
+    <!-- for multi-artifact related components; use {groupId}-version as maven variable name for consistency -->
+    <com.codahale.metrics-version>3.0.2</com.codahale.metrics-version>
+    <com.fasterxml.jackson-version>2.12.3</com.fasterxml.jackson-version>
+    <com.google.protobuf-version>3.19.1</com.google.protobuf-version>
+    <hapi.fhir.version>5.4.0</hapi.fhir.version>
+    <io.dropwizard.metrics-version>4.1.16</io.dropwizard.metrics-version>
+    <io.dropwizard.version>1.3.7</io.dropwizard.version>
+    <io.netty-version>4.1.61.Final</io.netty-version>
+    <junit5.version>5.8.2</junit5.version>
+    <log4j-version>1.2.17</log4j-version>
+    <log4j2-version>2.17.1</log4j2-version>
+    <mdht.version>3.0.0.202012030600</mdht.version>
+    <org.apache.flink.version>1.14.4</org.apache.flink.version>
+    <org.apache.httpcomponents-version>4.5.13</org.apache.httpcomponents-version>
+    <org.apache.jena-version>2.13.0</org.apache.jena-version>
+    <org.codehaus.jackson-version>1.9.2</org.codehaus.jackson-version>
+    <org.hibernate-version>4.3.5.Final</org.hibernate-version>
+    <org.openrdf.sesame-version>2.7.16</org.openrdf.sesame-version>
+    <org.powermock-version>1.6.5</org.powermock-version>
+    <org.slf4j-version>1.7.32</org.slf4j-version>
+    <org.spring-security-version>3.2.8.RELEASE</org.spring-security-version>
+    <org.springframework-version>3.2.13.RELEASE</org.springframework-version>
+    <pdfbox.version>2.0.2</pdfbox.version>
+    <jersey.version>2.25.1</jersey.version>
+    <aws.java.sdk.version>1.11.1034</aws.java.sdk.version>
+    <org.bouncycastle.bc-fips.version>1.0.2.1</org.bouncycastle.bc-fips.version>
+    <org.bouncycastle.bcprov-jdk15on.version>1.68</org.bouncycastle.bcprov-jdk15on.version>
+
+    <scala.binary.version>2.11</scala.binary.version>
+    <scala.version>2.11.12</scala.version>
+    <scala.version.suffix/>
+    <scalaBuildRepoUrl>${snapshot.repo.url}</scalaBuildRepoUrl>
+
+    <!-- apx-ensemble artifacts version -->
+    <apx.ensemble.version>2.16.0</apx.ensemble.version>
+
+    <cassandra.driver.version>3.11.1</cassandra.driver.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+
+    <repository>
+      <id>${release.repo.id}</id>
+      <name>Apixio Releases Repository</name>
+      <url>${release.repo.url}</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>${snapshot.repo.id}</id>
+      <name>Apixio Snapshots Repository</name>
+      <url>${snapshot.repo.url}</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+
+  </distributionManagement>
+
+  <modules>
+    <!-- library builds -->
+    <module>security</module>
+    <module>schemas</module>
+    <module>common</module>
+    <module>cardinal-system</module>
+    <module>model</module>
+    <module>dataload-bizlogic</module>
+    <module>APOConverter</module>
+    <module>cerveau</module>
+    <module>protobuf-util</module>
+    <module>ds</module>
+    <module>entity-common</module>
+    <module>dao</module>
+    <module>converters</module>
+    <module>nassembly</module>
+    <module>bizlogic</module>
+    <module>sdk-interface</module>
+    <module>sdk</module>
+    <module>mcs-common</module>
+    <module>mcs-blobmgr</module>
+    <module>apx-app-common</module>
+    <module>scala-common</module>
+
+    <!-- shaded-jar builds -->
+    <module>awslambda</module>
+    <module>infra-config</module>
+    <module>document-search</module>
+    <module>mcs-dw</module>
+    <module>apx-useracct</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- This section should list ALL artifacts produced by builds IN THIS REPOSITORY
+           in order to force a consistent version across uses.  This also implies that
+           any apixio artifact in this repository that depends on another apixio
+           artifact in here should NOT include <version> in the <dependency>
+           declaration. -->
+
+      <dependency><groupId>apixio</groupId><artifactId>apixio-bizlogic${scala.version.suffix}</artifactId>          <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-common</artifactId>                                   <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-converters${scala.version.suffix}</artifactId>        <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-dao${scala.version.suffix}</artifactId>               <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-datasource${scala.version.suffix}</artifactId>        <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-entity-common${scala.version.suffix}</artifactId>     <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-mcs-bms${scala.version.suffix}</artifactId>           <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-mcs-common${scala.version.suffix}</artifactId>        <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-model${scala.version.suffix}</artifactId>             <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-model-converter${scala.version.suffix}</artifactId>   <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-dataload-bizlogic${scala.version.suffix}</artifactId> <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-nassembly${scala.version.suffix}</artifactId>         <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-protobuf-util${scala.version.suffix}</artifactId>     <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-protoc</artifactId>                                   <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-s3-lambdafuncs${scala.version.suffix}</artifactId>    <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-sdk-cmdline${scala.version.suffix}</artifactId>       <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-sdk-interface${scala.version.suffix}</artifactId>     <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-sdk-core${scala.version.suffix}</artifactId>          <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-sdk-util${scala.version.suffix}</artifactId>          <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-security</artifactId>                                 <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apx-app-common${scala.version.suffix}</artifactId>           <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>infra-as-code</artifactId>                                   <version>${revision}</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>scala-common_${scala.binary.version}</artifactId>            <version>${revision}</version></dependency>
+      <dependency><groupId>apixio.cardinal-system</groupId><artifactId>cardinal-api</artifactId>                    <version>${revision}</version></dependency>
+      <dependency><groupId>apixio.cardinal-system</groupId><artifactId>cardinal-test-utils</artifactId>             <version>${revision}</version></dependency>
+
+      <!-- This section is for all known top-level shared/common dependencies of
+           modules.  All module pom.xml files that declare a <dependency> on one of
+           these artifacts MUST NOT INCLUDE <version> in the <dependency> declaration.
+
+           Note that groups of related artifacts (e.g., com.fasterxml.jackson.*) SHOULD
+           use a macro that defines the common version number for them.
+
+           ALL artifacts that are used/declared by more than one module MUST be declared
+           here (and follow the above rules). -->
+
+      <dependency><groupId>org.fluentd</groupId><artifactId>fluent-logger</artifactId><version>0.3.3</version></dependency>
+      <dependency><groupId>antlr</groupId><artifactId>antlr</artifactId><version>2.7.7</version></dependency>
+      <dependency><groupId>apixio.fork.io.ianferguson</groupId><artifactId>vault-java-driver</artifactId><version>6.1.1-apixio</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>Aspose</artifactId><version>15.10</version></dependency>
+      <dependency><groupId>apixio</groupId><artifactId>apixio-ensemble-interface${scala.version.suffix}</artifactId><version>${apx.ensemble.version}</version></dependency>
+      <dependency><groupId>ca.uhn.hapi.fhir</groupId><artifactId>hapi-fhir-base</artifactId><version>${hapi.fhir.version}</version></dependency>
+      <dependency><groupId>ca.uhn.hapi.fhir</groupId><artifactId>hapi-fhir-structures-dstu2</artifactId><version>${hapi.fhir.version}</version><exclusions><exclusion><groupId>org.apache.commons</groupId><artifactId>commons-text</artifactId></exclusion></exclusions></dependency>
+      <dependency><groupId>ca.uhn.hapi.fhir</groupId><artifactId>hapi-fhir-structures-dstu3</artifactId><version>${hapi.fhir.version}</version></dependency>
+      <dependency><groupId>ca.uhn.hapi.fhir</groupId><artifactId>hapi-fhir-structures-r4</artifactId><version>${hapi.fhir.version}</version></dependency>
+      <dependency><groupId>cloud.localstack</groupId><artifactId>localstack-utils</artifactId><version>0.2.11</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-java-sdk-s3</artifactId><version>${aws.java.sdk.version}</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-java-sdk-sns</artifactId><version>${aws.java.sdk.version}</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-java-sdk-sts</artifactId><version>${aws.java.sdk.version}</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-java-sdk</artifactId><version>${aws.java.sdk.version}</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-lambda-java-core</artifactId><version>1.2.0</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-lambda-java-events</artifactId><version>2.2.2</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-lambda-java-log4j</artifactId><version>1.0.0</version></dependency>
+      <dependency><groupId>com.codahale.metrics</groupId><artifactId>metrics-annotation</artifactId><version>${com.codahale.metrics-version}</version></dependency>
+      <dependency><groupId>com.codahale.metrics</groupId><artifactId>metrics-core</artifactId><version>${com.codahale.metrics-version}</version></dependency>
+      <dependency><groupId>com.datastax.cassandra</groupId><artifactId>cassandra-driver-core</artifactId><version>${cassandra.driver.version}</version></dependency>
+      <dependency><groupId>com.datastax.cassandra</groupId><artifactId>cassandra-driver-mapping</artifactId><version>${cassandra.driver.version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.dataformat</groupId><artifactId>jackson-dataformat-yaml</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.datatype</groupId><artifactId>jackson-datatype-guava</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.datatype</groupId><artifactId>jackson-datatype-jdk8</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.datatype</groupId><artifactId>jackson-datatype-joda</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.module</groupId><artifactId>jackson-module-scala_${scala.binary.version}</artifactId><version>${com.fasterxml.jackson-version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson</groupId><artifactId>jackson-bom</artifactId><version>${com.fasterxml.jackson-version}</version><scope>import</scope><type>pom</type></dependency>
+      <dependency><groupId>com.google.auto.value</groupId><artifactId>auto-value-annotations</artifactId><version>1.6.3</version></dependency>
+      <dependency><groupId>com.google.auto.value</groupId><artifactId>auto-value</artifactId><version>1.6.3</version></dependency>
+      <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>31.0.1-jre</version></dependency>
+      <dependency><groupId>com.google.http-client</groupId><artifactId>google-http-client-jackson2</artifactId><version>1.23.0</version></dependency>
+      <dependency><groupId>com.google.oauth-client</groupId><artifactId>google-oauth-client</artifactId><version>1.23.0</version></dependency>
+      <dependency><groupId>com.google.protobuf</groupId><artifactId>protobuf-java-util</artifactId><version>${com.google.protobuf-version}</version></dependency>
+      <dependency><groupId>com.google.protobuf</groupId><artifactId>protobuf-java</artifactId><version>${com.google.protobuf-version}</version></dependency>
+      <dependency><groupId>com.googlecode.json-simple</groupId><artifactId>json-simple</artifactId><version>1.1.1</version></dependency>
+      <dependency><groupId>com.googlecode.libphonenumber</groupId><artifactId>libphonenumber</artifactId><version>8.11.1</version></dependency>
+      <dependency><groupId>com.googlecode.protobuf-java-format</groupId><artifactId>protobuf-java-format</artifactId><version>1.4</version></dependency>
+      <dependency><groupId>com.hubspot.jackson</groupId><artifactId>jackson-datatype-protobuf</artifactId><version>0.9.12</version></dependency>
+      <dependency><groupId>com.jayway.jsonpath</groupId><artifactId>json-path</artifactId><version>2.0.0</version></dependency>
+      <dependency><groupId>com.nulab-inc</groupId><artifactId>zxcvbn</artifactId><version>1.4.0</version></dependency>
+      <dependency><groupId>com.orbitz.consul</groupId><artifactId>consul-client</artifactId><version>1.3.7</version></dependency>
+      <dependency><groupId>com.sksamuel.elastic4s</groupId><artifactId>elastic4s-core_${scala.binary.version}</artifactId><version>7.8.2-apixio</version></dependency>
+      <dependency><groupId>com.sun.mail</groupId><artifactId>javax.mail</artifactId><version>1.4.7</version></dependency>
+      <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.9.4</version></dependency>
+      <dependency><groupId>commons-cli</groupId><artifactId>commons-cli</artifactId><version>1.4</version></dependency>
+      <dependency><groupId>commons-codec</groupId><artifactId>commons-codec</artifactId><version>1.15</version></dependency>
+      <dependency><groupId>commons-collections</groupId><artifactId>commons-collections</artifactId><version>3.2.2</version></dependency>
+      <dependency><groupId>commons-configuration</groupId><artifactId>commons-configuration</artifactId><version>1.6</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-configuration2</artifactId><version>2.7</version></dependency>
+      <dependency><groupId>commons-io</groupId><artifactId>commons-io</artifactId><version>2.8.0</version></dependency>
+      <dependency><groupId>commons-lang</groupId><artifactId>commons-lang</artifactId><version>2.6</version></dependency>
+      <dependency><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId><version>1.2</version></dependency>
+      <dependency><groupId>commons-net</groupId><artifactId>commons-net</artifactId><version>3.6</version></dependency>
+      <dependency><groupId>commons-validator</groupId><artifactId>commons-validator</artifactId><version>1.7</version></dependency>
+      <dependency><groupId>de.mkammerer</groupId><artifactId>argon2-jvm</artifactId><version>2.10.1</version></dependency>
+      <dependency><groupId>dom4j</groupId><artifactId>dom4j</artifactId><version>1.6.1</version></dependency>
+      <dependency><groupId>io.dropwizard</groupId><artifactId>dropwizard-core</artifactId><version>${io.dropwizard.version}</version></dependency>
+      <dependency><groupId>io.dropwizard</groupId><artifactId>dropwizard-testing</artifactId><version>${io.dropwizard.version}</version></dependency>
+      <dependency><groupId>io.dropwizard</groupId><artifactId>dropwizard-views-freemarker</artifactId><version>${io.dropwizard.version}</version></dependency>
+      <dependency><groupId>com.github.mtakaki</groupId><artifactId>dropwizard-admin-resource</artifactId><version>1.3.8</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty-all</artifactId><version>${io.netty-version}</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty-buffer</artifactId><version>${io.netty-version}</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty-codec</artifactId><version>${io.netty-version}</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty-common</artifactId><version>${io.netty-version}</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty-handler</artifactId><version>${io.netty-version}</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty-transport</artifactId><version>${io.netty-version}</version></dependency>
+      <dependency><groupId>jakarta.xml.bind</groupId><artifactId>jakarta.xml.bind-api</artifactId><version>3.0.1</version></dependency>
+      <dependency><groupId>javax.annotation</groupId><artifactId>javax.annotation-api</artifactId><version>1.2</version></dependency>
+      <dependency><groupId>javax.mail</groupId><artifactId>mail</artifactId><version>1.4.7</version></dependency>
+      <dependency><groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><version>3.1.0</version></dependency>
+      <dependency><groupId>javax.ws.rs</groupId><artifactId>javax.ws.rs-api</artifactId><version>2.0.1</version></dependency>
+      <dependency><groupId>javax.xml.bind</groupId><artifactId>jaxb-api</artifactId><version>2.3.1</version ></dependency>
+      <dependency><groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.10.9</version></dependency>
+      <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version></dependency>
+      <dependency><groupId>log4j</groupId><artifactId>apache-log4j-extras</artifactId><version>${log4j-version}</version></dependency>
+      <dependency><groupId>log4j</groupId><artifactId>log4j</artifactId><version>${log4j-version}</version></dependency>
+      <dependency><groupId>lpg.runtime.java</groupId><artifactId>lpg.runtime.java</artifactId><version>2.0.17.v201004271640</version></dependency>
+      <dependency><groupId>net.sf.opencsv</groupId><artifactId>opencsv</artifactId><version>2.3</version></dependency>
+      <dependency><groupId>net.sf.trove4j</groupId><artifactId>trove4j</artifactId><version>3.0.3</version></dependency>
+      <dependency><groupId>net.sourceforge.owlapi</groupId><artifactId>owlapi-apibinding</artifactId><version>4.2.3</version></dependency>
+      <dependency><groupId>org.antlr</groupId><artifactId>antlr4</artifactId><version>4.8</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-dbcp2</artifactId><version>2.2.0</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.12.0</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-java</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-streaming-java_${scala.binary.version}</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-streaming-scala_${scala.binary.version}</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-clients_${scala.binary.version}</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-connector-kafka_${scala.binary.version}</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-connector-cassandra_${scala.binary.version}</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-connector-base</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.flink</groupId><artifactId>flink-test-utils_${scala.binary.version}</artifactId><version>${org.apache.flink.version}</version></dependency>
+      <dependency><groupId>org.apache.hadoop</groupId><artifactId>hadoop-common</artifactId><version>2.5.0-cdh5.3.2</version></dependency>
+      <dependency><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient</artifactId><version>${org.apache.httpcomponents-version}</version></dependency>
+      <dependency><groupId>org.apache.httpcomponents</groupId><artifactId>httpcore</artifactId><version>4.4.13</version></dependency>
+      <dependency><groupId>org.apache.jena</groupId><artifactId>apache-jena-libs</artifactId><version>${org.apache.jena-version}</version><type>pom</type></dependency>
+      <dependency><groupId>org.apache.jena</groupId><artifactId>jena-core</artifactId><version>${org.apache.jena-version}</version></dependency>
+      <dependency><groupId>org.apache.jena</groupId><artifactId>jena-tdb</artifactId><version>1.1.2</version></dependency>
+      <dependency><groupId>org.apache.kafka</groupId><artifactId>kafka-clients</artifactId><version>2.5.0</version></dependency>
+      <dependency><groupId>org.apache.kafka</groupId><artifactId>kafka_${scala.binary.version}</artifactId><version>2.4.1</version></dependency>
+      <dependency><groupId>org.apache.logging.log4j</groupId><artifactId>log4j-bom</artifactId><version>${log4j2-version}</version><scope>import</scope><type>pom</type></dependency>
+      <dependency><groupId>org.apache.pdfbox</groupId><artifactId>pdfbox</artifactId><version>${pdfbox.version}</version></dependency>
+      <dependency><groupId>org.apache.sshd</groupId><artifactId>sshd-common</artifactId><version>2.6.0</version></dependency>
+      <dependency><groupId>org.bouncycastle</groupId><artifactId>bcprov-jdk15on</artifactId><version>${org.bouncycastle.bcprov-jdk15on.version}</version></dependency>
+      <dependency><groupId>org.codehaus.jackson</groupId><artifactId>jackson-core-asl</artifactId><version>${org.codehaus.jackson-version}</version></dependency>
+      <dependency><groupId>org.codehaus.jackson</groupId><artifactId>jackson-mapper-asl</artifactId><version>${org.codehaus.jackson-version}</version></dependency>
+      <dependency><groupId>org.ehcache</groupId><artifactId>ehcache</artifactId><version>3.9.9</version></dependency>
+      <dependency><groupId>org.eclipse.emf.common</groupId><artifactId>org.eclipse.emf.common</artifactId><version>2.13.0.v20170609-0707</version></dependency>
+      <dependency><groupId>org.eclipse.emf.ecore</groupId><artifactId>org.eclipse.emf.ecore</artifactId><version>2.13.0.v20170609-0707</version></dependency>
+      <dependency><groupId>org.eclipse.emf</groupId><artifactId>org.eclipse.emf.ecore.xmi</artifactId><version>2.5.0.v20100521-1846</version></dependency>
+      <dependency><groupId>org.eclipse.mdht</groupId><artifactId>org.eclipse.mdht.emf.runtime</artifactId><version>${mdht.version}</version></dependency>
+      <dependency><groupId>org.eclipse.mdht</groupId><artifactId>org.eclipse.mdht.uml.cda</artifactId><version>${mdht.version}</version></dependency>
+      <dependency><groupId>org.eclipse.mdht</groupId><artifactId>org.eclipse.mdht.uml.hl7.datatypes</artifactId><version>${mdht.version}</version></dependency>
+      <dependency><groupId>org.eclipse.mdht</groupId><artifactId>org.eclipse.mdht.uml.hl7.rim</artifactId><version>${mdht.version}</version></dependency>
+      <dependency><groupId>org.eclipse.mdht</groupId><artifactId>org.eclipse.mdht.uml.hl7.vocab</artifactId><version>${mdht.version}</version></dependency>
+      <dependency><groupId>org.eclipse.ocl.common</groupId><artifactId>org.eclipse.ocl.common</artifactId><version>1.4.200.v20160613-1518</version></dependency>
+      <dependency><groupId>org.eclipse.ocl.ecore</groupId><artifactId>org.eclipse.ocl.ecore</artifactId><version>3.6.200.v20170522-1736</version></dependency>
+      <dependency><groupId>org.eclipse.ocl</groupId><artifactId>org.eclipse.ocl</artifactId><version>3.6.200.v20170522-1736</version></dependency>
+      <dependency><groupId>org.eclipse.uml2</groupId><artifactId>org.eclipse.uml2.types</artifactId><version>2.0.0.v20170605-1616</version></dependency>
+      <dependency><groupId>org.freemarker</groupId><artifactId>freemarker</artifactId><version>2.3.31</version></dependency>
+      <dependency><groupId>org.glassfish.jersey.containers</groupId><artifactId>jersey-container-servlet</artifactId><version>${jersey.version}</version></dependency>
+      <dependency><groupId>org.glassfish.jersey.test-framework.providers</groupId><artifactId>jersey-test-framework-provider-grizzly2</artifactId><version>${jersey.version}</version></dependency>
+      <dependency><groupId>org.glassfish.jersey.test-framework</groupId><artifactId>jersey-test-framework-core</artifactId><version>${jersey.version}</version></dependency>
+      <dependency><groupId>org.glassfish.web</groupId><artifactId>javax.el</artifactId><version>2.2.6</version></dependency>
+      <dependency><groupId>org.hamcrest</groupId><artifactId>hamcrest-core</artifactId><version>1.3</version></dependency>
+      <dependency><groupId>org.hibernate</groupId><artifactId>hibernate-c3p0</artifactId><version>${org.hibernate-version}</version></dependency>
+      <dependency><groupId>org.hibernate</groupId><artifactId>hibernate-core</artifactId><version>${org.hibernate-version}</version></dependency>
+      <dependency><groupId>org.json</groupId><artifactId>json</artifactId><version>20171018</version></dependency>
+      <dependency><groupId>org.jsoup</groupId><artifactId>jsoup</artifactId><version>1.11.3</version></dependency>
+      <dependency><groupId>org.junit</groupId><artifactId>junit-bom</artifactId><version>${junit5.version}</version><type>pom</type><scope>import</scope></dependency>
+      <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-api</artifactId><version>${junit5.version}</version></dependency>
+      <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-engine</artifactId><version>${junit5.version}</version></dependency>
+      <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-vintage-engine</artifactId><version>${junit5.version}</version></dependency>
+      <dependency><groupId>org.lz4</groupId><artifactId>lz4-java</artifactId><version>1.8.0</version></dependency>
+      <dependency><groupId>org.mockito</groupId><artifactId>mockito-all</artifactId><version>1.10.19</version></dependency>
+      <dependency><groupId>org.mockito</groupId><artifactId>mockito-core</artifactId><version>1.10.19</version></dependency>
+      <dependency><groupId>org.msgpack</groupId><artifactId>msgpack</artifactId><version>0.6.8</version></dependency>
+      <dependency><groupId>org.passay</groupId><artifactId>passay</artifactId><version>1.6.0</version></dependency>
+      <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><version>42.2.2</version></dependency>
+      <dependency><groupId>org.powermock</groupId><artifactId>powermock-api-mockito</artifactId><version>${org.powermock-version}</version></dependency>
+      <dependency><groupId>org.powermock</groupId><artifactId>powermock-module-junit4</artifactId><version>${org.powermock-version}</version></dependency>
+      <dependency><groupId>org.reflections</groupId><artifactId>reflections</artifactId><version>0.10.2</version></dependency>
+      <dependency><groupId>org.scala-lang</groupId><artifactId>scala-library</artifactId><version>${scala.version}</version></dependency>
+      <dependency><groupId>org.scalatest</groupId><artifactId>scalatest_${scala.binary.version}</artifactId><version>3.2.0</version></dependency>
+      <dependency><groupId>org.scalatestplus</groupId><artifactId>junit-4-12_${scala.binary.version}</artifactId><version>3.2.0.0</version></dependency>
+      <dependency><groupId>org.slf4j</groupId><artifactId>jcl-over-slf4j</artifactId><version>${org.slf4j-version}</version></dependency>
+      <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><version>${org.slf4j-version}</version></dependency>
+      <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-log4j12</artifactId><version>${org.slf4j-version}</version></dependency>
+      <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-core</artifactId><version>${org.spring-security-version}</version></dependency>
+      <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-web</artifactId><version>${org.spring-security-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-aop</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-beans</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-context-support</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-context</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-expression</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-jdbc</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-test</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-web</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.testcontainers</groupId><artifactId>testcontainers-bom</artifactId><version>1.16.3</version><type>pom</type><scope>import</scope></dependency>
+      <dependency><groupId>org.yaml</groupId><artifactId>snakeyaml</artifactId><version>1.27</version></dependency>
+      <dependency><groupId>redis.clients</groupId><artifactId>jedis</artifactId><version>3.2.0</version></dependency>
+      <dependency><groupId>software.amazon.awssdk</groupId><artifactId>bom</artifactId><version>2.16.34</version><type>pom</type><scope>import</scope></dependency>
+
+
+      <!-- This section is to fix problems with upperbounds/convergence with TRANSITIVE dependencies!  Top-level
+           dependencies are theoretically never conflicting due to single-point-control over versions (above)
+      -->
+
+      <dependency><groupId>asm</groupId><artifactId>asm</artifactId><version>3.3.1</version></dependency>
+      <dependency><groupId>com.amazonaws</groupId><artifactId>aws-java-sdk-simpleworkflow</artifactId><version>${aws.java.sdk.version}</version></dependency>
+      <dependency><groupId>com.github.jsonld-java</groupId><artifactId>jsonld-java</artifactId><version>0.5.1</version></dependency>
+      <dependency><groupId>com.google.code.findbugs</groupId><artifactId>jsr305</artifactId><version>3.0.2</version></dependency>
+      <dependency><groupId>com.google.code.gson</groupId><artifactId>gson</artifactId><version>2.8.6</version></dependency>
+      <dependency><groupId>com.google.errorprone</groupId><artifactId>error_prone_annotations</artifactId><version>2.7.1</version></dependency>
+      <dependency><groupId>com.squareup.okhttp3</groupId><artifactId>okhttp</artifactId><version>3.12.2</version></dependency>
+      <dependency><groupId>com.thoughtworks.paranamer</groupId><artifactId>paranamer</artifactId><version>2.8</version></dependency>
+      <dependency><groupId>io.dropwizard.metrics</groupId><artifactId>metrics-annotation</artifactId><version>${io.dropwizard.metrics-version}</version></dependency>
+      <dependency><groupId>io.dropwizard.metrics</groupId><artifactId>metrics-core</artifactId><version>${io.dropwizard.metrics-version}</version></dependency>
+      <dependency><groupId>io.dropwizard.metrics</groupId><artifactId>metrics-jmx</artifactId><version>${io.dropwizard.metrics-version}</version></dependency>
+      <dependency><groupId>io.netty</groupId><artifactId>netty</artifactId><version>3.10.6.Final</version></dependency>
+      <dependency><groupId>javax.servlet</groupId><artifactId>servlet-api</artifactId><version>2.5</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-pool2</artifactId><version>2.6.2</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-text</artifactId><version>1.9</version></dependency>
+      <dependency><groupId>org.apache.zookeeper</groupId><artifactId>zookeeper</artifactId><version>3.5.7</version></dependency>
+      <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>1.1</version></dependency>
+      <dependency><groupId>org.hibernate</groupId><artifactId>hibernate-validator</artifactId><version>5.4.3.Final</version></dependency>
+      <dependency><groupId>org.javassist</groupId><artifactId>javassist</artifactId><version>3.28.0-GA</version></dependency>
+      <dependency><groupId>org.jboss.logging</groupId><artifactId>jboss-logging</artifactId><version>3.3.0.Final</version></dependency>
+      <dependency><groupId>org.jetbrains</groupId><artifactId>annotations</artifactId><version>17.0.0</version></dependency>
+      <dependency><groupId>org.jfrog.maven.annomojo</groupId><artifactId>maven-plugin-anno</artifactId><version>1.4.1</version></dependency>
+      <dependency><groupId>org.objenesis</groupId><artifactId>objenesis</artifactId><version>3.1</version></dependency>
+      <dependency><groupId>org.openrdf.sesame</groupId><artifactId>sesame-model</artifactId><version>${org.openrdf.sesame-version}</version></dependency>
+      <dependency><groupId>org.openrdf.sesame</groupId><artifactId>sesame-rio-api</artifactId><version>${org.openrdf.sesame-version}</version></dependency>
+      <dependency><groupId>org.reactivestreams</groupId><artifactId>reactive-streams</artifactId><version>1.0.3</version></dependency>
+      <dependency><groupId>org.scala-lang.modules</groupId><artifactId>scala-parser-combinators_${scala.binary.version}</artifactId><version>1.1.2</version></dependency>
+      <dependency><groupId>org.scala-lang</groupId><artifactId>scala-reflect</artifactId><version>${scala.version}</version></dependency>
+      <dependency><groupId>org.scalactic</groupId><artifactId>scalactic_${scala.binary.version}</artifactId><version>3.2.0</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-core</artifactId><version>${org.springframework-version}</version></dependency>
+      <dependency><groupId>org.tukaani</groupId><artifactId>xz</artifactId><version>1.5</version></dependency>
+      <dependency><groupId>org.xerial.snappy</groupId><artifactId>snappy-java</artifactId><version>1.1.8.3</version></dependency>
+      <dependency><groupId>xml-apis</groupId><artifactId>xml-apis</artifactId><version>1.4.01</version></dependency>
+
+      <!-- Remove this when parallel-consumers releases new version with updated dependency version. -->
+      <dependency><groupId>pl.tlinkowski.unij</groupId><artifactId>pl.tlinkowski.unij.api</artifactId><version>0.1.3</version></dependency>
+      <dependency><groupId>pl.tlinkowski.unij</groupId><artifactId>pl.tlinkowski.unij.bundle.jdk8</artifactId><version>0.1.3</version></dependency>
+      <!--                <dependency><groupId></groupId><artifactId></artifactId><version></version></dependency> -->
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+
+    <!-- ALL plugins defined here will automatically be used/instantiated in all modules.
+         This section should include only those globally useful plugins.
+    -->
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>  <!-- minimally for dependency:tree -->
+        <version>2.10</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>      <!-- required for publishing to artifactory -->
+        <version>2.8.2</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>       <!-- required to force 1.8 -->
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${java-version}</source>
+          <target>${java-version}</target>
+          <showWarnings>false</showWarnings>
+          <showDeprecation>true</showDeprecation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.plugin.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <rules>
+                <requireUpperBoundDeps>
+                  <excludes>
+                    <exclude>com.google.guava:guava</exclude>
+                  </excludes>
+                </requireUpperBoundDeps>
+                <dependencyConvergence/>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-bc-jars</id>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.bouncycastle</groupId>
+                  <artifactId>bc-fips</artifactId>
+                  <version>${org.bouncycastle.bc-fips.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/bc-jars</outputDirectory>
+                  <destFileName>bc-fips-${org.bouncycastle.bc-fips.version}.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.bouncycastle</groupId>
+                  <artifactId>bcprov-jdk15on</artifactId>
+                  <version>${org.bouncycastle.bcprov-jdk15on.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/bc-jars</outputDirectory>
+                  <destFileName>bcprov-jdk15on-${org.bouncycastle.bcprov-jdk15on.version}.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <systemPropertiesFile>${user.home}/.apixio/apx-run.properties</systemPropertiesFile>
+          <argLine>@{argLine} -Dbcfipspath=${project.build.directory}/bc-jars/bc-fips-${org.bouncycastle.bc-fips.version}.jar -Dbcprovpath=${project.build.directory}/bc-jars/bcprov-jdk15on-${org.bouncycastle.bcprov-jdk15on.version}.jar -DAPX_VAULT_TOKEN=${env.APX_VAULT_TOKEN}</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- this plugin appears to be necessary for building modules directly; i.e.,
+           doing a "cd" into the module dir and doing the maven build -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <configuration>
+            <updatePomFile>true</updatePomFile>
+            <outputDirectory>${project.basedir}/target</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>package</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <!-- attached to Maven test phase -->
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <!-- pluginManagement section provides "template" plugins in that a module pom.xml can
+         just do <plugin>...</plugin> with the same groupId,artifactId and all the
+         configuration here will show up in the module.  In general this top level pom.xml
+         should put plugins under pluginManagement and *not* the main plugins XML element
+         as all plugins under the main one will be automatically "instantiated" (used) by
+         all modules, which might or might not be the desired behavior.
+    -->
+
+    <pluginManagement>  <!-- modules must still do <plugin>...</plugin> (w/o rest of elements) to use these -->
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.4</version>
+          <configuration>
+            <createDependencyReducedPom>false</createDependencyReducedPom>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <transformers>
+                  <transformer implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer">
+                  </transformer>
+                </transformers>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>com.github.edwgiz</groupId>
+              <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
+              <version>2.8.1</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>kr.motd.maven</groupId>
+          <artifactId>os-maven-plugin</artifactId>
+          <version>1.7.0</version>
+          <executions>
+            <execution>
+              <phase>initialize</phase>
+              <goals>
+                <goal>detect</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.xolstice.maven.plugins</groupId>
+          <artifactId>protobuf-maven-plugin</artifactId>
+          <version>0.6.1</version>
+          <configuration>
+            <protocArtifact>com.google.protobuf:protoc:${com.google.protobuf-version}:exe:${os.detected.classifier}</protocArtifact>
+            <protoSourceRoot>${project.basedir}/src/main/protobuf</protoSourceRoot>
+            <useArgumentFile>true</useArgumentFile>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>net.alchim31.maven</groupId>
+          <artifactId>scala-maven-plugin</artifactId>
+          <version>4.4.0</version>
+          <executions>
+            <execution>
+              <id>scala-compile</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>scala-test-compile</id>
+              <phase>process-test-resources</phase>
+              <goals>
+                <goal>testCompile</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.scalatest</groupId>
+          <artifactId>scalatest-maven-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+            <junitxml>.</junitxml>
+            <filereports>WDF TestSuite.txt</filereports>
+            <argLine>-Dbcfipspath=${project.build.directory}/bc-jars/bc-fips-${org.bouncycastle.bc-fips.version}.jar -Dbcprovpath=${project.build.directory}/bc-jars/bcprov-jdk15on-${org.bouncycastle.bcprov-jdk15on.version}.jar -DAPX_VAULT_TOKEN=${env.APX_VAULT_TOKEN}</argLine>
+          </configuration>
+          <executions>
+            <execution>
+              <id>test</id>
+              <goals>
+                <goal>test</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.9</version>
+        <reportSets>
+          <reportSet>
+            <reports>                                                   <!-- select reports -->
+              <report>index</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
+</project>

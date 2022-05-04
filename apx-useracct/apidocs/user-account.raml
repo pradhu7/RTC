@@ -1,0 +1,984 @@
+#%RAML 0.8
+title: User Account Service API
+baseUri: http://user-account.apixio.com
+protocols: [ HTTPS ]
+securitySchemes:
+  - ApixioAuthorization:
+      describedBy:
+        headers:
+          Authorization:
+            description: "Valid authtoken obtained by POST to /auths.  Authtoken value passed in Authorization HTTP header
+                         using Apixio as the type.  Example:  'Authorization: Apixio TA_0473ebc7-b600-417b-bb66-68968564da47'"
+            type: string
+      type: x-apixio-header
+
+
+################
+################ ACL AccessTypes API
+/aclat: 
+  get: 
+    securedBy: [ApixioAuthorization]
+    description:  Returns a list of all AccessType objects
+    responses: 
+      200: 
+        description:  List of AccessType object details
+        body: 
+          application/json: 
+            schema: |
+              {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "properties" :
+                  { "name": {"required": true, "type": "string"}, 
+                    "description": {"required": true, "type": "string"}
+                  },
+                "required": true,
+                "type": "object"
+                }
+            example: |
+              [ {
+                "name": "WriteAccess",
+                "description": "AccessType that declares intent to Update data"
+              } ]
+  post: 
+    securedBy: [ApixioAuthorization]
+    description:  Create a new AccessType object
+    body: 
+      application/json:
+        schema: |
+          {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties" :
+              { "name": {"required": true, "type": "string"}, 
+                "description": {"required": false, "type": "string"}
+              },
+            "required": true,
+            "type": "object"
+            }
+        example: |
+          {
+            "name": "WriteAccess",
+            "description": "AccessType that declares intent to Update data"
+          }
+    responses: 
+      200: 
+        description:  Returned on successful creation of AccessType object
+        body: 
+          application/json: 
+  /{typeName}: 
+    securedBy: [ApixioAuthorization]
+    description:  Get information about the given AccessType.
+    get: 
+      description:  Return details about the given AccessType
+      responses: 
+        200: 
+          description:  Returns details about the given AccessType ({typeName})
+          body: 
+            application/json: 
+              schema: |
+                {
+                  "name": "Name of new AccessType",
+                  "description": "Description of AccessType"
+                }
+    delete: 
+      description: Delete the given AccessType.  Warning, this could affect runtime behavior of applications that depend
+                   on this AccessType.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+
+################
+################ ACL Operations API
+/aclop: 
+  get: 
+    securedBy: [ApixioAuthorization]
+    description:  Returns a list of all Operations objects.
+    responses: 
+      200: 
+        description:  List of Operation object details
+        body: 
+          application/json: 
+            schema: |
+              {
+                "name": "CanViewDocument",
+                "description": "Can view a protected document"
+              }
+  post: 
+    securedBy: [ApixioAuthorization]
+    description:  Create a new Operation object
+    body: 
+      application/json:
+        schema: |
+          {
+            "name": "Unique name of new Operation",
+            "description": "Description of Operation"
+          }
+    responses: 
+      200: 
+        description:  Returned on successful creation of Operation object
+        body: 
+          application/json: 
+  /{opName}: 
+    get: 
+      securedBy: [ApixioAuthorization]
+      description:  Get information about the given Operation.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+              schema: |
+                {
+                  "name": "Name of new Operation",
+                  "description": "Description of Operation"
+                }
+    delete: 
+      securedBy: [ApixioAuthorization]
+      description: Delete the given Operation.  Warning, this could affect runtime behavior of applications that depend
+                   on this Operation.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+
+################
+################ Authentication API:
+/auths: 
+  post: 
+    description: Attempts to authenticate a User.
+    queryParameters: 
+      int: 
+        type: boolean
+        description: Means "internal".  Set to true if the token returned should be an internal token.
+      ttl: 
+        type: integer
+        description: Time-to-live for token, in seconds.
+    body: 
+      application/json:
+        schema: |
+          {
+            "email": "<email address>; required if in initial authentication (i.e., not part of 2nd factor)",
+            "password": "<password>; required if in initial authentication (i.e., not part of 2nd factor)",
+            "code": "<code>; required if in second step of 2nd factor"
+          }
+
+    responses: 
+      200: 
+        description: Returned on successful authentication
+        body: 
+          application/json:
+            schema:  |
+              {
+                "token": "<token-value>"
+              }
+      401: 
+        description: |
+          Returned on authentication failure.  Note that this is non-conforming for 401 as
+          it doesn't return a WWW-Authenticate header with a challenge.
+        body: 
+          application/json:
+            schema:  |
+              {
+                "reason": "<failure info>"
+              }
+  /{id}: 
+    delete: 
+      securedBy: [ApixioAuthorization]
+      description: Logs out the user by deleting the given auth token.  No operations that require an authenticated
+                   user can be performed after this with the deleted token.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+
+################
+################ Customer API:
+/customer: 
+  post: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /mysql-sync: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /projects: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /properties: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /property: 
+    post: 
+      queryParameters: 
+        name: 
+        type: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{name}: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /{customerId}: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    delete: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /activate: 
+      post: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /project: 
+      post: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{projectId}: 
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /projects: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /property: 
+      post: 
+        queryParameters: 
+          name: 
+          value: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      delete: 
+        queryParameters: 
+          name: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /{name}: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+
+################
+################ Filter API:
+/filter: 
+  post: 
+    body: 
+      application/json: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /customer: 
+    /{customerId}: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      post: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /group: 
+    /customer: 
+      /{customerId}: 
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+    /{groupId}: 
+      /customer: 
+        /{customerId}: 
+          delete: 
+            responses: 
+              200: 
+                body: 
+                  application/json: 
+  /{filterId}: 
+    delete: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /customer: 
+      /{customerId}: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+
+################
+################ Grants API:
+/grants: 
+  /{subject}: 
+    /{operation}: 
+      put: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      delete: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+
+################
+################ Groups API:
+/groups: 
+  get: 
+    queryParameters: 
+      type: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{groupID}: 
+    /members: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+
+################
+################ Password policies API:
+/passpolicies: 
+  post: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{policyName}: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+
+################
+################ ACL Permissions API:
+/perms: 
+  /{subject}: 
+    /{operation}: 
+      /{object}: 
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        put: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+
+################
+################ ACL Roles API:
+/roles: 
+  post: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{roleName}: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /{rolename}: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+
+################
+################ Rules API:
+/rule: 
+  /assignments: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /project: 
+    /{projectId}: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      post: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /assignments: 
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+      /user: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        /{userId}: 
+          delete: 
+            responses: 
+              200: 
+                body: 
+                  application/json: 
+          /state: 
+            /{state}: 
+              post: 
+                body: 
+                  application/json: 
+                responses: 
+                  200: 
+                    body: 
+                      application/json: 
+  /user: 
+    /{userId}: 
+      post: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /assignments: 
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+  /{ruleId}: 
+    /project: 
+      /{projectId}: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+
+################
+################ Privileged system API:
+/sys: 
+  /passpolicies: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /roles: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /users: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+
+################
+################ UserOrgs API
+/uorgs: 
+  post: 
+    securedBy: [ApixioAuthorization]
+    description: Creates a new UserOrg entity
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /cproperties: 
+    post: 
+      securedBy: [ApixioAuthorization]
+      description: Creates a new custom property definition.
+      body: 
+        application/json: 
+          schema: |
+            {
+              "name": "required; name of custom property; must be unique within UserOrg custom properties when lowercased",
+              "type": "one of [STRING, BOOLEAN, DATE, INTEGER, DOUBLE]"
+            }
+      responses: 
+        200: 
+          description:  returned on successful creation of the custom type.
+          body: 
+            application/json: 
+
+    get: 
+      securedBy: [ApixioAuthorization]
+      description: Returns the set of all custom UserOrg property definitions (that were created by POST:/uorgs/cproperties).
+      responses: 
+        200: 
+          body: 
+            application/json: 
+              schema: |
+                [
+                  { "<propname>": "[STRING, BOOLEAN, DATE, INTEGER, DOUBLE]" }, ...
+                ]
+    /{name}: 
+      delete: 
+        securedBy: [ApixioAuthorization]
+        description: Deletes the given custom property definition (identified by {name}). 
+                     All UserOrg entities with that custom property will have that property removed.
+        responses: 
+          200: 
+            description: returned if the delete was successful
+            body: 
+              application/json: 
+  /properties: 
+    get: 
+      securedBy: [ApixioAuthorization]
+      description: Gets ALL custom properties of ALL UserOrg entities in the system.
+                   The returned JSON structure is an object with field names that are the
+                   XUUID of the UserOrg entity, and the value of the field is another
+                   JSON object where the field names of that are the custom property name
+                   and the field values are the values of the custom properties.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+              schema: |
+                [
+                  { "<UserOrgID>": { "<propertyName>": "<propertyValue>" }, ... }, ...
+                ]
+    /{name}: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        description: Gets ALL UserOrg entities in the system that have a custom property
+                     with the given name ({name}). 
+                     The returned JSON structure is an object with field names that are the
+                     XUUID of the UserOrg entity, and the value of the field is that
+                     entity's value of the custom property.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: |
+                  [
+                    { "<UserOrgID>": "<propertyValue>" }, ...
+                  ]
+  /{entityID}: 
+    /properties: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        description: Gets ALL custom properties on the given UserOrg entity (identified by {entityID})
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: |
+                  [
+                    { "<propertyName>": "<propertyValue>" }, ...
+                  ]
+      /{name}: 
+        put: 
+          securedBy: [ApixioAuthorization]
+          description: Sets (adds or replaces) a custom property of the given name ({name}) to the given UserOrg ({entityID}).
+                       The entityID must be the externalID of the UserOrg.
+                       The operation will fail if the name doesn't correspond to a known custom property (that was added
+                       by POST:/uorgs/cproperties) or if the value supplied can't be converted to the value type as
+                       declared when the custom property was defined.
+          body: 
+            application/json: 
+              schema: |
+                  { "value": "<propertyValueAsString>" }
+          responses: 
+            200: 
+              description: 200 is returned on a successful set of the value.
+              body: 
+                application/json: 
+        delete: 
+          securedBy: [ApixioAuthorization]
+          description: Deletes the given custom property ({name}) from the given UserOrg ({entityID}).  Note that this
+                       only deletes the property value on that entity instance and doesn't affect the custom property
+                       definition.
+          responses: 
+            200: 
+              description: 200 is returned on successful deletion.
+              body: 
+                application/json: 
+  /{orgID}: 
+    /users: 
+      /{userID}: 
+        post: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+        delete: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+  /{orgid}: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{detail}: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      put: 
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+
+################
+################ Users API
+/users: 
+  post: 
+    securedBy: [ApixioAuthorization]
+    description: Creates a new User account
+    queryParameters: 
+      resendOnly: 
+      skipEmail: 
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /cproperties: 
+    post: 
+      securedBy: [ApixioAuthorization]
+      description: Creates a new custom property definition.
+      body: 
+        application/json: 
+          schema: |
+            {
+              "name": "required; name of custom property; must be unique within User custom properties when lowercased",
+              "type": "one of [STRING, BOOLEAN, DATE, INTEGER, DOUBLE]"
+            }
+      responses: 
+        200: 
+          description:  returned on successful creation of the custom type.
+          body: 
+            application/json: 
+
+    get: 
+      securedBy: [ApixioAuthorization]
+      description: Returns the set of all custom User property definitions (that were created by POST:/users/cproperties).
+      responses: 
+        200: 
+          body: 
+            application/json: 
+              schema: |
+                [
+                  { "<propname>": "[STRING, BOOLEAN, DATE, INTEGER, DOUBLE]" }, ...
+                ]
+    /{name}: 
+      delete: 
+        securedBy: [ApixioAuthorization]
+        description: Deletes the given custom property definition (identified by {name}). 
+                     All User entities with that custom property will have that property removed.
+        responses: 
+          200: 
+            description: returned if the delete was successful
+            body: 
+              application/json: 
+  /forgot: 
+    post: 
+      securedBy: [ApixioAuthorization]
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /me: 
+    get: 
+      securedBy: [ApixioAuthorization]
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      securedBy: [ApixioAuthorization]
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /passpolicy: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /{detail}: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      put: 
+        securedBy: [ApixioAuthorization]
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+  /properties: 
+    get: 
+      securedBy: [ApixioAuthorization]
+      description: Gets ALL custom properties of ALL User entities in the system.
+                   The returned JSON structure is an object with field names that are the
+                   XUUID of the User entity, and the value of the field is another
+                   JSON object where the field names of that are the custom property name
+                   and the field values are the values of the custom properties.
+      responses: 
+        200: 
+          body: 
+            application/json: 
+              schema: |
+                [
+                  { "<UserID>": { "<propertyName>": "<propertyValue>" }, ... }, ...
+                ]
+    /{name}: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        description: Gets ALL User entities in the system that have a custom property
+                     with the given name ({name}). 
+                     The returned JSON structure is an object with field names that are the
+                     XUUID of the User entity, and the value of the field is that
+                     entity's value of the custom property.
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: |
+                  [
+                    { "<UserID>": "<propertyValue>" }, ...
+                  ]
+  /token: 
+    get: 
+      securedBy: [ApixioAuthorization]
+      responses: 
+        200: 
+          body: 
+            application/json: 
+  /{entityID}: 
+    /properties: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        description: Gets ALL custom properties on the given User entity (identified by {entityID})
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: |
+                  [
+                    { "<propertyName>": "<propertyValue>" }, ...
+                  ]
+      /{name}: 
+        put: 
+          securedBy: [ApixioAuthorization]
+          description: Sets (adds or replaces) a custom property of the given name ({name}) to the given User ({entityID}).
+                       The operation will fail if the name doesn't correspond to a known custom property (that was added
+                       by POST:/users/cproperties) or if the value supplied can't be converted to the value type as
+                       declared when the custom property was defined.
+          body: 
+            application/json: 
+              schema: |
+                  { "value": "<propertyValueAsString>" }
+          responses: 
+            200: 
+              description: 200 is returned on a successful set of the value.
+              body: 
+                application/json: 
+        delete: 
+          securedBy: [ApixioAuthorization]
+          description: Deletes the given custom property ({name}) from the given User ({entityID}).  Note that this
+                       only deletes the property value on that entity instance and doesn't affect the custom property
+                       definition.
+          responses: 
+            200: 
+              description: 200 is returned on successful deletion.
+              body: 
+                application/json: 
+  /{userid}: 
+    get: 
+      securedBy: [ApixioAuthorization]
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    put: 
+      securedBy: [ApixioAuthorization]
+      body: 
+        application/json: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{detail}: 
+      get: 
+        securedBy: [ApixioAuthorization]
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      put: 
+        securedBy: [ApixioAuthorization]
+        body: 
+          application/json: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+/verifications: 
+  /{id}: 
+    /forgot: 
+      post: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /valid: 
+      post: 
+        responses: 
+          200: 
+            body: 
+              application/json: 

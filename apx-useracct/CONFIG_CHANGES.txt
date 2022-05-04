@@ -1,0 +1,121 @@
+
+General changes:
+
+* general model change:  configuration values are retrieved from a single Map<String,Object>,
+  populated by flattening out the yaml key structure.  "dotted path" keys are defined in
+  MicroserviceConfig (see that file for more info).  This is a major (philosophical) change
+  from defining Java classes that hold configuration.  This means that config clients (which
+  are few, in the end) use simple "getInteger(key)" (getBoolean, etc.) with the flattened key
+
+* in .yaml file for dropwizard:
+  * changed "globalConfig" to "microserviceConfig"
+  * added new key "persistenceConfig" under "microserviceConfig"
+  * indented the following keys by 2 spaces to be under "persistenceConfig":
+    * jedisConfig
+	* jedisPool
+	* redisConfig
+	* cassandraConfig
+  * indented the following keys by 2 spaces to be under "microserviceConfig":
+    * loggingConfig
+	* apiaclConfig
+	* filterConfig
+  * modified filterConfig as follows:
+    * no more "filterClass:" before classname (i.e., make it a string rather than a map)
+	* any per-filterClass config gets moved (outdented by 2, also) with the classname
+	  as the yaml key that's under "filterConfig".
+
+* removed the following config-related classes:
+  * GlobalConfig; this generally has been replaced by MicroserviceConfig
+  * DwJedisConfig, DwJedisPool, DwRedisConfig:
+                     half-replaced by MicroserviceConfig.getPersistenceConfig() (returns generic ConfigSet)
+  * CassandraConfig: half-replaced by MicroserviceConfig.getPersistenceConfig() (returns generic ConfigSet)
+  * LoggingConfig;   half-replaced by MicroserviceConfig.getLoggingConfig()     (returns generic ConfigSet)
+  * ApiaclConfig:    half-replaced by MicroserviceConfig.getAclConfig()         (returns generic ConfigSet)
+  * FilterConfig:    half-replaced by MicroserviceConfig.getFilterConfig()      (returns generic ConfigSet)
+
+* removed GlobalConfig from SysServices construction; replaced with MicroserviceConfig
+
+* centralized logger construction in ConfigUtil.getEventLogger()
+
+* changed the MicroserviceApplication.SysServicesFactory interface:
+
+  * removed the GlobalConfig parameter as the already-required configuration (class-generic) parameter is sufficient
+  * changed the type of the "seed" from Tokens to DaoBase
+
+* removed need to pass in aclCfName parameter to any SysService-like constructor
+
+
+Benefits:
+
+* allows for cmdline overrides of yaml-based configuration; e.g., for dropwizard and java cmdline tools:
+
+    java -DapiaclConfig.apiAclDefs=src/main/resources/apiacls.json -jar target/apixio-useracct-dw-*.jar server src/main/resources/user-account.yaml
+
+* unifies config model between pipline-core/hadoop-job code and dropwizard code
+
+* easier to add new config:  add to yaml, (optionally add as a Java const string), use where config is needed
+  (current method requires a change to a Java config class, or the creation of a new one)
+
+
+################ How to convert old code to 5.0.0:
+
+* Remove imports for:
+
+  com.apixio.restbase.config.{DwRedisConfig,DwJedisConfig,CassandraConfig,TokenConfig,
+                              FilterConfig,GlobalConfig,LoggingConfig,ApiaclConfig,DwJedisPool}
+
+
+* import com.apixio.restbase.config.{MicroserviceConfig,ConfigSet} (you'll possibly need ConfigSet)
+
+* Remove GlobalConfig param from code that uses/implements MicroserviceApplication.SysServicesFactory
+
+* Remove the ".getGlobalConfig()" in calls to "MicroserviceConfig.getGlobalConfig()" (also
+  classes that extend MicroserviceConfig) as GlobalConfig has basically been replaced with
+  the full MicroserviceConfig class
+
+* Remove the aclColumnFamilyName parameter to calls to the constructor of SysServices.  This
+  value is now automatically pulled from MicroserviceConfig (which still needs to be passed in
+  to SysServices())
+
+* If EventLogger is set up via the now-removed LoggingConfig class, use the method
+  com.apixio.restbase.config.ConfigUtil.getEventLogger(MicroserviceConfig) to create it.  Null will
+  be returned if no logging has been configured.  If more control over logger creation is
+  required, see that method's code for how to do it properly.
+
+* Replace calls to com.apixio.restbase.config.CassandraConfig.toConnector with calls to
+  com.apixio.restbase.PersistenceServices.toCqlConnector(ConfigSet, boolean).  The ConfigSet
+  parameter should have been retrieved via MicroserviceConfig.getPersistenceConfig().
+
+* if a class directly extends com.apixio.restbase.UserServices, change the GlobalConfig parameter passed to
+  "super(..., GlobalConfig)" to MicroserviceConfig
+
+* code that gets config values from one of the now-removed Java config classes will now need to call
+
+    com.apixio.restbase.config.ConfigSet.getXyz(String key)
+
+  where the value of "key" comes from one of the constants in com.apixio.restbase.config.MicroserviceConfig.
+
+* code that creates a now-removed Java config class will now need to create either an instance of
+  com.apixio.restbase.config.MicroserviceConfig (useful, for example, if the code created config that spanned
+  config objects) OR an instance of com.apixio.restbase.config.ConfigSet (if, for example, the code
+  created just a single config object).  Note that explicit construction of either one of these is not
+  the ideal use-model as the config system is optimized for the case where dropwizard/snakeyaml creates
+  the objects.
+
+* change existing .yaml files:
+  * change "globalConfig" to "microserviceConfig"
+  * add new key "persistenceConfig" under "microserviceConfig"
+  * indent the following keys by 2 spaces to be under "persistenceConfig":
+    * jedisConfig
+	* jedisPool
+	* redisConfig
+	* cassandraConfig
+  * indent the following keys to be under "microserviceConfig":
+    * loggingConfig
+	* apiaclConfig
+	* filterConfig
+  * modify filterConfig as follows:
+    * remove "filterClass:" before classname (i.e., make it a string rather than a map)
+	* move any per-filterClass config (outdented by 2, also) with the classname
+	  as the yaml key that's under "filterConfig".
+

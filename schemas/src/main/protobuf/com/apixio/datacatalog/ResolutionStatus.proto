@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+enum ResolutionStatus {
+  UNKNOWN_STATUS = 0;
+  STILL_ACTIVE = 1; //C++ scoping rules causes error with EditType.ACTIVE
+  INACTIVE = 2;
+  RESOLVED_ = 3;
+  RECURRENCE = 4;
+  RELAPSE = 5;
+  REMISSION = 6;
+}
+

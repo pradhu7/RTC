@@ -1,0 +1,94 @@
+/*
+ * This file contains the serialization and transport standard for Signals generated
+ * by any Apixio generator.
+ */
+syntax = "proto3";
+
+package com.apixio.ensemble.ifc.transport;
+
+import "com/apixio/messages/MessageMetadata.proto";
+
+enum SignalType {
+    NUMERIC = 0;
+    CATEGORY = 1;
+}
+
+message Generator {
+    string name = 1;
+    string version = 2;
+    string className = 3;
+    string jarVersion = 4;
+    string modelVersion = 5;
+}
+
+message PatientSource {
+    com.apixio.messages.XUUID patientID = 1;
+    oneof location {
+        StringLocation stringLocation = 6;
+    }
+}
+
+message MultiDocumentSource {
+    com.apixio.messages.XUUID patientID = 1;
+    repeated com.apixio.messages.XUUID documentIds = 2;
+    int32 numPages = 3;
+    oneof location {
+        StringLocation stringLocation = 6;
+    }
+}
+
+message DocumentSource {
+    com.apixio.messages.XUUID patientID = 1;
+    com.apixio.messages.XUUID documentID = 2;
+    int32 numPages = 3;
+    oneof location {
+        StringLocation stringLocation = 6;
+    }
+}
+
+message PageWindowSource {
+    com.apixio.messages.XUUID patientID = 1;
+    com.apixio.messages.XUUID documentID = 2;
+    int32 startPage = 3;
+    int32 endPage = 4;
+    int32 centroid = 5;
+    oneof location {
+        StringLocation stringLocation = 6;
+    }
+}
+
+message PageSource {
+    com.apixio.messages.XUUID patientID = 1;
+    com.apixio.messages.XUUID documentID = 2;
+    int32 page = 3;
+    oneof location {
+        StringLocation stringLocation = 6;
+    }
+}
+
+message Signal {
+    Generator generator = 1;
+    string name = 2;
+    SignalType signalType = 3;
+    oneof source {
+        PatientSource patientSource = 4;
+        DocumentSource documentSource = 5;
+        PageWindowSource pageWindowSource = 6;
+        PageSource pageSource = 7;
+        MultiDocumentSource multiDocumentSource = 11;
+    }
+    oneof value {
+        float numericValue = 8;
+        string categoryValue = 9;
+    }
+    float weight = 10;
+}
+
+message StringLocation {
+    // descriptor is a reserved word in proto3 so we have to use locDescriptor
+    string locDescriptor = 1;
+}
+
+message SignalsWrapper {
+    repeated Signal signals = 1;
+}

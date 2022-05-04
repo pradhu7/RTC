@@ -1,0 +1,20 @@
+- DictionaryExtractorGenerator: '{"name":"ModularDictionaryTokenExtractor","version":"1.0.0"}'
+  ModularDictionaryTokenExtractor.codeFilter: HCCCRV2,APXCAT
+  PageGeneratorList: '{"generators": ["java.util.List", [{"name": "InferredDate",
+    "version": "1.0.0", "className": "com.apixio.ensemble.impl.generators.page.InferredDate"},
+    {"name": "Dictionary", "version": "1.2.0", "className": "com.apixio.ensemble.impl.generators.page.Dictionary"},
+    {"name": "LogitFaceToFace", "version": "1.0.0", "className": "com.apixio.ensemble.impl.generators.page.LogitFaceToFace"},
+    {"name": "HAR", "version": "1.1.0", "className": "com.apixio.ensemble.impl.generators.page.HAR"},
+    {"name": "AssumedDate", "version": "1.0.0", "className": "com.apixio.ensemble.impl.generators.page.AssumedDate"}]]}'
+  PageLimit: 2500
+  PatientGeneratorList: '{"generators": ["java.util.List", [{"name": "DateIsAssumed",
+    "version": "1.0.0", "className": "com.apixio.ensemble.impl.generators.patient.DateIsAssumed"}]]}'
+  emit_equivalents: 'false'
+  extract_dates: 'true'
+  modelVersion: production_model_9_2_2
+  model_filename: production_model_9_2_2.zip
+  performSimilarity: 'true'
+  performUnCramming: 'true'
+  pill_mode: dictionary
+  signalCombiners: '{"generators": ["java.util.List", [{"name": "Signal2EventDecisionTreeV24",
+    "version": "1.2.0", "className": "com.apixio.ensemble.impl.combiners.Signal2EventDecisionTreeV24"}]]}'

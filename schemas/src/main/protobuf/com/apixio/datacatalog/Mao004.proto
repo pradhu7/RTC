@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ResolutionStatus.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/EditType.proto";
+import "com/apixio/datacatalog/ProblemInfo.proto";
+
+message Mao004 {
+  ProblemInfo problemInfo = 1;
+
+  // Mao004 specific metadata
+  string encounterClaimType = 2;
+  string maContractId = 3;
+  YearMonthDay reportDate = 4;
+  string submissionInterchangeNumber = 5;
+  string submissionFileType = 6;
+  string encounterIcn = 7;
+  string replacementEncounterSwitch = 8;
+  string originalEncounterIcn = 9;
+  YearMonthDay planSubmissionDate = 10;
+  YearMonthDay processingDate = 11;
+  string encounterTypeSwitch = 12;
+  string hicn = 13;
+}

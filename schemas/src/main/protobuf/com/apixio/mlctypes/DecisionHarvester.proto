@@ -1,0 +1,14 @@
+/*
+
+ */
+syntax = "proto3";
+
+package com.apixio.harvesters;
+
+message DecisionHarvesterParams {
+  int64  startTime     = 1;
+  int64  endTime       = 2;
+  string sourceProject = 3;
+  string s3Bucket      = 4;
+  string groupId       = 5;
+}

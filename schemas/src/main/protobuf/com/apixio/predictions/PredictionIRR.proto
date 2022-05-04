@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package com.apixio.predictions;
+
+import "com/apixio/predictions/PredictionCommon.proto";
+
+option java_outer_classname = "IRR";
+
+message IRRPrediction {
+
+    // This the format given by: https://github.com/Apixio/apx-ensemble/blob/feature-irr-model-no-state/interface/src/main/java/com/apixio/irr/ifc/Prediction.java
+
+    //     Long getTime();
+    //     String getProjectId();
+    //     String getDocsetId();
+    //     String getPatientId();
+    //     String getDocumentId();
+    //     String getHcc();
+    //     Double getWeight();
+    //     String getPrediction();
+
+    int64                     timeStamp                  =  1;
+    string                    projectId                  =  2;
+    string                    docsetId                   =  3;
+    string                    patientId                  =  4;
+    string                    documentId                 =  5;
+    string                    hcc                        =  6;
+    double                    weight                     =  7;
+    string                    prediction                 =  8;
+
+}
+
+message IRROutput {
+    // This is the format given by: https://github.com/Apixio/apx-ensemble/blob/feature-irr-model-no-state/interface/src/main/java/com/apixio/irr/ifc/Output.java
+
+    // This will hold a list of IRRPredictions from the above message
+
+    // Iterable<Prediction> getPredictions();
+
+    repeated                  IRRPrediction irrPredicton = 1;
+
+}

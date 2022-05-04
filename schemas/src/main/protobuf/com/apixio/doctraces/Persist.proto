@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.doctraces;
+
+import "com/apixio/doctraces/Error.proto";
+
+message PersistTrace {
+  string patientKey = 1;
+  repeated Error errors = 2;
+
+}

@@ -1,0 +1,75 @@
+[
+  {
+    "c": "0111",
+    "d": "Inpatient Admit Through Discharge",
+    "o": ["I"],
+    "v": "2018"
+  },
+  {
+    "c": "0117",
+    "d": "Inpatient Replacement of Prior Claim",
+    "o": ["I"],
+    "v": "2018"
+  },
+
+  {
+    "c": "0131",
+    "d": "hospital outpatient admit through discharge",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0137",
+    "d": "hospital outpatient replacement of prior claim",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0711",
+    "d": "Rural Health Clinic Admit Through Discharge",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0717",
+    "d": "Rural Health Clinic Replacement of Prior Claim",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0761",
+    "d": "Community Mental Health Center Admit Through Discharge",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0767",
+    "d": "Community Mental Health Center Replacement of Prior Claim",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0771",
+    "d": "Federally Qualified Health Center Admit Through Discharge",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0777",
+    "d": "Federally Qualified Health Center Replacement of Prior Claim",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0851",
+    "d": "Critical Access Hospital Admit Through Discharge",
+    "o": ["O"],
+    "v": "2018"
+  },
+  {
+    "c": "0857",
+    "d": "Critical Access Hospital Replacement of Prior Claim",
+    "o": ["O"],
+    "v": "2018"
+  }
+]

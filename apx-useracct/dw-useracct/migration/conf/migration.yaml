@@ -1,0 +1,44 @@
+persistenceConfig:
+
+  jedisConfig:
+    testWhileIdle: true
+    testOnBorrow: true
+    maxTotal: 100
+
+  jedisPool:
+    timeout: 60000
+
+  redisConfig:
+    host: localhost
+    port: 6379
+    keyPrefix: scottsbox-
+
+#  cassandraConfig:
+#    hosts: localhost
+#    binaryPort: 9042
+#    keyspaceName: apixio
+#    baseDelayMs: 50
+#    maxDelayMs: 250
+#    readConsistencyLevel: QUORUM
+#    writeConsistencyLevel: QUORUM
+#    minConnections: 1
+#    maxConnections: 2
+
+apiaclConfig:
+    aclColumnFamilyName: apx_cfAcl
+
+loggingConfig:
+  appName: useraccount
+  defaultLoggerName: global
+  properties:
+    graphite: false
+    graphite.url: 127.0.0.1
+    graphite.folderPrefix: test.useraccount
+    # Write to console. Change to true to start logging using fluent
+    fluent: false
+    fluent.url: 127.0.0.1
+    fluent.tag: test
+
+
+emailConfig:
+  templates:     /emailTemplates

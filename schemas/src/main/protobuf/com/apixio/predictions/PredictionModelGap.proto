@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.apixio.predictions.modelgap;
+
+import "com/apixio/predictions/PredictionCommon.proto";
+
+option java_outer_classname = "ModelGap";
+
+message DocumentValuePrediction {
+    com.apixio.predictions.predictionbin.DocumentXUUID documentId = 1;
+    double value = 2;
+    com.apixio.predictions.predictionbin.ModelEngine engine = 3;
+    com.apixio.predictions.predictionbin.Code code = 4;
+    com.apixio.predictions.predictionbin.DateOfService dateOfService = 5;
+}
+
+message PatientValuePrediction {
+    com.apixio.predictions.predictionbin.PatientXUUID documentId = 1;
+    double value = 2;
+
+    com.apixio.predictions.predictionbin.ModelEngine engine = 3;
+    com.apixio.predictions.predictionbin.ModelVariant variant = 4;
+}

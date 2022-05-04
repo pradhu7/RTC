@@ -1,0 +1,23 @@
+
+
+## Creating event column family
+## give common fields and annotation fields
+## also need unique key field - annotation supplies one
+use apixio;
+
+create column family event1 with 
+comparator=UTF8Type and 
+column_metadata=[
+{column_name: class, validation_class:BytesType, index_type:KEYS}, 
+{column_name: code, validation_class: UTF8Type, index_type:KEYS}, 
+{column_name: token, validation_class: UTF8Type, index_type: KEYS}
+{column_name: group_id, validation_class: UTF8Type, index_type:KEYS}, 
+{column_name: start_time, validation_class: BytesType, index_type:KEYS}, 
+{column_name: end_time, validation_class: BytesType, index_type:KEYS}, 
+
+{column_name: document_uuid, validation_class: UTF8Type, index_type:KEYS}, 
+{column_name: user_id, validation_class: UTF8Type, index_type:KEYS}, 
+{column_name: patient_uuid, validation_class: UTF8Type, index_type:KEYS}, 
+{column_name: status, validation_class: UTF8Type, index_type:KEYS}, 
+];
+

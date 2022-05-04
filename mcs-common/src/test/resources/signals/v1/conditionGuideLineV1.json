@@ -1,0 +1,29 @@
+{
+  "generator" : {
+    "name" : "ConditionGuideLine",
+    "version" : "1.0.0",
+    "className" : "com.apixio.ensemble.impl.generators.page.ConditionGuideLine",
+    "jarVersion" : "1.4.0"
+  },
+  "name" : "ConditionGuideLine-V22_88",
+  "source" : {
+    "centroid" : 11,
+    "documentId" : {
+      "type" : "DOC",
+      "uuid" : "000b3191-72ca-4bb6-ae72-22e35d292a95",
+      "id" : "DOC_000b3191-72ca-4bb6-ae72-22e35d292a95"
+    },
+    "patientId" : {
+      "type" : "PAT",
+      "uuid" : "0070c50b-2466-4bfb-a797-121a34afffe8",
+      "id" : "PAT_0070c50b-2466-4bfb-a797-121a34afffe8"
+    },
+    "startPage" : 9,
+    "endPage" : 13,
+    "_class_name" : "com.apixio.ensemble.impl.source.PageWindowSource",
+    "_interface_name" : "PageWindowSource"
+  },
+  "sigType" : "CATEGORY",
+  "value" : "false",
+  "weight" : 0.22466598
+}

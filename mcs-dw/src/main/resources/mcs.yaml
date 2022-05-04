@@ -1,0 +1,130 @@
+################################################################
+#
+# This file is for the drop-wizard specific configuration and NOT for
+# anything to do with actually running the coordinator daemon or for
+# accessing coordinator structures kept in redis!
+#
+
+################################################################
+# dropwizard configuration:
+server:
+  applicationConnectors:
+    - type: http
+      port: 8036
+  adminConnectors:
+    - type: http
+      port: 9036
+
+################################################################
+# Note that the bulk of this yaml file is actually dealt with in the Java
+# code via a com.apixio.restbase.config.ConfigSet object.  This allows
+# both the use of boot macros and command line overrides (via -Dn=v)
+#
+# The only part of this yaml that isn't converted to a ConfigSet is
+# the dropwizard-specific parts (at the beginning of the file).
+#
+# That said, the only efficient way to do this ConfigSet model is
+# to have things separated into a small number of top-level keys
+# that each have a ConfigSet instance created from the yaml map-of-objects
+# below them.  It's for this reason that we have the following top-level
+# keys:
+#
+#  microserviceConfig:  this is used by MicroserviceConfig
+#  mcsConfig:           this is used by the MCS DW code
+################################################################
+
+mcsConfig:
+  blobStorageUrl: s3://apixio-smasmodels-stg/blob      # note:  no trailing "/"!
+
+################################################################
+# "microserviceConfig" refers to configuration that is shared across projects that
+# conform to the API & token/security model.  The use of "microserviceConfig" as
+# a YAML key automatically supports dropwizard commandline overrides and boot config
+# via Java System properties:
+#
+#  -D_bootprops=$HOME/something.properties -Dkey1.subkey2.subsub3=newvalue
+
+microserviceConfig:
+
+  storageConfig:
+    s3Config:
+      accessKey: ""
+      secretKey: ""
+      connectionTimeoutMs: 200000
+      socketTimeoutMs: 200000
+
+  # this is persistence config that's for the purpose of runtime microservice stuff such as ACLs
+  persistenceConfig:
+
+    # '_blobmanager' is defined by MariaDbStorage.java
+    jdbc_blobmanager:
+      verboseSql:            true
+      connectionUrl:         "jdbc:mysql://localhost:3306/blobmgr"
+      driverClassname:       "com.mysql.cj.jdbc.Driver"
+      password:              "root"
+      username:              "root"
+      maxTotal:              25
+
+    jedisConfig:
+      testWhileIdle: true
+      testOnBorrow: true
+      maxTotal: 100
+
+    jedisPool:
+      timeout: 60000
+
+    # redisConfig is REALLY ONLY FOR microfilters so they can make direct redis calls
+    #  for efficiency in checking role/status of users
+    redisConfig:
+      host: "{microservice.redis-host}"
+      port: 6379
+      # prefix for user-account/tokenizer keys (NOT for coordinator keys!):
+      keyPrefix: "{microservice.redis-prefix}"
+
+  loggingConfig:
+    appName: mcsadmin
+    defaultLoggerName: mcsadmin
+    properties:
+      graphite: false
+      graphiteUrl: http://blah
+      graphiteFolderPrefix: mcs
+      fluent: true
+      fluent.url: 127.0.0.1
+      fluent.tag: test
+
+  ################ RESTful API access control
+  # just a reference to a JSON file with all the definitions.  This JSON file must contain
+  # an single top-level array of JSON object, where each object is an API definition.
+
+  apiaclConfig:
+    apiAclDefs: src/main/resources/apiacls.json
+    aclColumnFamilyName: apx_cfAcl                 # deprecated but code still needs placeholder
+    aclDebug: detailed
+    aclHpCacheTimeout: 10000
+
+  ################################################################
+  # all request filters take configuration with the structure of a map from string to
+  # object, where the object can be whatever structure is needed (e.g., a list or
+  # map...).  One required map key is "filterClass" which refers to a class that
+  # extends com.apixio.web.Microfilter
+
+  # only 1 main filter is supported; this pattern indicates which URL requests
+  # actually get filtered: (Note: static bundles might affect this design here)
+  filterConfig:
+    filterUrlPattern:
+      - "/*"
+
+  # requestFilters is the list of web filters that will be applied in the listed order
+  # to each and every request coming in to the server:
+
+    requestFilters:
+
+      - com.apixio.restbase.web.RequestTimer
+      - com.apixio.restbase.web.RedisTransaction
+      # SFM commented out to ease testing:  - filterClass: com.apixio.restbase.web.ValidateToken
+      # SFM commented out to ease testing:    tokenType:  INTERNAL
+      # the microfilters after this expect the user on the thread...
+      # this won't fail if there is no token:
+      - com.apixio.useracct.web.AttachUser
+      # SFM commented out to ease testing:  - filterClass: com.apixio.restbase.web.AclChecker
+

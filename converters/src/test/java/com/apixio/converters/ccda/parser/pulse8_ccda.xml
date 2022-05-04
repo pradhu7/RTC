@@ -1,0 +1,616 @@
+<x:ClinicalDocument xmlns:x="urn:hl7-org:v3" xmlns:ep3="http://www.w3.org/2001/XMLSchema-instance" ep3:schemaLocation="urn:hl7-org:v3 CDA.xsd">
+	<x:realmCode code="US" />
+	<x:typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040" />
+	<x:templateId root="2.16.840.1.113883.10.20.1" />
+	<x:id root="ed1e6bea-a722-46f7-9cb4-bcaf587e28b4" />
+	<x:code code="34133-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Continuity of Care Document" />
+	<x:title>Reconciliation of Problem List Based on Claims History</x:title>
+	<x:effectiveTime value="20190528125119 -0500" />
+	<x:confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" />
+	<x:languageCode code="en-US" />
+	<x:recordTarget>
+		<x:patientRole>
+			<x:id root="2.16.840.1.113883.19" extension="1234590" assigningAuthorityName="PULSE8" />
+			<x:addr use="HP">
+				<x:streetAddressLine>Suite 302</x:streetAddressLine>
+				<x:state>MD</x:state>
+				<x:city>Annapolis</x:city>
+				<x:postalCode>21401</x:postalCode>
+			</x:addr>
+			<x:telecom use="HP" value="410-444-1234" />
+			<x:telecom use="MC" value="410-240-1112" />
+			<x:telecom use="WP" value="410-928-4218" />
+			<x:patient>
+				<x:name>
+					<x:given>TestIntegr8</x:given>
+					<x:family>Model</x:family>
+				</x:name>
+				<x:administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1" />
+				<x:birthTime value="02/15/1974" />
+			</x:patient>
+			<x:providerOrganization>
+				<x:id root="2.16.840.1.113883.19" />
+				<x:name>Epic Model Customer</x:name>
+			</x:providerOrganization>
+		</x:patientRole>
+	</x:recordTarget>
+	<x:author>
+		<x:time value="20190315" />
+		<x:assignedAuthor>
+			<x:id extension="INTEGR8" />
+			<x:representedOrganization>
+				<x:id root="2.16.840.1.113883.19.5" />
+				<x:name>PULSE8</x:name>
+			</x:representedOrganization>
+		</x:assignedAuthor>
+	</x:author>
+	<x:custodian>
+		<x:assignedCustodian>
+			<x:representedCustodianOrganization>
+				<x:id root="2.16.840.1.113883.19.5" />
+				<x:name>PULSE8</x:name>
+			</x:representedCustodianOrganization>
+		</x:assignedCustodian>
+	</x:custodian>
+	<x:documentationOf typeCode="DOC">
+		<x:serviceEvent classCode="PCPR">
+			<x:effectiveTime>
+				<x:high value="20181201" />
+			</x:effectiveTime>
+			<x:performer typeCode="PRF">
+				<x:functionCode code="PCP" codeSystem="2.16.840.1.113883.12.443" codeSystemName="Provider Role" displayName="Primary Care Provider" />
+				<x:time>
+					<x:high value="20181201" />
+				</x:time>
+				<x:assignedEntity>
+					<x:id root="2.16.840.1.113883.19" extension="RJOH1234" />
+					<x:assignedPerson>
+						<x:name>"Rebecca, Johnson"</x:name>
+					</x:assignedPerson>
+					<x:representedOrganization>
+						<x:id root="2.16.840.1.113883.19.5" />
+						<x:name>PULSE8; Next Appt Date: 4/15/19 13:00</x:name>
+					</x:representedOrganization>
+				</x:assignedEntity>
+			</x:performer>
+		</x:serviceEvent>
+	</x:documentationOf>
+	<x:component>
+		<x:structuredBody>
+			<x:component>
+				<x:section>
+					<x:component>
+						<x:section>
+							<x:templateId root="2.16.840.1.113883.10.20.1.11" />
+							<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.6" />
+							<x:templateId root="2.16.840.1.113883.3.88.11.83.103" />
+							<x:id root="96166F5A-313B-11E9-B44F-DE0407965914" />
+							<x:code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
+							<x:title>Active Problems</x:title>
+							<x:text>
+								<x:table>
+									<x:colgroup>
+										<x:col width="75%" />
+										<x:col width="25%" />
+									</x:colgroup>
+									<x:thead>
+										<x:tr>
+											<x:th>Problem</x:th>
+											<x:th>Noted Date</x:th>
+										</x:tr>
+									</x:thead>
+									<x:tbody>
+										<x:tr ID="problem1" styleCode="normRow">
+											<x:td ID="problem1name">Diabetes mellitus due to underlying condition without complications: HCC 19</x:td>
+											<x:td>05/21/2017</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem1comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2017 Claims Data</x:paragraph>
+											</x:td>
+										</x:tr>
+										<x:tr ID="problem2" styleCode="normRow">
+											<x:td ID="problem2name">Chronic hepatitis, unspecified: HCC 29</x:td>
+											<x:td>03/01/2019</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem2comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2019 Claims Data</x:paragraph>
+											</x:td>
+										</x:tr>
+										<x:tr ID="problem3" styleCode="normRow">
+											<x:td ID="problem3name">Chronic obstructive pulmonary disease, unspecified: HCC 111</x:td>
+											<x:td>02/12/2018</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem3comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2018 Chart Review</x:paragraph>
+											</x:td>
+										</x:tr>
+										<x:tr ID="problem4" styleCode="normRow">
+											<x:td ID="problem4name">Chronic combined systolic (congestive) and diastolic (congestive) heart failure: HCC 85</x:td>
+											<x:td>12/09/2018</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem4comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2018 Claims Data</x:paragraph>
+											</x:td>
+										</x:tr>
+										<x:tr ID="problem5" styleCode="normRow">
+											<x:td ID="problem5name">Multiple Sclerosis: HCC 77</x:td>
+											<x:td>06/18/2011</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem5comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2011 Continuity of Care Document</x:paragraph>
+											</x:td>
+										</x:tr>
+										<x:tr ID="problem6" styleCode="normRow">
+											<x:td ID="problem6name">Cerebral infarction due to thrombosis of unspecified cerebral artery: HCC 100</x:td>
+											<x:td>03/01/2019</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem6comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2019 Claims Data</x:paragraph>
+											</x:td>
+										</x:tr>
+										<x:tr ID="problem7" styleCode="normRow">
+											<x:td ID="problem7name">Hemiplegia, unspecified affecting right dominant side: HCC 103</x:td>
+											<x:td>11/12/2006</x:td>
+										</x:tr>
+										<x:tr styleCode="normRow xMergeUp">
+											<x:td ID="problem7comment" styleCode="allIndent" colspan="2">
+												<x:paragraph styleCode="cellHeader">Overview: </x:paragraph>
+												<x:paragraph>Source: 2006 Chart Review</x:paragraph>
+											</x:td>
+										</x:tr>
+									</x:tbody>
+								</x:table>
+							</x:text>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem1name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20170521" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="E08.9" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem1name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20170521" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem1comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem2name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20190301" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="K73.9" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem2name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20190301" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem2comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem3name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20180212" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="J44.9" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem3name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20180212" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem3comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem4name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20181209" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="I50.42" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem4name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20181209" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem4comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem5name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20110618" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="G35" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem5name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20110618" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem5comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem6name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20190301" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="I63.30" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem6name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20190301" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem6comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+							<x:entry>
+								<x:act classCode="ACT" moodCode="EVN">
+									<x:templateId root="2.16.840.1.113883.10.20.1.27" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+									<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.32.7" />
+									<x:templateId root="2.16.840.1.113883.3.88.11.83.7" />
+									<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" extension="concern" />
+									<x:code nullFlavor="NA" />
+									<x:statusCode code="Active" />
+									<x:effectiveTime>
+										<x:low value="20190314" />
+									</x:effectiveTime>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="false">
+										<x:observation classCode="OBS" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.28" />
+											<x:id root="1.2.840.114350.1.13.5325.1.7.2.768076" />
+											<x:code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+											<x:text>
+												<x:reference value="#problem7name" />
+											</x:text>
+											<x:statusCode code="completed" />
+											<x:effectiveTime>
+												<x:low value="20061112" />
+											</x:effectiveTime>
+											<x:value ep3:type="CD" code="G81.91" codeSystem="2.16.840.1.113883.6.90" codeSystemName="ICD10">
+												<x:originalText>
+													<x:reference value="#problem7name" />
+												</x:originalText>
+											</x:value>
+											<x:entryRelationship typeCode="REFR">
+												<x:observation classCode="OBS" moodCode="EVN">
+													<x:templateId root="2.16.840.1.113883.10.20.1.50" />
+													<x:templateId root="2.16.840.1.113883.10.20.1.57" />
+													<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.1.1" />
+													<x:code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status" />
+													<x:statusCode code="completed" />
+													<x:effectiveTime>
+														<x:low value="20061112" />
+													</x:effectiveTime>
+													<x:value ep3:type="CE" code="55561003" codeSystem="2.16.840.1.113883.6.96" displayName="Active" />
+												</x:observation>
+											</x:entryRelationship>
+										</x:observation>
+									</x:entryRelationship>
+									<x:entryRelationship typeCode="SUBJ" inversionInd="true">
+										<x:act classCode="ACT" moodCode="EVN">
+											<x:templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2" />
+											<x:templateId root="2.16.840.1.113883.10.20.1.40" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.12" />
+											<x:templateId root="2.16.840.1.113883.3.88.11.32.11" />
+											<x:templateId root="2.16.840.1.113883.10.20.22.4.64" />
+											<x:code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+											<x:text>
+												<x:reference value="#problem7comment" />
+											</x:text>
+											<x:statusCode code="completed" />
+										</x:act>
+									</x:entryRelationship>
+								</x:act>
+							</x:entry>
+						</x:section>
+					</x:component>
+				</x:section>
+			</x:component>
+		</x:structuredBody>
+	</x:component>
+</x:ClinicalDocument>

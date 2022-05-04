@@ -1,0 +1,32 @@
+{
+  "generator": [
+    "com.apixio.ensemble.impl.common.Generator", 
+    {
+      "className": "com.apixio.ensemble.impl.generators.page.WordCount", 
+      "jarVersion": "1.4.0", 
+      "name": "WordCount", 
+      "version": "1.0.0"
+    }
+  ], 
+  "name": "WordCount-SUCCESS", 
+  "sigType": "CATEGORY", 
+  "source": [
+    "com.apixio.ensemble.impl.source.PageSource", 
+    {
+      "documentId": {
+        "pattern": "DOC", 
+        "uuid": "000b3191-72ca-4bb6-ae72-22e35d292a95"
+      }, 
+      "location": {
+        "descriptor": "default"
+      }, 
+      "page": 64, 
+      "patientId": {
+        "pattern": "PAT", 
+        "uuid": "0070c50b-2466-4bfb-a797-121a34afffe8"
+      }
+    }
+  ], 
+  "value": "true", 
+  "wt": 1.0
+}

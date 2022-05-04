@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package com.apixio.annotations;
+
+message ApixioGoogleAnnotationFormat {
+  ApixioMetadata apixio_meta_data = 1 [json_name = "apixio_meta_data"];
+  repeated Entity entities = 2;
+  repeated Relationship relationships = 3;
+}
+
+message ApixioMetadata {
+  string fact_id = 1 [json_name = "fact_id"];
+  string fact_schema_version = 2 [json_name = "fact_schema_version"];
+  string fact_schema_id = 3 [json_name = "fact_schema_id"];
+  string annotation_approver = 4 [json_name = "annotation_approver"];
+  string document_id = 5 [json_name = "document_id"];
+  string project_id = 6 [json_name = "project_id"];
+}
+
+message Entity {
+  string entity_id = 1 [json_name = "entity_id"];
+  string label_schema_id = 2 [json_name = "label_schema_id"];
+  TextExtraction text_extraction = 3 [json_name = "text_extraction"];
+  string entity_type = 4 [json_name = "entity_type"];
+  string temporal_assessment = 5 [json_name = "temporal_assessment"];
+  string certainty_assessment = 6 [json_name = "certainty_assessment"];
+  string subject = 7;
+  string CREATED_AT = 8 [json_name = "CREATED_AT"];
+  string UPDATED_AT = 9 [json_name = "UPDATED_AT"];
+}
+
+message TextExtraction {
+  repeated TextSegment text_segment = 1 [json_name = "text_segment"];
+}
+
+message TextSegment {
+  int32 page = 1;
+  int32 start_offset = 2 [json_name = "start_offset"];
+  int32 end_offset = 3 [json_name = "end_offset"];
+}
+
+message Relationship {
+  string relationship_type = 1 [json_name = "relationship_type"];
+  string subject_id = 2 [json_name = "subject_id"];
+  string object_id = 3 [json_name = "object_id"];
+}

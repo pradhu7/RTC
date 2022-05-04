@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/UUID.proto";
+import "com/apixio/datacatalog/PatientMeta.proto";
+
+message CleanText {
+  PatientMeta patientMeta = 1;
+  UUID documentId = 2;
+  bytes docCacheElementListProto = 3; // serialized DocCacheElementListProto
+}

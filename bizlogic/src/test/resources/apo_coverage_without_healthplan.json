@@ -1,0 +1,74 @@
+{
+  "patientId": "8c3d8672-a448-4aa3-9d82-22051839c697",
+  "primaryExternalID": {
+    "id": "888-808-888",
+    "assignAuthority": "RANDOM_UUID"
+  },
+  "externalIDs": [
+    {
+      "id": "888-808-888",
+      "assignAuthority": "RANDOM_UUID"
+    }
+  ],
+  "coverage": [
+    {
+      "sourceId": "d4871fbc-e18c-478d-af16-fb65c4c8be5f",
+      "parsingDetailsId": "e9c6f644-1031-4fe6-8719-e9a43bbc617f",
+      "internalUUID": "4ea27837-4c8a-42f2-b814-7b5d472e95f8",
+      "editType": "ACTIVE",
+      "lastEditDateTime": "2017-05-23T15:36:51.160-07:00",
+      "sequenceNumber": 1,
+      "startDate": [
+        2015,
+        1,
+        1
+      ],
+      "endDate": [
+        2019,
+        1,
+        1
+      ],
+      "type": "CMS",
+      "subscriberID": {
+        "id": "XYZ",
+        "assignAuthority": "HP_ID"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "sourceId": "d4871fbc-e18c-478d-af16-fb65c4c8be5f",
+      "parsingDetailsId": "e9c6f644-1031-4fe6-8719-e9a43bbc617f",
+      "internalUUID": "d4871fbc-e18c-478d-af16-fb65c4c8be5f",
+      "editType": "ACTIVE",
+      "lastEditDateTime": "2017-05-23T15:36:51.160-07:00",
+      "sourceSystem": "EHR",
+      "sourceType": "EHR",
+      "creationDate": "2017-04-30T17:00:00.000-07:00",
+      "dciStart": [
+        2016,
+        5,
+        1
+      ],
+      "dciEnd": [
+        2017,
+        5,
+        1
+      ]
+    }
+  ],
+  "parsingDetails": [
+    {
+      "metadata": {
+        "sourceUploadBatch": "370_assembly_full_sample_set8a",
+        "sourceFileArchiveUUID": "11c8ac5f-2104-496b-b51e-9213331cc3e5",
+        "sourceFileHash": "b40f5527b837c1133381d63a5bca29a7e7d3749b"
+      },
+      "parsingDetailsId": "e9c6f644-1031-4fe6-8719-e9a43bbc617f",
+      "parsingDateTime": "2017-05-23T15:36:51.154-07:00",
+      "contentSourceDocumentType": "STRUCTURED_DOCUMENT",
+      "parser": "AXM",
+      "parserVersion": "0.1"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+
+
+message Anatomy {
+  ClinicalCode bodySite = 1;
+  string anatomicalStructureName = 2;
+}

@@ -1,0 +1,45 @@
+/*
+ * This file contains the serialization and transport standard for Documents
+ */
+syntax = "proto3";
+
+package com.apixio.ensemble.ifc.transport;
+
+import "com/apixio/messages/MessageMetadata.proto";
+import "com/apixio/signals/Signals.proto";
+
+message DocCacheElementListProto {
+  repeated DocCacheElementProto data = 1;
+}
+
+/*
+ * Moved from https://github.com/Apixio/datasource/blob/dev/dao/src/main/resources/doccacheelements.proto
+ */
+message DocCacheElementProto {
+  string   patientUUID = 1;
+  string   documentUUID = 2;
+  string   originalId = 3;
+  string   encId = 4;                  // encounter ID
+  int64    documentDate = 5;           // Unix Epoch time in milliseconds
+  string   sourceId = 6;
+  string   title = 7;
+  int32    pageNumber = 8;
+  string   extractionType = 9;
+  string   content = 10;
+  string   org = 11;                   // organization id
+  repeated string   externalIds = 12;
+}
+
+message PageWindowProto {
+  repeated DocCacheElementProto pages = 1;
+  repeated int32 pageNumbers = 2;
+  int32 pageCentroid = 3;
+  string title = 4;
+  repeated string tags = 5;
+  oneof source {
+    DocumentSource documentSource = 6;
+    PageWindowSource pageWindowSource = 7;
+    PageSource pageSource = 8;
+    MultiDocumentSource multiDocumentSource = 9;
+  }
+}

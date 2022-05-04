@@ -1,0 +1,11 @@
+{
+  "AcceptedIpNetwork": "10.19.0.0/16,192.168.99.0/24",
+  "Group": "INTERNAL",
+  "HomeDirectoryDetails": "[{\"Entry\":\"/\",\"Target\":\"/apx-sftp-stg-uploads/kmcgovern\"}]",
+  "HomeDirectoryType": "LOGICAL",
+  "Password": "iuBqvuief8p922hrf8qw$$%",
+  "PrivateKey": "-----BEGIN EC PRIVATE KEY-----\nMIHcAgEBBEIBixeAVhWEff1LbB6rVgfR7+YZUGtfF0p4v9DY3fy9blsqigwTI0Ka\nR5ysKMHSc+g7vgB476+Xa8eJVQQQPdit3D+gBwYFK4EEACOhgYkDgYYABAE0Br0L\nafcWo+N69SUzjTJioczPIdHeK4XJfsWNK4P/6NLFa79O+7okJaRnB3NtxgM3uMCF\nO7siFwBPtW9UnLiDTwCcp9yU2Z8chCkgQc35NwvSRT93M5d0xFAlC3imt144npdN\nv7x+AXN27v/bBUEM754n6nEQmcK1ELiSprfQWJJsEg==\n-----END EC PRIVATE KEY-----\n",
+  "PublicKey": "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAE0Br0LafcWo+N69SUzjTJioczPIdHeK4XJfsWNK4P/6NLFa79O+7okJaRnB3NtxgM3uMCFO7siFwBPtW9UnLiDTwCcp9yU2Z8chCkgQc35NwvSRT93M5d0xFAlC3imt144npdNv7x+AXN27v/bBUEM754n6nEQmcK1ELiSprfQWJJsEg==\n",
+  "Role": "arn:aws:iam::088921318242:role/stg/sftp-stg-transferfamily",
+  "Initialized": true
+}

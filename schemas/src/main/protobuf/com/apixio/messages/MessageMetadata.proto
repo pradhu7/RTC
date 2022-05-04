@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package com.apixio.messages;
+
+import "google/protobuf/timestamp.proto";
+
+
+enum MessageType {
+  UNSPECIFIED                   = 0;
+
+  // LamdaECC messages
+  // requests
+  DOCUMENT_PREDICTIONS_REQUEST  = 1;
+  DOCUMENT_SIGNALS_REQUEST      = 2;
+  PATIENT_PREDICTIONS_REQUEST   = 3;
+  PATIENT_SIGNALS_REQUEST       = 4;
+  PROJECT_SIGNALS_REQUEST       = 5;
+  PROJECT_PREDICTIONS_REQUEST   = 6;
+
+  //responses
+  DOCUMENT_PREDICTIONS_RESPONSE = 7;
+  DOCUMENT_SIGNALS_RESPONSE     = 8;
+  PATIENT_PREDICTIONS_RESPONSE  = 9;
+  PATIENT_SIGNALS_RESPONSE      = 10;
+  PROJECT_SIGNALS_RESPONSE      = 11;
+  PROJECT_PREDICTIONS_RESPONSE  = 12;
+
+  // Cerveau messagess
+  DOCUMENT_SIGNALS_READY        = 13;
+  PATIENT_SIGNALS_READY         = 14;
+  PATIENT_CHANGE_EVENT		      = 15;
+  DOCSET_CHANGE_EVENT           = 16;
+  PATSET_CHANGE_EVENT           = 17;
+  PROJECT_CHANGE_EVENT          = 18;
+
+  DOCUMENT_PREDICTIONS_READY    = 19;
+  IRR_PREDICTIONS_READY         = 20;
+  PATIENT_PREDICTIONS_READY     = 21;
+
+  // OCR messages
+  OCR_REQUEST                   = 22;
+  OCR_RESPONSE                  = 23;
+
+  // spark OCR page level messages
+  OCR_PAGE_REQUEST              = 24;
+  OCR_PAGE_RESPONSE             = 25;
+
+  // spark ocr merge messages
+  OCR_MERGE_REQUEST             = 26;
+  OCR_MERGE_RESPONSE            = 27;
+
+  //data 2.0
+  DATA_REQUEST                  = 28;
+}
+
+message MessageHeader {
+  XUUID                     messageID       = 1;  // ID for tracking, an XUUID
+  MessageType               messageType     = 2;  // this is for non proto buf clients
+  SenderID                  senderID        = 3;  // what kind of client sent this, XUUID
+  string                    hostFqdn        = 4;  // which host sent this, XUUID
+  google.protobuf.Timestamp messageDateTime = 5;
+  string                    version         = 6;
+}
+
+message XUUID {
+  string type = 1;
+  string uuid = 2;
+}
+
+message SenderID {
+  string name    = 1;
+  string version = 2;
+}
+
+// TODO:
+// 1. make an XUUID wrapper
+// 2. put in documentation for how the senderID is created
+// 3. create an include for SenderXUUID, this will need to be generated in the build, probably a python script OK
+

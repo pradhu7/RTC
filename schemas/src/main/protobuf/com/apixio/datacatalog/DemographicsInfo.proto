@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/Name.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/Gender.proto";
+import "com/apixio/datacatalog/MaritalStatus.proto";
+
+option java_outer_classname = "DemographicsInfoProto";
+
+message DemographicsInfo {
+    Name name = 1;
+    Gender gender = 2;
+    YearMonthDay dob = 3;
+    YearMonthDay dod = 4;
+    ClinicalCode race = 5;
+    ClinicalCode ethnicity = 6;
+    repeated string languages = 7;
+    string religiousAffiliation = 8;
+    MaritalStatus martialStatus = 9;
+    ClinicalCode primaryCareProvider = 10;
+}

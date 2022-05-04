@@ -1,0 +1,29 @@
+################################################################
+  functionId:  "FX_922218e4-dbaf-4c9b-85fb-6ff55259c57f"
+  entry:       "com.apixio.ensemblesdk.impl.AnnotationFx"
+list<apixio.Signal> transformSignals(list<apixio.Signal>)
+
+
+################################################################
+  functionId:  "FX_9cb1f7cc-a9b6-428b-aa5e-31d30eb988fb"
+  entry:       "com.apixio.ensemblesdk.impl.CAPVFx"
+list<apixio.Event>  combineSignals(apixio.SignalGroups)
+
+
+################################################################
+  functionId:  "FX_00318bf2-a57b-4c26-9b6b-8528045c78b9"
+  entry:       "com.apixio.ensemblesdk.impl.Har2Fx"
+list<apixio.Signal> extractSignals(apixio.PageWindow)
+
+
+################################################################
+  functionId:  "FX_8a81abf0-d790-46e1-81f0-b3e70b267e60"
+  entry:       "com.apixio.ensemblesdk.impl.SlimLyntyFx"
+list<apixio.Signal> extractPatientSignals(apixio.Patient)
+
+
+################################################################
+  functionId:  "FX_8a81abf0-d790-46e1-81f0-b3e70b267e60"
+  entry:       "com.apixio.ensemblesdk.impl.StructuredSuspectsFx"
+list<apixio.Signal> extractPatientSignals(apixio.Patient)
+

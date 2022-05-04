@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+message Address {
+  repeated string streetAddresses = 1;
+  string city = 2;
+  string state = 3;
+  string zip = 4;
+  string country = 5;
+  string county = 6;
+  string addressType = 7; //Enum in model com.apixio.model.patient.AddressType
+}

@@ -1,0 +1,282 @@
+/*
+
+This file defines ALL messages that are the requests and responses to the 
+AlgoCloud/Lambda ECC 
+
+Each message has standard (i.e., common across all message types) envelope info
+along with type-specific data.
+
+Types of messages:
+
+1.  Requests ask the ALgoCloud to do some work  on behalf of the sender. Requests
+    specify data to be operated on, currently a patient or a document, and an 
+    algorithm to run against that data. There are two general types of algorithms
+    we are running initially. The first takes a collection of signals generated
+    off of a document and returns a set of predictions; this is calleed an ensemble
+    The second takes an object which is typically a patient  object and returns 
+    a list of signals. We envision signals being generated from documents as well
+
+    A future AlgoCloud might apply any function over any data. For example doing
+    OCR on a document image page. And requests might provide the actual data in 
+    line with the request. Today they do not, requests supply an address to the
+    data and the request processor is assumed to understand how to find the data
+
+2.  Responses are to requesests that have been made. To provide the response
+    processor with context the responses contain the entire original request 
+    message
+    
+    Responses typicaly just provide metadata about the completion of a request
+    though responses may return results. 
+
+    NOTE: version 1.0 no results being returned directly
+
+
+*/
+
+syntax = "proto3";
+
+package com.apixio.messages;
+
+// this import defines:
+//   * message OuterEnvelope
+//   * enum    MessageType
+import "com/apixio/messages/MessageMetadata.proto";
+import "com/apixio/messages/Cerveau.proto";
+
+enum AlgorithmType {
+  // generate a set of predictions from a collection of referenced signals
+  ENSEMBLE = 0;
+  // create a set of document level signals from a document
+  DOCUMENT_SIGNAL = 1;
+  // create a set of patient level signals from a patient
+  PATIENT_SIGNAL = 2;
+  // create a manual review signal
+  MANUAL_REVIEW = 3;
+  // harvest a set of signals
+  SIGNAL_HARVESTER = 4;
+  // harvest a set of decisions
+  DECISION_HARVESTER = 5;
+  // create a set of IRR predictions
+  IRR_COMBINER = 6;
+
+  AUTO_ACCEPT = 7;
+
+  DOCUMENT_DATE_SIGNAL_COVERAGE = 8;
+
+  DOCUMENT_SIGNAL_MULTIPLE_PAGE_WINDOW = 9;
+
+  CAPV = 10;
+}
+
+enum ResponseStatus {
+  // for now some simple return value types
+  FINISHED_SUCCEEDED = 0;
+  FINISHED_ERRORS = 1;
+  HEARTBEAT = 2;
+
+  // Finished null means completed with no errors, but no results were found - client should not retry.
+  FINISHED_NULL = 3;
+
+  // We Might consider more http like status codes in the future
+  //  FINISHED_SUCCEEDED_RESULTS_RETURNED  = 200;
+  //  FINISHED_SUCCEEDED_RESULTS_CREATED  = 201;
+  //  FINISHED_SUCCEEDED_PARTIAL_RESULTS_RETURNED  = 206;
+  //  FINISHED_ERRORS     = 400;
+  //  UNAUTHORIZED = 401
+  //  NOT_FOUND = 404
+  //  REQUEST_TIMED_OUT = 408
+  //  PRECONDITION_FAILED = 412
+  //  INTERNAL_ERROR = 500
+  //  NOT_IMPLEMENTED = 501
+}
+
+message RequestEnvelope {
+  MessageHeader header = 1;
+  AlgorithmType algorithmType = 2; // type is a cached value from the opaque ID
+  XUUID algorithmID = 3; // a model catalog XUUID
+  int64 computeComplexity = 4; // heuristic determining complexity of the computation
+  oneof messageBody {
+    PredictionsFromDocumentRequest documentPredictionsReq = 5;
+    SignalsFromPatientRequest patientSignalsReq = 6;
+    PredictionsFromPatientRequest patientPredictionsReq = 7;
+    PredictionsFromS3SignalsRequest predictionsFromS3Req = 8;
+    PredictionsFromProjectRequest predictionsFromProjectReq = 9;
+    SignalsFromDocumentRequest signalsFromDocReq = 10;
+  }
+  XUUID parentCombinerID = 11; // this is the parent mcId incase algorithmID is a generatorID and not a combiner (EN-10423)
+}
+
+message PredictionsFromProjectRequest {
+   XUUID projectId = 1;
+   int64 start = 2;
+   int64 end = 3;
+}
+
+message PredictionsFromDocumentRequest {
+  XUUID projectID = 1;
+  XUUID docsetID = 2;
+  XUUID documentID = 3;
+  XUUID pdsID = 4;
+  XUUID patientID = 5;
+}
+
+message PredictionsFromPatientRequest {
+  XUUID projectID = 1;
+  XUUID patsetID = 2 [deprecated=true];
+  XUUID patientID = 3;
+  XUUID pdsID = 4;
+  XUUID trackingSetID = 5; // use this in the context of patSetId or docsetId
+  repeated string logicalIds = 6;
+}
+
+message PredictionsFromS3SignalsRequest {
+  string s3InputLocation = 1;
+  string s3OutputLocation = 2;
+}
+
+message SignalsFromPatientRequest {
+  XUUID projectID = 1;
+  oneof controlsetID {
+    XUUID docsetID = 2;
+    XUUID patsetID = 3;
+  }
+  XUUID patientID = 4;
+  XUUID pdsID = 5;
+}
+
+message SignalsFromDocumentRequest {
+  XUUID projectID = 1;
+  oneof controlsetID {
+    XUUID docsetID = 2;
+    XUUID patsetID = 3;
+  }
+  XUUID patientID = 4;
+  XUUID pdsID = 5;
+  XUUID documentID = 6;
+}
+
+message ResponseEnvelope {
+  MessageHeader header = 1;
+  // response metadata we want to have returned
+  int64 executionTimeMs = 2;
+  ResponseStatus status = 3;
+  // the entire original request sent to the algo cloud to enable the sender
+  // to align response with the workflow that generated the request
+  RequestEnvelope originalRequest = 4;
+  oneof resultDetails {
+    PredictionsResultsDetail predictionsResults = 5;
+    SignalsResultsDetail signalsResults = 6;
+  }
+  string errorDetails = 7;  // exists only if request ended with FINISHED_ERRORS
+}
+
+message PredictionsResultsDetail {
+  int64 resultCount = 1;
+  // future - add a result set message type
+}
+
+message SignalsResultsDetail {
+  repeated Signal signalsComputed = 1;
+  int64 resultCount = 2;
+}
+
+/**
+ * This message defines the public interface by a single ECC node for initialization.
+ */
+message LambdaInitParams {
+  string algorithmID = 1;       // deprecated 12/3/2019 and will be removed by eoy; replaced by algorithmXUUID
+  int32 instanceCount = 2;      // deprecated 12/3/2019 and will be removed by eoy; replaced by parallelism
+
+  /**
+   * Kafka-based interfacing with an ECC node is the standard mechanism and
+   * all of these fields are needed for this mode of operation
+   */
+  string inboundTopic = 3;
+  string outboundTopic = 4; //!! need more here based on spec:  error, stats, regular (double-check)
+  string errorTopic = 5;
+  string deadLetterTopic = 6;
+
+  /**
+   * The following fields support automated correctness (etc.) testing.  If
+   * the initialization REST endpoint is for test mode, then the ECC node
+   * will ignore all kafka-related config.
+   */
+
+  /**
+   * Format is s3://bucket/prefix and specifies where to get input for the
+   * ECC node.  For every file found with the given prefix, a corresponding
+   * output file in S3 will be produced.  The client decides how to group
+   * the signals (e.g.) into files--a file might contain all signal data for
+   * a given document or it might contains data for more than one document.
+   * The client is responsible for making sure that the amount of input data
+   * doesn't cause an OOM.
+   *
+   * The format of the data within the file is one serialized object per
+   * text line; specifically it is the case that the downloaded (to S3)
+   * signal data can be used as input files.
+   *
+   * If a filename ends with .gz then it will be unzipped via
+   * java.util.zip.GZip*
+   */
+  string s3Input = 7;
+
+  /**
+   * Format is s3://bucket/prefix and specifies where to store output from
+   * the ECC node invocation.  Output data will be stored in the given
+   * bucket+prefix (if prefix doesn't end with "/" then a "/" will be
+   * added).  File names are derived from the input filenames as all data
+   * from an input file is read and processed and the resulting output data
+   * from that input file will be stored in a single output file.  Output
+   * files are always zipped via java.util.zip.GZip*
+   *
+   * The format of the stored data is one serialized object per line.
+   */
+  string s3Output = 8;
+
+  /**
+   * Callback context is a client-supplied value that will be passed back as
+   * a query parameter to the doneCallback.  The client code can use this
+   * to link the initialize request back to when the processing is done
+   * on it.  Logging will include this context for easier debugging.
+   */
+  string callbackContext = 9;
+
+  /**
+   * Callback URL is useful only in the context of S3 input as that's the only
+   * request source that has a defined termination point.  When all S3 keys
+   * have been processed, then this callback will be invoked.  This should be
+   * a valid URL, with an optional HTTP "method:" declaration prefixed, where
+   * the only two supported declarations are "post:" and "put:".
+   */
+  string doneCallback = 10;
+
+  /**
+   * Overrides for case where parallelism > 1.  If both of the following are
+   * false, then whatever mode (single/multi thread) is configured/allowed by
+   * the MC is used.
+   */
+  bool forceSingleThreaded = 11;
+  bool forceMultiThreaded = 12;
+
+  /**
+   * More aptly named field to declare how parallel to make it
+   */
+  int32 parallelism = 13;
+
+  /**
+   * Replaces algorithmID for stricter typing of data
+   */
+  XUUID algorithmXUUID = 14;
+
+  /**
+   * Returns true if this is a spark enabled node.
+   */
+  bool sparkEnabled = 15;
+
+  /**
+    * Complexity filter.
+   */
+  int64 complexityStart = 16;
+  int64 complexityEnd = 17;
+
+}

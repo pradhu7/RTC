@@ -1,0 +1,59 @@
+{
+  "core": {
+    "modelTest": {
+      "scope": "COMBINER_UNIT"
+    },
+    "name": "ExampleCombinerUnitTest",
+    "version": {
+      "version": "1.0.0"
+    }
+  },
+  "createdAt": "2019-09-24T18:56:43Z",
+  "createdBy": "twang@apixio.com",
+  "deleted": false,
+  "executor": "",
+  "id": "B_ea607247-1085-4ce8-8683-edd1de17d3d3 ",
+  "name": "ExampleCombinerUnitTest",
+  "outputType": "",
+  "parts": [
+    {
+      "core": {
+        "testPartMeta": {
+          "dataType": "SIGNALS"
+        }
+      },
+      "createdAt": "2019-09-24T18:56:43Z",
+      "createdBy": "twang@apixio.com",
+      "md5Digest": "3719AA2B83BB2CFA5E1581B7973F2B64",
+      "mimeType": "application/x-yaml; charset=UTF-8",
+      "modelId": "B_ea607247-1085-4ce8-8683-edd1de17d3d3 ",
+      "name": "DOC_1_SIGNALS",
+      "s3Path": "s3://apixio-smasmodels/modelblobs/signal_file_1.json.gz",
+      "search": null
+    },
+    {
+      "core": {
+        "testPartMeta": {
+          "dataType": "SIGNALS"
+        }
+      },
+      "createdAt": "2019-09-24T18:56:45Z",
+      "createdBy": "twang@apixio.com",
+      "md5Digest": "10E429266D23037B11FA0B1A5BC547E6",
+      "mimeType": "application/zip",
+      "modelId": "B_ea607247-1085-4ce8-8683-edd1de17d3d3 ",
+      "name": "DOC_2_SIGNALS",
+      "s3Path": "s3://apixio-smasmodels/modelblobs/signal_file_2.json.gz",
+      "search": null
+    }
+  ],
+  "pdsId": null,
+  "product": "",
+  "search": {
+    "tags": [
+      "COMBINER_UNIT_TEST"
+    ]
+  },
+  "state": "RELEASED",
+  "version": null
+}

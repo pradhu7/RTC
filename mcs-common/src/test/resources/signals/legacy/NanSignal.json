@@ -1,0 +1,30 @@
+{
+  "generator": {
+    "className": "com.apixio.ensemble.impl.generators.page.Junkiness", 
+    "jarVersion": "1.5.4-SNAPSHOT", 
+    "name": "Junkiness", 
+    "version": "1.1.0"
+  }, 
+  "name": "Junkiness", 
+  "sigType": "NUMERIC", 
+  "source": {
+    "_interface_name": "Page", 
+    "centroid": -1, 
+    "documentId": {
+      "id": "DOC_b77e53f4-4030-42c5-91dc-f76397710823", 
+      "type": "DOC", 
+      "uuid": "b77e53f4-4030-42c5-91dc-f76397710823"
+    }, 
+    "endPage": -1, 
+    "page": 16, 
+    "pages": -1, 
+    "patientId": {
+      "id": "PAT_c6e445d9-ecaf-41f7-9beb-7d5f3ad7d37c", 
+      "type": "PAT", 
+      "uuid": "c6e445d9-ecaf-41f7-9beb-7d5f3ad7d37c"
+    }, 
+    "startPage": -1
+  }, 
+  "value": "NaN", 
+  "wt": 1.0
+}

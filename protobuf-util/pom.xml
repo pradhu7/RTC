@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>apixio</groupId>
+    <artifactId>mono</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>apixio-protobuf-util${scala.version.suffix}</artifactId>
+  <name>apixio-protobuf-util${scala.version.suffix}</name>
+  <description>Apixio Protobuf Utilities</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-protoc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>apixio</groupId>
+      <artifactId>apixio-model${scala.version.suffix}</artifactId>
+    </dependency>
+      <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_${scala.binary.version}</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+   <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>                <!-- because module has .scala files -->
+            </plugin>
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

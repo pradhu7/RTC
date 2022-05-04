@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+
+message SocialHistoryInfo {
+  YearMonthDay date = 1;
+  ClinicalCode type = 2;
+  string fieldName = 3;
+  string value = 4;
+  ClinicalCode code = 5;
+  repeated ClinicalCode codeTranslations = 6;
+}

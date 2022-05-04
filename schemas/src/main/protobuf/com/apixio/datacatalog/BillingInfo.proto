@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+
+
+message BillingInfo {
+  ExternalId providerId = 1;
+  string providerName = 2;
+  ClinicalCode providerType = 3;
+  ClinicalCode billType = 4;
+  YearMonthDay transactionDate = 5;
+  string placeOfService = 6; // 01-99 https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/Downloads/Website-POS-database.pdf
+}

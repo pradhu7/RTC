@@ -1,0 +1,169 @@
+pipeline {
+    agent {
+        kubernetes {
+            // Truncate label down to 61 characters for k8s label
+            // restrictions.
+            label 'jenkins-apxsdk-' + env.BRANCH_NAME.replaceAll("\\.", "_").replaceAll("/", "_").substring(0, Math.min(env.BRANCH_NAME.size(), 61-'jenkins-apxsdk-'.size()))  // all your pods will be named with this prefix, followed by a unique id
+          idleMinutes 1  // how long the pod will live after no jobs have run on it
+          yamlFile 'buildbox.yaml'  // path to the pod definition relative to the root of our project
+          defaultContainer 'mvn'  // define a default container if more than a few stages use it, will default to jnlp container
+        }
+    }
+
+    environment {
+        REPO_NAME = "apx-sdk"
+        SLACK_CHANNEL = "#eng-apxsdk-repository"
+    }
+
+    options {
+        timestamps()
+        ansiColor('xterm')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(daysToKeepStr: '3',
+                                  numToKeepStr: '3'))
+    }
+
+    tools {
+        maven 'Maven3.6.3'
+        jdk 'Java 8'
+    }
+
+    parameters {
+        booleanParam(name: 'PUBLISH_SNAPSHOT', defaultValue: false, description: 'Publish a SNAPSHOT, even if not on `dev` branch.')
+        booleanParam(name: 'FORCE_SKIP_TESTS', defaultValue: false, description: 'Skip unit tests. Only use this if there are issues with Jenkins and tests pass locally.')
+    }
+
+    stages {
+        stage ("Clear prior build cruft") {
+            steps {
+                deleteDir()
+                checkout scm
+
+                // dummy fix for security v2 running with java 8
+                sh '\\cp -r /usr/local/openjdk-8/jre/lib/security/US_export_policy.jar /home/jenkins/agent/tools/hudson.model.JDK/Java_8/jre/lib/security'
+                sh '\\cp -r /usr/local/openjdk-8/jre/lib/security/local_policy.jar /home/jenkins/agent/tools/hudson.model.JDK/Java_8/jre/lib/security'
+            }
+        }
+        stage("Install GCC & Other dependencies") {
+            steps {
+                // sh 'curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo'
+                sh 'apt-get --allow-releaseinfo-change update -y && apt-get upgrade -y'
+                sh 'apt-get install -y python3-pip python3-setuptools python3-dev python3-venv'
+                sh 'echo pass'
+            }
+        }
+        stage ("Analyse") {
+            steps {
+                sh 'apt-get --allow-releaseinfo-change update -y && apt-get install -y cloc'
+                sh 'cloc --exclude-list-file=.clocignore --by-file --xml --out=cloc.xml .'
+            }
+        }
+
+        stage ("Publish reports") {
+            steps {
+                sloccountPublish encoding: '', pattern: '**/cloc.xml'
+            }
+        }
+
+        stage("Compile") {
+            steps {
+                sh '$M2_HOME/bin/mvn -DskipTests clean compile'
+            }
+        }
+
+        stage("Unit Tests") {
+            environment {
+                VAULT_TOKEN = credentials("vault-stg-token")
+            }
+            steps {
+                script {
+                    if (params.FORCE_SKIP_TESTS) {
+                        slackSend botUser: true, channel: "${SLACK_CHANNEL}", message: "FORCE_SKIP_TESTS for `${REPO_NAME}` for ${env.GIT_BRANCH}"
+                    } else {
+                        sh 'curl -O https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/1.0.2/bc-fips-1.0.2.jar'
+                        sh 'curl -O https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.47/bcprov-jdk15on-1.47.jar'
+
+                        sh '$M2_HOME/bin/mvn -X -e clean test'
+                    }
+                }
+            }
+            post {
+                always {
+                    jacoco()
+                }
+            }
+        }
+
+        stage("Integration Tests") {
+            environment {
+                VAULT_TOKEN = credentials("vault-stg-token")
+            }
+            steps {
+                script {
+                    if (params.FORCE_SKIP_TESTS) {
+//                        slackSend botUser: true, channel: "${SLACK_CHANNEL}", message: "FORCE_SKIP_TESTS for `${REPO_NAME}` for ${env.GIT_BRANCH}"
+                    } else {
+//                        sh '$M2_HOME/bin/mvn -X -e clean test'
+                    }
+                }
+            }
+        }
+
+        stage("Package/Assembly") {
+            steps {
+                sh '$M2_HOME/bin/mvn -DskipTests clean install'
+            }
+        }
+
+        stage("Python processing") {
+            steps {
+                 withPythonEnv('python3.7') {
+                    sh """
+                    cd sdkcore/src/main/python
+                    python3.7 -m venv env
+                    source env/bin/activate
+                    pip3 install pip-tools==6.1.0
+                    pip3 config set global.extra-index-url https://repos.apixio.com/artifactory/api/pypi/apixio-pypi/simple
+                    pip3 config set list.format columns
+                    pip3 install -r requirements.txt
+                    python setup.py install
+                    python setup.py sdist bdist_wheel 
+                    pip3 install twine
+                    twine upload dist/* --verbose -r artifactory
+                    deactivate
+                    """
+                }
+            }
+        }
+
+        stage("Publish SNAPSHOT from dev") {
+            when {
+	        not { branch 'master' }
+                anyOf {
+                    branch 'dev'
+                    expression { return params.PUBLISH_SNAPSHOT }
+                }
+            }
+            steps {
+                sh '$M2_HOME/bin/mvn -U -f pom.xml -DskipTests=true -DaltDeploymentRepository=apixio.snapshots.build::default::https://repos.apixio.com/nexus/content/repositories/snapshots/ clean package deploy'
+                script {
+                    version = sh returnStdout: true, script: "$M2_HOME/bin/mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '^\\[' | tail -n1"
+                }
+//                slackSend botUser: true, channel: "${SLACK_CHANNEL}", message: "Publishing SNAPSHOT of `${REPO_NAME}` $version for ${env.GIT_BRANCH} published to Artifactory"
+            }
+        }
+
+        stage("Publish Release from master") {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh '$M2_HOME/bin/mvn -U -f pom.xml -DskipTests=true -DaltDeploymentRepository=apixio.releases.build::default::https://repos.apixio.com/nexus/content/repositories/releases/ clean package deploy'
+                script {
+                    version = sh returnStdout: true, script: "$M2_HOME/bin/mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '^\\[' | tail -n1"
+                }
+//                slackSend botUser: true, channel: "${SLACK_CHANNEL}", message: "Publishing Release to Artifactory of `${REPO_NAME}` $version for ${env.GIT_BRANCH}"
+            }
+        }
+    }
+}

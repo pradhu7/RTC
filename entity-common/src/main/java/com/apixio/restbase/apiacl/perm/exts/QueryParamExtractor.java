@@ -1,0 +1,43 @@
+package com.apixio.restbase.apiacl.perm.exts;
+
+import com.apixio.restbase.apiacl.ApiAcls.InitInfo;
+import com.apixio.restbase.apiacl.CheckContext;
+import com.apixio.restbase.apiacl.HttpRequestInfo;
+import com.apixio.restbase.apiacl.MatchResults;
+import com.apixio.restbase.apiacl.model.ApiDef;
+import com.apixio.restbase.apiacl.perm.Extractor;
+
+public class QueryParamExtractor implements Extractor {
+
+    private String paramName;
+
+    /**
+     * Initializes the extractor with the given configuration.  Interpretation of config
+     * is entirely up to the type of extractor.
+     */
+    @Override
+    public void init(InitInfo initInfo, ApiDef api, String config)
+    {
+        paramName = config;   // config will contain a string like "userID"
+    }
+
+    /**
+     * Returns true if the only way for the extractor to return information is by examining
+     * the HTTP entity body.
+     */
+    @Override
+    public boolean requiresHttpEntity()
+    {
+        return false;
+    }
+
+    /**
+     *
+     */
+    @Override
+    public Object extract(CheckContext ctx, MatchResults match, HttpRequestInfo info, Object prevInChain, Object httpEntity)
+    {
+        return info.getQueryParameter(paramName);
+    }
+
+}

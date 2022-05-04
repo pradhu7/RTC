@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "LabResultProto";
+
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/ValueAsString.proto";
+import "com/apixio/datacatalog/CareSite.proto";
+import "com/apixio/datacatalog/DefaultValueWrappers.proto";
+
+message LabResultInfo {
+  string name = 1;
+  ValueAsString value = 2;
+  string range = 3;
+  LabFlag flag = 4;
+  string units = 5;
+  string labNote  = 6;
+  ClinicalCode specimen = 7;
+  ClinicalCode panel = 8;
+  ClinicalCode superPanel = 9;
+  YearMonthDay sampleDate = 10;
+  CareSite careSite = 11;
+  repeated TypedDate otherDates = 12;
+  IntWrapper sequenceNumber = 13;
+  ClinicalCode code = 14;
+  repeated ClinicalCode codeTranslations = 15;
+  VendorDetails vendorDetails = 16;
+}
+
+message VendorDetails {
+  string vendorId = 1;
+  string vendorCode = 2;
+}
+
+message TypedDate {
+  int64 epochMs = 1;
+  string type = 2;
+}
+
+enum LabFlag {
+  UNKNOWN_FLAG = 0;
+  NORMAL= 1;
+  HIGH= 2;
+  LOW= 3;
+  ABNORMAL= 4;
+  SENSITIVE= 5;
+}

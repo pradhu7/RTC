@@ -1,0 +1,73 @@
+################################################################
+Operations:
+  - name: ManageSystem
+    description:  Manage system
+    appliesTo: "*"                  # "*" => only valid acltarget is "*" => powerful role
+
+  - name: ManageConfigurations
+    description: can manage view application configuration
+    appliesTo: "*"
+
+  - name: ManagePipeline
+    description:  Manage pipeline
+    appliesTo: "*"
+
+  - name: ManageAclGroupMembership
+    description:  Manage membership in ACL-maintained groups (meta acls, basically)
+    appliesTo: "*, acl-groupname"
+
+  - name: AllowMultipleSessions
+    description:  Allow users to have more than one active login session
+    appliesTo: "*"
+
+  - name: ManageScience
+    description:  Manage science
+
+  - name: ManageProject
+    description:  Manage projects
+    appliesTo: "*, target-proj"
+
+  - name: ManageOrganization
+    description:  Manage organizations
+    appliesTo: "*, member-of-org, target-org"
+
+  - name: ManageUser
+    description:  Manage users
+    appliesTo: "*, member-of-org, target-org"
+
+  - name: ViewUsers
+    description:  View users
+    appliesTo: "*, target-projorg"
+
+  - name: ManagePatientDataSet
+    description:  Manage PDSs
+    appliesTo: "*"
+
+  - name: viewDocuments
+    description:  View documents with PHI
+    appliesTo: "*, target-projpds"
+
+  - name: writeDocuments
+    description:  update documents with PHI
+
+  - name: viewReportsAnnotatedBy
+    description:  view reports annotated by
+
+  - name: canAnnotate
+    description:  can add annotations
+
+  - name: viewReportsAnnotatedFor
+    description:  view reports annotated for
+
+  - name: ViewProjectData
+    description: view project data
+
+  - name: ManageBundling
+    description: manage bundling process
+
+  - name: ViewPipelineData
+    description: view pipeline related data
+
+  - name: ViewAnnotatedReports
+    description: view annotated data
+

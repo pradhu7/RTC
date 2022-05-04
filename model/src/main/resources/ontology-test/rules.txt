@@ -1,0 +1,5 @@
+@prefix example: <http://example.org/> .
+@prefix : <http://tutorialacademy.com/2015/jena#> .
+
+[ruleHasStudent: (?s :hasClass ?c) (?p :teaches ?c) -> (?p :hasStudent ?s)]
+[ruleHasMatematicas: (?s :hasClass ?c) (?c :hasLabel "matematicas") -> (?c :hasType :potato)]

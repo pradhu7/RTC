@@ -1,0 +1,72 @@
+[
+  {
+    "generator": [
+      "com.apixio.ensemble.impl.common.Generator",
+      {
+        "className": "com.apixio.ensemble.impl.generators.page.V5",
+        "jarVersion": "1.7.3--f2481ed46c77c415720dc11457f3d9a87fb85a0b--`2019-09-04T17:44:24.582Z`",
+        "modelVersion": "production_model_9_0_2",
+        "name": "V5",
+        "version": "1.0.1"
+      }
+    ],
+    "name": "V5-V22_70",
+    "sigType": "CATEGORY",
+    "source": [
+      "com.apixio.ensemble.impl.source.PageWindowSource",
+      {
+        "centroid": 1,
+        "documentId": {
+          "pattern": "DOC",
+          "uuid": "cec46359-01e0-4019-8492-4da24cfeb7e2"
+        },
+        "endPage": 3,
+        "location": {
+          "descriptor": "default"
+        },
+        "patientId": {
+          "pattern": "PAT",
+          "uuid": "00c27702-4979-4102-b62c-46c43a8333f5"
+        },
+        "startPage": 1
+      }
+    ],
+    "value": "false",
+    "wt": 2.7473635e-12
+  },
+  {
+    "generator": [
+      "com.apixio.ensemble.impl.common.Generator",
+      {
+        "className": "com.apixio.ensemble.impl.generators.page.V5",
+        "jarVersion": "1.7.3--f2481ed46c77c415720dc11457f3d9a87fb85a0b--`2019-09-04T17:44:24.582Z`",
+        "modelVersion": "production_model_9_0_2",
+        "name": "V5",
+        "version": "1.0.1"
+      }
+    ],
+    "name": "V5-V22_166",
+    "sigType": "CATEGORY",
+    "source": [
+      "com.apixio.ensemble.impl.source.PageWindowSource",
+      {
+        "centroid": 1,
+        "documentId": {
+          "pattern": "DOC",
+          "uuid": "cec46359-01e0-4019-8492-4da24cfeb7e2"
+        },
+        "endPage": 3,
+        "location": {
+          "descriptor": "default"
+        },
+        "patientId": {
+          "pattern": "PAT",
+          "uuid": "00c27702-4979-4102-b62c-46c43a8333f5"
+        },
+        "startPage": 1
+      }
+    ],
+    "value": "false",
+    "wt": 0.50492096
+  }
+]

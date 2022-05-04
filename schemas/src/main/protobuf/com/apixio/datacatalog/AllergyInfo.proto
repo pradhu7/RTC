@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+
+message AllergyInfo {
+  string allergen = 1;
+  ClinicalCode reaction = 2;
+  string reactionSeverity = 3;
+  YearMonthDay diagnosisDate = 4;
+  YearMonthDay reactionDate = 5;
+  YearMonthDay resolvedDate = 6;
+  ClinicalCode code = 7;
+  repeated ClinicalCode codeTranslations = 8;
+}

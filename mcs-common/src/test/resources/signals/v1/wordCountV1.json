@@ -1,0 +1,31 @@
+{
+  "generationTime" : 1556435811915,
+  "generator" : {
+    "name" : "WordCount",
+    "version" : "1.0.0",
+    "className" : "com.apixio.ensemble.impl.generators.page.WordCount",
+    "jarVersion" : "1.6.0-apo-drain-2019-04-15-2-SNAPSHOT"
+  },
+  "name" : "WordCount",
+  "source" : {
+    "sourceType" : "Window",
+    "centroid" : 8,
+    "documentId" : {
+      "type" : "DOC",
+      "uuid" : "4bed93f8-1a30-4a91-8ba8-8b1a38e5002c",
+      "id" : "DOC_4bed93f8-1a30-4a91-8ba8-8b1a38e5002c"
+    },
+    "patientId" : {
+      "type" : "PAT",
+      "uuid" : "ffdc1ab7-a7f8-4be3-a417-2177eb779525",
+      "id" : "PAT_ffdc1ab7-a7f8-4be3-a417-2177eb779525"
+    },
+    "page" : -1,
+    "pages" : -1,
+    "startPage" : 6,
+    "endPage" : 10
+  },
+  "sigType" : "NUMERIC",
+  "value" : "1685.0",
+  "weight" : 1.0
+}

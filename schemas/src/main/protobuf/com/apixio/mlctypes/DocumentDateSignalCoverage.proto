@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "com/apixio/predictions/PredictionCommon.proto";
+import "com/apixio/signals/Signals.proto";
+
+package com.apixio.harvesters;
+
+///////// https://github.com/Apixio/apx-signalmanager/blob/EN-9685/cerveau-models/src/main/java/com/apixio/cerveau/model/util/DocumentSignalDateCoverageInput.java
+
+
+message DocumentDateSignalCoverageInput {
+    com.apixio.predictions.predictionbin.DocsetXUUID docsetId = 1;
+    com.apixio.predictions.predictionbin.PatientXUUID patientId = 2;
+    repeated com.apixio.predictions.predictionbin.DocumentXUUID docIds = 3;
+    map <string, com.apixio.ensemble.ifc.transport.SignalsWrapper> dateIsAssumedSignals = 4;
+    map <string, com.apixio.ensemble.ifc.transport.SignalsWrapper> assumedDateSignals = 5;
+    map <string, com.apixio.ensemble.ifc.transport.SignalsWrapper> inferredDateSignals = 6;
+}
+
+////// https://github.com/Apixio/apx-signalmanager/blob/EN-9685/cerveau-models/src/main/java/com/apixio/cerveau/model/util/DocumentSignalDateCoverageOutput.java
+
+message DocumentDateSignalCoverageOutput {
+
+    repeated DocumentDateInformation documentDateInformation = 1;
+
+}
+
+message DocumentDateInformation {
+    com.apixio.predictions.predictionbin.DocumentXUUID docId = 1;
+    bool isDateAssumed = 2;
+    repeated string documentDates = 3;
+}

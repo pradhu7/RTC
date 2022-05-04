@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>apixio-sdk</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>apixio-sdk-cmdline${scala.version.suffix}</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+      <dependency>
+	<groupId>apixio</groupId>
+	<artifactId>apixio-protoc</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>apixio</groupId>
+	<artifactId>apixio-sdk-core${scala.version.suffix}</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>apixio</groupId>
+	<artifactId>apixio-mcs-common${scala.version.suffix}</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>apixio</groupId>
+	<artifactId>apixio-sdk-util${scala.version.suffix}</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>apixio</groupId>
+	<artifactId>apixio-dao${scala.version.suffix}</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>com.google.protobuf</groupId>
+	<artifactId>protobuf-java</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>com.google.protobuf</groupId>
+	<artifactId>protobuf-java-util</artifactId>
+      </dependency>
+
+      <dependency>
+	<groupId>com.googlecode.protobuf-java-format</groupId>
+	<artifactId>protobuf-java-format</artifactId>
+	<version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+      </dependency>
+
+    </dependencies>
+
+  <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>                <!-- inherit from pluginManagement def -->
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+  </build>
+
+
+</project>

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+enum MaritalStatus {
+    UNKNOWN_MARITAL_STATUS = 0;
+    ANNULLED = 1;
+    DIVORCED = 2;
+    INTERLOCUTORY = 3;
+    LEGALLY_SEPARATED = 4;
+    MARRIED = 5;
+    POLYGAMOUS = 6;
+    NEVER_MARRIED = 7;
+    DOMESTIC_PARTNER = 8;
+    WIDOWED = 9;
+    UNMARRIED = 10;
+}

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ApxCatalog" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="ApxCatalog" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="CatalogEntry" minOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DocumentId" type="xs:string" minOccurs="0" />
+              <xs:element name="Organization" type="xs:string" minOccurs="0" />
+              <xs:element name="PracticeName" type="xs:string" minOccurs="0" />
+              <xs:element name="FileLocation" type="xs:string" minOccurs="0" />
+              <xs:element name="FileFormat" type="xs:string" minOccurs="0" />
+              <xs:element name="MimeType" type="xs:string" minOccurs="0" />
+              <xs:element name="DocumentType" type="xs:string" minOccurs="0"/>    
+              <xs:element name="CreationDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ModifiedDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Description" type="xs:string" minOccurs="0" />
+              <xs:element name="MetaTags" type="xs:string" minOccurs="0" />
+              <xs:element name="SourceSystem" type="xs:string" minOccurs="0" /> 
+              <xs:element name="Version" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+              <xs:element name="Encounter">
+	              <xs:complexType>
+		              <xs:sequence>
+			              <xs:element name="EncounterId" type="xs:string" minOccurs="0" /> 
+			              <xs:element name="EncounterDate" type="xs:string" minOccurs="0" /> 
+		              </xs:sequence>
+	              </xs:complexType>
+              </xs:element>
+              <xs:element name="AuthorId"> 
+              	<xs:complexType>
+		              <xs:sequence>
+			              <xs:element name="Id" type="xs:string" minOccurs="0" /> 
+			              <xs:element name="AssignAuthority" type="xs:string" minOccurs="0" /> 
+		              </xs:sequence>
+	              </xs:complexType>
+              </xs:element>        
+              <xs:element name="Patient">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="PatientFirstName" type="xs:string" minOccurs="0" />
+                    <xs:element name="PatientMiddleName" type="xs:string" minOccurs="0" />
+                    <xs:element name="PatientLastName" type="xs:string" minOccurs="0" />
+                    <xs:element name="PatientDOB" type="xs:string" minOccurs="0" />
+                    <xs:element name="PatientGender" type="xs:string" minOccurs="0" />
+                    <xs:element name="PatientId" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Id" type="xs:string" minOccurs="0" />
+                          <xs:element name="AssignAuthority" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Attributes" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Attribute" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Name" type="xs:string" minOccurs="0" />
+                          <xs:element name="Value" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="FileParts" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="FilePart" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:simpleContent msdata:ColumnName="FilePart_Text" msdata:Ordinal="0">
+                          <xs:extension base="xs:string">
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ProcessorId" type="xs:string" minOccurs="0"/>
+			  <xs:element name="WorkDir" type="xs:anyURI" minOccurs="0"/>
+			  <xs:element name="LogLevel" type="xs:string" minOccurs="0"/>
+			  <xs:element name="OrgId" type="xs:string" minOccurs="0"/>
+			  <xs:element name="MaxFileSize" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="Conversions" type="xs:string" minOccurs="0"/>
+			  <xs:element name="UserName" type="xs:string" minOccurs="0"/>
+			  <xs:element name="ProcessInterval" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="TransmitDir" type="xs:anyURI" minOccurs="0"/>
+			  <xs:element name="TransmitMin" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="SourceDir" type="xs:anyURI" minOccurs="0"/>
+			  <xs:element name="Timeout" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="MinFileAge" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="SleepInterval" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="TransmitMax" type="xs:integer" minOccurs="0"/>
+			  <xs:element name="Id" type="xs:string" minOccurs="0"/>
+			  <xs:element name="AssignAuthority" type="xs:string" minOccurs="0"/>
+			  <xs:element name="DocumentUUID" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

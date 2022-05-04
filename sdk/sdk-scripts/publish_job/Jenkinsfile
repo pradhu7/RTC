@@ -1,0 +1,101 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'jenkins-publish-mcs'
+            idleMinutes 15
+            defaultContainer 'mvn'
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  labels:
+                    jobType: publish-mcs-sdk
+                spec:
+                  containers:
+                  - name: mvn
+                    image: 088921318242.dkr.ecr.us-west-2.amazonaws.com/jenkins/maven:3.6.3-jdk-8
+                    command: ["tail", "-f", "/dev/null"]
+                    resources:
+                      requests:
+                        memory: "4Gi"
+                      limits:
+                        memory: "4Gi"
+                '''
+        }
+    }
+
+    environment {
+        SEC_OPTS = "-Dbcfipspath=bc-fips-1.0.2.jar -Dbcprovpath=bcprov-jdk15on-1.47.jar"
+        ARTIFACTORY_USERNAME = "jenkinstoken"
+        ARTIFACTORY_PASSWORD = credentials("jenkins-artifactory")
+        GITHUB_USERNAME = "apixio-readonly"
+        GITHUB_TOKEN = credentials("apixio-read-only-token")
+    }
+
+    options {
+        timestamps()
+        ansiColor('xterm')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(daysToKeepStr: '10',
+                                  numToKeepStr: '10'))
+    }
+
+    tools {
+        jdk 'Java 8'
+    }
+
+    parameters {
+        string(name: 'SDK_VERSION', defaultValue: "1.0.7", description: 'SDK Command Line Version')
+        string(name: 'CREATOR', description: 'Your email address')
+        string(name: 'PUBLISH', description: 'Path to mc.publish file to publish')
+        string(name: 'CONFIG', defaultValue: "pubconfig.yaml", description: 'Publish operation configuration')
+        booleanParam(name: 'PRODUCTION', defaultValue: false, description: 'Run against Prod')
+    }
+
+    stages {
+        stage('Download') {
+            steps {
+                dir('./scripts/publish_job') {
+                    sh 'curl -O https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/1.0.2/bc-fips-1.0.2.jar'
+                    sh 'curl -O https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.47/bcprov-jdk15on-1.47.jar'
+                    sh 'curl -u${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -o apixio-sdk-cmdline.jar https://repos.apixio.com/artifactory/releases/apixio/apixio-sdk-cmdline/${SDK_VERSION}/apixio-sdk-cmdline-${SDK_VERSION}.jar'
+                }
+            }
+        }
+
+        stage('Run on Staging') {
+            when {
+                expression { return !params.PRODUCTION }
+            }
+            environment {
+                APXSECV2_VAULT_SERVER = "https://vault-stg.apixio.com:8200"
+                APX_VAULT_TOKEN = credentials("vault-stg-token")
+                MCS_SERVER = "https://modelcatalogsvc-stg.apixio.com:8443"
+            }
+
+            steps {
+                dir('./scripts/publish_job') {
+                    sh 'java -cp apixio-sdk-cmdline.jar ${SEC_OPTS} com.apixio.sdk.cmdline.PublishFxImpl creator=${CREATOR} config=${CONFIG} publish=${PUBLISH}'
+                }
+            }
+        }
+
+        stage('Run on Production') {
+            when {
+                expression { return params.PRODUCTION }
+            }
+
+            environment {
+                APXSECV2_VAULT_SERVER="https://vault.apixio.com:8200"
+                APX_VAULT_TOKEN = credentials("vault-prd-token")
+                MCS_SERVER = "https://modelcatalogsvc.apixio.com:8443"
+            }
+
+            steps {
+                dir('./scripts/publish_job') {
+                    sh 'java -cp apixio-sdk-cmdline.jar ${SEC_OPTS} com.apixio.sdk.cmdline.PublishFxImpl creator=${CREATOR} config=${CONFIG} publish=${PUBLISH}'
+                }
+            }
+        }
+    }
+}

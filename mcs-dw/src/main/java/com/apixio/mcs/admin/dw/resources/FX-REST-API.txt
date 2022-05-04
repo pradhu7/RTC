@@ -1,0 +1,15 @@
+
+#### f(x) endpoints:
+
+1. POST:/fx/fxdefs
+  * accepts application/json
+  * produces application/json
+  * body is converted into ??? instance
+
+2. GET:/fx/fxdefs/{fxid}
+  * produces application/json   # this is the JSON formatted protobuf of FxDef
+
+# NOT YET IMPLEMENTED
+3. GET:/fx/fxdefs/{fxid}/metadata
+  * produces application/json   # this is basically the http body from endpoint #1
+

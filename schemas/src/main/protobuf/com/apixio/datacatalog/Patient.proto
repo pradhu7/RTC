@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "PatientProto";
+
+import "com/apixio/datacatalog/DataCatalogMeta.proto";
+import "com/apixio/datacatalog/PatientMeta.proto";
+import "com/apixio/datacatalog/ParsingDetails.proto";
+import "com/apixio/datacatalog/Source.proto";
+import "com/apixio/datacatalog/BaseObjects.proto";
+import "com/apixio/datacatalog/CodedBaseObjects.proto";
+import "com/apixio/datacatalog/ExtractedText.proto";
+
+// DO NOT CHANGE NUMBERS! If adding data, you MUST use a non-existing number
+message BasePatient {
+  PatientMeta patientMeta = 1;
+  DataCatalogMeta dataCatalogMeta = 2;
+  repeated Source sources = 3;
+  repeated ParsingDetails parsingDetails = 4;
+}
+
+message CodedBasePatient {
+  PatientMeta patientMeta = 1;
+  DataCatalogMeta dataCatalogMeta = 2;
+  repeated Source sources = 3;
+  repeated ParsingDetails parsingDetails = 4;
+  repeated ClinicalActor clinicalActors = 5;
+  repeated Encounter encounters = 6;
+}
+
+message Patient {
+  CodedBasePatient base = 1;
+  repeated DocumentMetaCBO documents = 2;
+  repeated ProcedureCBO procedures = 3;
+  repeated FfsClaimCBO ffsClaims = 4;
+  repeated ProblemCBO problems = 5;
+  repeated RaClaimCBO raClaims = 6;
+  repeated Mao004CBO mao004s = 7;
+  ContactDetails primaryContactDetails = 8;
+  repeated ContactDetails alternateContactDetails = 9;
+  PatientDemographics primaryDemographics = 10;
+  repeated PatientDemographics alternateDemographics = 11; //first item in list should be "primary" demographics
+  repeated Coverage coverage = 12;
+  repeated Allergy allergies = 13;
+  repeated BiometricValue biometricValues = 14;
+  repeated SocialHistory socialHistories = 15;
+  repeated LabResultCBO labResults = 16;
+  repeated PrescriptionCBO prescriptions = 17;
+  repeated FamilyHistoryCBO familyHistories = 18;
+  repeated ImmunizationCBO immunizations = 19;
+  repeated RawExtractedText extractedText = 20;
+}

@@ -1,0 +1,92 @@
+/**
+This protobuf schema defines the contract of the accept/reject submit messages sent by the
+session manager logger service to Kafka topic for IRR
+
+ */
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "com/apixio/logs/AppUserInfo.proto";
+import "com/apixio/logs/ViewedPages.proto";
+import "com/apixio/logs/Annotation.proto";
+import "com/apixio/logs/Code.proto";
+import "com/apixio/logs/WorkItem.proto";
+import "google/protobuf/wrappers.proto";
+
+message CoderActivity {
+
+  message Browser {
+    google.protobuf.StringValue time = 1;
+    google.protobuf.StringValue isotime = 2;
+    google.protobuf.StringValue url = 3;
+  }
+
+  message Opportunity {
+    google.protobuf.StringValue transactionId = 1;
+    WorkItem workitem = 2;
+    google.protobuf.StringValue servedAt = 3;
+  }
+
+  message Pagesviewed {
+    repeated ViewedPages viewedPages = 1;
+  }
+
+  message CodingWorkflow {
+    Pagesviewed pagesViewed = 1;
+  }
+
+  message EventData {
+    google.protobuf.StringValue workflow = 1;
+    repeated google.protobuf.UInt32Value pagesShown = 2;
+    Browser browser = 3;
+    Opportunity opportunity = 4;
+    google.protobuf.BoolValue errorsOnForm = 5;
+    ResultFinding finding = 6;
+
+    message ResultFinding {
+      google.protobuf.UInt32Value totalPages = 1;
+      google.protobuf.StringValue startDos = 2;
+      google.protobuf.StringValue state = 3;
+      google.protobuf.StringValue document = 4;
+      google.protobuf.StringValue endDos = 5;
+      google.protobuf.StringValue documentUuid = 6;
+      repeated google.protobuf.UInt32Value pages = 7;
+      google.protobuf.StringValue mimeType = 8;
+      Code code = 9;
+      google.protobuf.UInt64Value docDate = 10;
+      google.protobuf.StringValue patientUuid = 11;
+      google.protobuf.StringValue lifecycleId = 12;
+      google.protobuf.StringValue predictedDos = 13;
+      repeated Annotation annotationHistory = 14;
+      google.protobuf.UInt32Value listPosition = 15;
+    }
+
+    Annotation annotations = 7;
+
+    google.protobuf.BoolValue fromReport = 8;
+    google.protobuf.StringValue message = 9;
+    CodingWorkflow codingWorkflow = 10;
+  }
+
+  message App_data {
+    google.protobuf.StringValue event_name = 1 [json_name = "event_name"];
+    EventData event_data = 2 [json_name = "event_data"];
+  }
+
+  message App {
+    App_data app_data = 1 [json_name = "app_data"];
+    google.protobuf.StringValue app_name = 2 [json_name = "app_name"];
+    AppUserInfo app_user_info = 3 [json_name = "app_user_info"];
+    google.protobuf.StringValue app_version = 4 [json_name = "app_version"];
+  }
+
+  google.protobuf.StringValue source = 2;
+  google.protobuf.StringValue host = 3;
+  App app = 5;
+  google.protobuf.StringValue isotime = 6;
+  google.protobuf.StringValue referrer = 7;
+  google.protobuf.StringValue time = 8;
+  google.protobuf.StringValue router = 9;
+  google.protobuf.StringValue level = 10;
+}

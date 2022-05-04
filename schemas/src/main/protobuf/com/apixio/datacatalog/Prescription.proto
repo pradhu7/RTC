@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "PrescriptionProto";
+
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/MedicationInfo.proto";
+import "com/apixio/datacatalog/DefaultValueWrappers.proto";
+
+message PrescriptionInfo {
+  ClinicalCode code = 1;
+  YearMonthDay prescriptionDate = 2;
+  string amount = 3;
+  string directions = 4; // "sig"
+  YearMonthDay endDate = 5;
+  YearMonthDay fillDate = 6;
+  string dosage = 7;
+  MedicationInfo associatedMedication = 8;
+  BoolWrapper isActivePrescription = 9;
+  IntWrapper refillsRemaining = 10;
+  DoubleWrapper quantity = 11;
+  string frequency = 12;
+  repeated ClinicalCode codeTranslations = 13;
+}

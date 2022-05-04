@@ -1,0 +1,123 @@
+################################################################
+#
+# Migration and cleanup data declarations
+#
+# The YAML structure/format of all the top-level keys ("propdefs", "organizations", ...)
+# is that the top level key contains a list of maps.  We take advantage (and the code
+# enforces it) of the ability to have a <null> value as a value of key in the map.  The
+# key that has the <null> value should always be the first item declared in the map and
+# it is used to define (in the code) a "map name" for the full set of map elements.  For
+# example, in the following yaml snippet (where "organization" is a top level key),
+#
+#   organizations:
+#     - Apixio:
+#       name:  Apixio
+#       active:  "true"
+#       coder_rate: "1.23"
+#       noway: "blammo"
+#
+# the line "- Apixio:" declares a yaml list of maps ("-" declares list, ": " declares a map)
+# and it also declares a name=value in the map, where the name is "Apixio" and the value is
+# <null>.  It's really a shorthand notation allowed in yaml but it works well to visually
+# declare a name for a map.  For this to work, the line "- Apixio:" must NOT have a value
+# after it!
+#
+# General syntax note:  snakeYaml will make obvious conversion ("true" becomes a boolean
+# and "12.34" becomes a double.  This causes problems as Java code expects Map<String,String>
+# and will fail with a ClassCastException if these values are not quoted strings.
+
+################################################################
+#
+# Property definitions.  Only organization propdefs are supported.
+
+propdefs:
+  - Organization:
+    coder_rate:  DOUBLE
+    stuffer_rate:  INTEGER
+    is_test: BOOLEAN
+
+################################################################
+#
+# Organizations.  Organizations are symbolically named by the "map name"
+# (see comment at top).  These must be unique and are used ONLY internally
+# in this .yaml file for purposes of referencing an organization.
+#
+# Organizations MUST already exist and can be identified by either their
+# name (which, if not unique, will generate a warning during migration) or
+# by their XUUID.  To identify by name, include a map element "name:" with
+# the value being the exact name (case-sensitive).  To identify by XUUID,
+# include a map element "xuuid" with the value being the XUUID of the org.
+#
+# All map keys other than "name", "xuuid", and "active" are assumed to be
+# custom properties and an attempt will be made to set that prop on the
+# organization.
+
+organizations:
+  - Apixio:                 # "map name" name used ONLY within this data file for linking data together
+    name:  Apixio           # (hopefully) unique Organization.name; used to look it up
+    active:  "true"
+    coder_rate: "1.23"
+    noway: "jose"
+
+  - Apixio2:
+    xuuid:  UO_blah          # alternate way to look up organization
+    active:  "false"
+    coder_rate: "1.24"
+
+################################################################
+#
+# Users.  Users can be cleaned up by marking them as CLOSED (or
+# any other status) and they can be moved into being a "member-of"
+# an organization.
+#
+# Users are identified by their email address.  To change the state
+# of the user account, include the map key "state" with the value of
+# CLOSED (really any of [NEW,ACTIVE,CLOSED,DISABLED,EXPIRED_PASSWORD]).
+#
+# To assign a user to be a member-of an organization, include the
+# "member-of" map key with the value being the "map name" of the
+# organization.
+
+users:
+  - email:     smccarty@apixio.com
+    member-of: Apixio              # references identifiers under 'Organizations' key
+    state:     CLOSED
+
+  - email: root@api.apixio.com
+    state: ACTIVE
+
+
+################################################################
+#
+# Projects.  Projects to be migrated from properties-based to
+# entity-based are listed here, by their XUUID.  By default only the
+# values in the custom properties are used to create the new entity
+# (the project XUUID is used when creating the new Project entity).
+# There is, however, the ability to set/override the values that are
+# in the properties value.  To do this, add a map key with the name of
+# the field whose value is to be overridden/set.
+#
+# Migration of projects automatically picks up the PatientDataSet used
+# (as that's in the old project data).  All PDS instances that are
+# referenced (by the migrated projects) MUST be listed below and MUST
+# include the reference to the owning organization.
+
+projects:
+    - xuuid:  CP_757be953-f8a1-49c6-a805-db34c01f212d             # old projects are always/only identified by XUUID
+      budget: ".75"                                           # overrides can be specified
+
+    - xuuid: CP_aaaaaaaa-bbbb-cccc-dddd-db34c01f212d
+
+################################################################
+#
+# (Old Customer) PatientDataSets.  PDS instances can be cleaned up by
+# marking them as inactive.  PDS instances are identified by their
+# XUUID ("and because 
+# What to do with PDS (old Customer):
+#  * associate with (new) customer-type Organization
+
+patientDataSets:
+  - xuuid:     O_00000000-0000-0000-0000-000000000454               # O_ for "organization" aka customer aka PDS
+    owningOrg: Apixio       # references identifiers under 'Organizations' key
+    active:    "true"
+

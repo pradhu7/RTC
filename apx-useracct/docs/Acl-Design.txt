@@ -1,0 +1,194 @@
+May 28, 2014
+
+Design and Implementation notes for the ACL and UserGroup subsystems
+--------------------------------------------------------------------
+
+Document Overview
+-----------------
+
+This document describes some of the design and implementation of both an ACL
+system and its accompanying UserGroup system.  The Java code contains more
+detailed information.
+
+Both of these chunks of functionality rely on the RESTful API and User
+infrastructure system described in the document "User-Account-Design.txt".
+
+
+The Access Control Model
+------------------------
+
+The quick overview of how access control works is that the client code (presumed
+to be Apixio internal dropwizard-based apps) can register identifiers that have
+configurable access control/protection metadata that can be queried when access
+(by that same application or another application) to that identifier is
+requested.
+
+All components in the overall system (application code, service code, and
+administrative code) need to all use the access control system in order for it
+to be effective.  As there is no injected code or interception of flow (ala AOP)
+going on, this use of the access control system must be explicit within the
+code.
+
+The relevant constructs for the access control model are:
+
+1.  Subject:  the thing that is attempting to perform some operation on a
+    controlled Object
+
+2.  Operation: an application-defined (i.e., meaningful to the application level
+    functionality) verb-ish thing that can be done to an Object.
+
+3.  Object: the thing (data, or function) that is protected via the access
+    control meta data
+
+4.  Access type: a service-level-defined (i.e., meaningful to a lower-level
+    service) thing that can be done to an Object.
+
+
+Operations are basically a named set of Access Types that has meaning to the
+application.
+
+The prototypical example of Operation vs Access type is that of "Can Code For"
+for an Operation and "Can Read Patient Metadata" for an Access Type.  The "Can
+Code For" is an HCC-specific application construct, whereas the "Can Read
+Patient Metadata" is a more reusable concept that is defined/enforced at the
+Data Service level.
+
+
+
+Assumed Scaling Of Data And Implications Due To That
+----------------------------------------------------
+
+The design and implementation the ACL system makes the following assumptions:
+
+1.  There will be relatively few Subjects as compared to the (eventually larger)
+    number of Objects to be protected (e.g., eventually there could be
+    per-patient access control).
+
+2.  UserGroups will have relatively few members.
+
+
+As there could be large numbers of Objects it makes sense to use Cassandra as
+the datastore to record Objects.  Storing Objects there necessarily pulls along
+the Subjects and the actual matrix of access control, so everything except for
+the definitions of the various Operations and Access Types is kept in Cassandra,
+while Redis is used to store Operation and Access Type info.
+
+
+
+XUUID and Object IDs
+--------------------
+
+The access control system uses the (new) eXtended UUID to identify Subjects.
+This tagging of the type of a UUID is required to support inferred rights of a
+User who belongs to a UserGroup (where the UserGroup is given privileges to an
+Object).  This is compatible with the UserAccount system that identifiers Users
+with XUUIDs.
+
+Objects, on the other hand, are identified by just a String.  The main reason
+for this is that it's useful to be able to use current/existing organization IDs
+(and, later, patients/patient groups, that use UUIDs).
+
+
+
+Privileged Actions
+------------------
+
+The access control system splits its set of functionality into normal ones and
+ones that require a special privilege.  The normal privilege ones are generally
+those that are expected to be called frequently from services and applications
+as part of normal use of the application(s).  The privileged ones are reserved
+for system and/or application setup where these changes are done very
+infrequently and have a system-level impact.
+
+Specifically, the privileged functions are:
+
+* creation and deletion of Operations
+* creation and deletion of Access Types
+
+These operations are available only via the separate dropwizard service "dw-acl"
+and the REST calls made to this service are protected by the microfilters that
+limit access to the ROOT role.
+
+Everything else in the access control system is contained within the packaged
+.jar file.  Dropwizard applications must configure both Redis and Cassandra
+access (as both datastores are used for the access control) and then must create
+the "SysServices" module that gives access to the access control and UserGroup
+business logic code.
+
+
+
+Persistent Entity Storage
+-------------------------
+
+As mentioned above, both Operation and AccessType are persisted to Redis; the
+entity model used for Users (basically a copy of that which is in the
+Coordinator) is used for both of them also.
+
+The UserGroup POJO entity is stored in Cassandra and a very lightweight
+persistence layer is used for that: basically the object converts its fields
+to/from JSON notation and the UTF8 bytes of that string are stored as a column
+value within Cassandra.
+
+UserGroup membership information is stored in different rowkeys in Cassandra,
+where there is one rowkey per group to record the list of members for each
+group.  There is also one rowkey per member to record the list of groups that
+user is a member of.
+
+Additionally there are rowkeys to support lookup of a group by ID as well as by
+name.
+
+
+
+UserGroups
+----------
+
+The access control system exposes the idea of a group of Users.  This UserGroup
+construct is very simple currently: a UserGroup has a unique name and records
+group membership.  The canonical form of a UserGroup name is the "as entered"
+group name but trimmed and made lowercase.  It is this canonical form that must
+be unique in the system--there is no hierarchy or namespacing to help manage
+uniqueness.
+
+A User can be a member of more than one UserGroup, so a m-by-n association is
+supported and expected.
+
+Note that as Users are (currently) never deleted, there is no need to worry
+about maintaining group membership lists when a user is deleted.
+
+UserGroups are a Subject (as are Users) and can therefore be given rights to
+some Object to perform some Operation (or to have some Access Type privilege).
+The access control model for this case is to grant the privileges that the
+UserGroup has to all of its members.  If the member is removed from the group,
+however, that member loses privileges specific to that group.
+
+
+
+Notes on UserGroups and Access Control efficiencies
+---------------------------------------------------
+
+For all cases but one, it is possible to determine access rights for a User on
+an Object for a given Operation in at most 2 queries to Cassandra, regardless of
+the number of Users or Objects or Operations.  This provides for anticipated
+scalability.
+
+The exceptional case is when the system determine whether or not a User has
+rights to a particular Access Type, given a particular Object.  If the User is a
+member of a UserGroup and it's the UserGroup that has rights, then the system
+requires
+
+  2 + # of groups the user is a member of
+
+queries against Cassandra, as each UserGroup the User is a member of needs to be
+looked up for its rights against the Object.
+
+The above limits scalability in the (very?) long run.  There is no easy
+data-side (denormalization of data) fix, because denormalizing down to the User
+and AccessType level means that, for example, if an AccessType is added to an
+Operation, a scan must be done of all UserGroups that are given rights to that
+Operation and for each UserGroup that has that right all Users in those
+UserGroups would have to have that denormed Access Type right added.
+
+The alternative is to cache the query results of "what Operations does this
+UserGroup have for this Object?" by Object.  Doing so avoids a query to
+Cassandra if no access control change has been made to a particular Object.
+

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.apixio.doctraces;
+
+import "com/apixio/doctraces/Error.proto";
+
+message PatientAssemblyTrace {
+    string patientKey = 1;
+    repeated string dataTypes = 2;
+    int32 numParts = 3;
+    repeated Error errors = 4;
+}

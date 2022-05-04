@@ -1,0 +1,51 @@
+
+// contains schema that describe how to call some f(x).  this is basically
+// a way of declaring the parameter list to some arbitrary f(x) where each
+// argument can be either a scalar or a call to an accessor, where each
+// argument to the accessor call can also be a scalar or a call ...
+//
+// example arglists:
+//
+//  ("name")
+//  (config("name"))
+//  (apo(request("personID")))
+//
+// the construction of the tree of args is done by a parser or manually so trees
+// of these messages here are really just the AST (simplified) of it, and the
+// rule of construction is that an arg is either a scalar (terminal) or an
+// accessor name
+
+syntax = "proto3";
+
+package com.apixio.sdk.protos;
+option java_outer_classname = "EvalProtos";
+
+// captures all supported value types
+message Value {
+  oneof value {
+    int32  intValue     = 1;
+    int64  longValue    = 2;
+    float  floatValue   = 3;
+    double doubleValue  = 4;
+    bool   booleanValue = 5;
+    string stringValue  = 6;
+  }
+}
+
+message AccessorCall {
+  string accessorName = 1;
+  repeated Arg args   = 2;
+}
+
+message Arg {
+  bool isConst = 1;
+  oneof value {
+    Value constValue     = 2;
+    AccessorCall accCall = 3;
+    }
+}
+
+message ArgList {
+  repeated Arg args = 1;
+}
+

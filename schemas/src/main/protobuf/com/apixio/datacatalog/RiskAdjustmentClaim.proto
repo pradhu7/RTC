@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/ResolutionStatus.proto";
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/EditType.proto";
+import "com/apixio/datacatalog/ProviderInRole.proto";
+import "com/apixio/datacatalog/Name.proto";
+import "com/apixio/datacatalog/ProblemInfo.proto";
+
+//https://docs.google.com/spreadsheets/d/1AfmZVQb8H5cT8Jhi3mLcK7TZ7dDn1I0ygg4Vf4-SA_Q/edit#gid=864355961
+// Ra Claim is the superset of AXM RA_CLAIM and AXM RAPS
+message RiskAdjustmentClaim {
+  ProblemInfo problemInfo = 1;
+
+  // Risk adjustment claims specific metadata
+  YearMonthDay transactionDate = 2;
+  string fileMode = 3;
+  string planNumber = 4;
+  string overpaymentId = 5;
+  string overpaymentIdErrorCode = 6;
+  string paymentYear = 7;
+  string paymentYearError = 8;
+  string detailErrorNumber = 9;
+  string patientControlNumber = 10;
+  string patientHicNumberError = 11;
+  string correctedHicNumber = 12;
+  YearMonthDay patientDob = 13;
+  string patientDobError = 14;
+  string providerType = 15; //could be "20" for example
+
+  string diagnosisClusterError1 = 16;
+  string diagnosisClusterError2 = 17;
+  repeated string riskAssessmentCodeClusters = 18;
+}

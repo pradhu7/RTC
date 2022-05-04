@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package com.apixio.protobuf;
+
+option java_package = "com.apixio.protobuf";
+
+//
+// WARNING: DO NOT EVER change/update the tag number of fields.
+//
+
+
+message DocCacheElementListProto {
+  repeated DocCacheElementProto data = 1;
+}
+
+message DocCacheElementProto {
+  optional string   patientUUID = 1;
+  optional string   documentUUID = 2;
+  optional string   originalId = 3;
+  optional string   encId = 4;
+  optional int64    documentDate = 5;
+  optional string   sourceId = 6;
+  optional string   title = 7;
+  optional int32    pageNumber = 8;
+  optional string   extractionType = 9;
+  optional string   content = 10;
+  optional string   org = 11;
+  repeated string   externalIds = 12;
+}

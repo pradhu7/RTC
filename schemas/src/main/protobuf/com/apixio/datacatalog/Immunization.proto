@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+option java_outer_classname = "ImmunizationProto";
+
+import "com/apixio/datacatalog/ClinicalCode.proto";
+import "com/apixio/datacatalog/MedicationInfo.proto";
+import "com/apixio/datacatalog/YearMonthDay.proto";
+import "com/apixio/datacatalog/DefaultValueWrappers.proto";
+
+//aka Administration
+message ImmunizationInfo {
+  YearMonthDay adminDate = 1;
+  DoubleWrapper quantity = 2;
+  string amount = 3;
+  string dosage = 4;
+  YearMonthDay startDate = 5;
+  YearMonthDay endDate = 6;
+  MedicationInfo medicationInfo = 7;
+  IntWrapper medicationSeriesNumber = 8;
+  ClinicalCode code = 9;
+  repeated ClinicalCode codeTranslations = 10;
+}

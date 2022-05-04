@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/Address.proto";
+import "com/apixio/datacatalog/UUID.proto";
+
+message CareSite {
+  string name = 1;
+  Address address = 2;
+  string type = 3;
+  UUID internalId = 4;
+}

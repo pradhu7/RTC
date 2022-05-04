@@ -1,0 +1,9 @@
+[
+  "com.apixio.ensemble.impl.common.Generator",
+  {
+    "className": "com.apixio.ensemble.impl.generators.page.ConditionGuideLine",
+    "jarVersion": "1.4.0",
+    "name": "ConditionGuideLine",
+    "version": "1.0.0"
+  }
+]

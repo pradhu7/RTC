@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/DataCatalogMeta.proto";
+import "com/apixio/datacatalog/ClinicalActorInfo.proto";
+import "com/apixio/datacatalog/CoverageInfo.proto";
+import "com/apixio/datacatalog/UUID.proto";
+import "com/apixio/datacatalog/ContactInfo.proto";
+import "com/apixio/datacatalog/DemographicsInfo.proto";
+
+message Base {
+  DataCatalogMeta dataCatalogMeta = 1;
+  repeated UUID parsingDetailsIds = 2;
+  repeated UUID sourceIds = 3;
+}
+
+message ClinicalActor {
+  Base base = 1;
+  ClinicalActorInfo clinicalActorInfo = 2;
+  UUID internalId = 3;
+}
+
+message ContactDetails {
+  Base base = 1;
+  ContactInfo contactInfo = 2;
+}
+
+message PatientDemographics {
+  Base base = 1;
+  DemographicsInfo demographicsInfo = 2;
+}
+
+message Coverage {
+  Base base = 1;
+  CoverageInfo coverageInfo = 2;
+}
+

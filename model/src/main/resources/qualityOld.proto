@@ -1,0 +1,76 @@
+package com.apixio.model.quality;
+
+import "predictionbin.proto";
+
+enum TYPES {
+  STRING = 0;
+  NUMERIC = 1;
+  DATE = 2;
+}
+
+message Attribute {
+    required string name = 1;
+    required TYPES type = 2;
+    required string value = 3;
+    optional double weight = 4;
+}
+
+message Code {
+    required string code = 1;
+    required string system = 2;
+    required string systemName = 3;
+    required string systemVersion = 4;
+    required string displayName = 5;
+}
+
+message Source {
+    required string document = 1;
+    required string patient = 2;
+    required uint32 page = 3;
+    required double weight = 4;
+}
+
+message ABA
+{
+    extend com.apixio.model.predictionbin.Prediction
+    {
+        optional ABA prediction = 100;
+    }
+
+    required Code code = 1;
+    required Source source = 2;
+
+    required ABA1 aba1 = 3;
+    required ABA2 aba2 = 4;
+    required ABA3 aba3 = 5;
+}
+
+message ABA1
+{
+    required Code code = 1;
+    required Source source = 2;
+
+    required Attribute dateOfService = 23;
+    required Attribute category = 4;
+    required Attribute height  = 5;
+}
+
+message ABA2
+{
+    required Code code = 1;
+    required Source source = 2;
+
+    required Attribute dateOfService = 3;
+    required Attribute category = 4;
+    required Attribute height  = 5;
+}
+
+message ABA3
+{
+    required Code code = 1;
+    required Source source = 2;
+
+    required Attribute dateOfService = 3;
+    required Attribute category = 4;
+    required Attribute height  = 5;
+}

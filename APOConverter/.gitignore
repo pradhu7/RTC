@@ -1,0 +1,8 @@
+/src/main/java/com/apixio/model/converter/bin/main/ApixioVocabularyPrinter.java
+patient-uuids.txt
+patient-uuids*
+patient-uuids.*
+APOConverter.log*
+APOConverter.log
+*.log
+*.log*

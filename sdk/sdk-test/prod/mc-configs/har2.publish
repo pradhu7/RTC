@@ -1,0 +1,57 @@
+# This publishing config file mimics AssumedDate config.  Note that the details that change between
+# publishing the "same" f(x) implementation are likely:
+#  * URIs
+#  * modelVersion
+#  * version
+#  * snapshot (not sure what this does)
+
+# purely used for convenience/centralization in this file only:
+macros:
+  generator_name:     HAR2_fx
+  artifactory_jars:   "https://repos.apixio.com/artifactory/apixio-release-snapshot-jars"
+  artifactory_models: "https://repos.apixio.com/artifactory/models/models"
+  github_content:     "https://raw.githubusercontent.com/Apixio/apx-sdk"
+
+################################################################
+
+# this gets stored as top/parent ModelCombination metadata:
+meta:
+  name:        "{% core.version.name %}"
+  functionDef:
+    idl:         'list<apixio.Signal> extractSignals(apixio.PageWindow)'
+    creator:     smccarty@apixio.com
+    name:        extractSignals
+    description: 'Generic extraction of signals from PageWindow'
+  entry:       "com.apixio.ensemblesdk.impl.Har2Fx"
+  logicalId:   "{% core.version.name %}:{% core.version.version %}/{% core.version.modelVersion %}"
+  
+# these get added as parts:
+assets:
+  implementation.jar:
+    uri:      "{% macros.artifactory_jars %}/apixio/apixio-fx-impls/1.0.3/apixio-fx-impls-1.0.3.jar"
+    mimeType: application/octet-stream
+
+  model.zip:
+    uri: "{% macros.artifactory_models %}/production_model/10.0.2-capv/production_model_10_0_2_capv.zip"
+
+  har2config:
+    uri: "{% macros.github_content %}/dev/fximplcode/src/test/resources/capvconfig.yaml"
+
+# this gets stored as top/parent extra_1 JSON
+core:
+  algorithm:
+    type: DOCUMENT_SIGNAL
+  version:
+    modelVersion: 1.0.1-V23
+    name: "{% macros.generator_name %}"
+    version: 1.0.1
+  supportedExecutors:
+    - executorType: LAMBDA
+
+# this gets stored as top/parent extra_2 JSON
+search:
+  tags:
+  - FX
+  - SIGNAL_GENERATOR
+  - DOCUMENT_SIGNAL
+  - "{% macros.generator_name %}"

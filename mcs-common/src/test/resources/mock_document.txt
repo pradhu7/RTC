@@ -1,0 +1,101 @@
+PageContent(8b46098b-5806-4557-b581-b0e61d824002,7,
+
+EVENSTAR, ARWEN U (id #00000, dob: 01/01/1968)
+HEDIS 1126F No Pain Present:
+
+1126F - PAIN SEVERITY QUANTIFIED; NO PAIN PRESENT
+HEDIS 1159F Medication List:
+
+1159F - MEDICATION LIST DOCUMENTED IN MEDICAL RECORD
+HEDIS 1160F Review of All Medications:
+
+1160F - REVIEW OF ALL MEDICATIONS BY A PRESCRIBING PRACTITIONER OR CLINICAL PHARMACIST (SUCH AS,
+
+PRESCRIPTIONS, OTCS, HERBAL THERAPIES AND SUPPLEMENTS) DOCUMENTED IN THE MEDICAL RECORD
+
+HEDIS 3077F Systolic > or equal to 140 mm Hg:
+
+3075F - Most recent Systolic GREATER THAN OR EQUAL TO 140 mm Hg
+HEDIS 3079F Diastolic between 80 - 89 mm Hg:
+
+3079F - Most recent Diastolic between 80 - 89 mm Hg
+
+Assessment / Plan
+
+1. Mild intermittent asthma
+J45.20: Mild intermittent asthma, uncomplicated
+
+o albuterol sulfate 2.5 mg/3 mL (0.083 %) solution for nebulization - Inhale 3 mL twice a day by nebulization route as directed for
+
+30 days. Qty: 180 mL Refills: 4 Pharmacy: I CARE RX LLC - BARADUR, MORDOR
+
+0 Advair HFA 230 mcg-21 mcg/actuation aerosol inhaler - Inhale 2 puff(s) twice a day by inhalation route for 30 days.
+
+puff(s) Refills: 4 Pharmacy: I CARE RX LLC - BARADUR, MORDOR
+
+2. Malignant hypertension
+I10: Essential (primary) hypertension
+0 DASH DIET
+0 LOW SODIUM DIET
+
+o amlodipine 10 mg tablet - Take 1 tablet(s) every day by oral route for 30 days. Qty: 30 tablet(s)
+
+CARE RX LLC - BARADUR, MORDOR
+
+0 Iisinopril 20 mg tablet - Take 1 tablet(s) every day by oral route for 30 days. Qty: 30 tablet(s)
+
+CARE RX LLC - BARADUR, MORDOR
+
+3. Screening for malignant neoplasm of breast
+Z12.31: Encounter for screening mammogram for malignant neoplasm of breast
+o MAMMO, SCREENING, BILATERAL
+
+4. Body mass index 40+ - severely obese
+
+Z6843: Body mass index (BMI) 50-599, adult
+
+0 BODY MASS INDEX: CARE INSTRUCTIONS
+LEARNING ABOUT HEALTHY WEIGHT
+ADVISED TO LOSE WEIGHT
+WEIGHT LOSS TIPS
+START AEROBIC EXERCISE
+LOW FAT DIET |
+NUTRITIONIST/DIETITIAN REFERRAL - Schedule Within: provider's discretion
+LEARNING ABOUT PHYSICAL ACTIVITY
+LEARNING ABOUT DIETARY GUIDELINES
+
+5. Interstitial lung disease
+J84.9: Interstitial pulmonary disease, unspecified
+0 INTERSTITIAL LUNG DISEASE: CARE INSTRUCTIONS
+0 CT, CHEST, W/O CONTRAST
+
+Special Instructions: High resolution CT scan of the chest. Give patient disc for lung
+windows
+
+6. Obstructive sleep apnea of adult
+G47.33: Obstructive sleep apnea (adult) (pediatric)
+o CPAP TITRATION STUDY
+
+7. Multiple skin tags
+L91.8: Other hypertrophic disorders of the skin
+0 DERMATOLOGY REFERRAL - Schedule Within: provider's discretion
+
+Return to Office
+
+0 Elessar Telecontar, MD for Follow Up GYN at BMC M OB/GYN on 01/01/2019 at 11:59 AM
+
+o to see Bilbo Baggins MD at BMC CM FAMILY MED on or around 01/01/2019
+
+Encounter Sign-Off
+Encounter signed-off by Tom Bombadil ARNP, 01/01/2019.
+
+Encounter performed and documented by Merry Brandybuck ARNP
+Encounter reviewed & signed by Merry Brandybuck ARNP on 01/01/2019 at 9:59am
+
+Refills: 4 Pharmacy: |
+
+Resolution: High Resolution
+
+Qty: 120
+
+Refills: 4 Pharmacy: |)

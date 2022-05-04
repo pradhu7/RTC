@@ -1,0 +1,49 @@
+
+persistenceConfig:
+
+  # format of yaml key for jdbc configuration subtree:  jdbc_{id}
+  jdbc_signal_control:
+    verboseSql:            true
+    connectionUrl:         "jdbc:mysql://localhost:3306/signalmgmt"
+    driverClassname:       "com.mysql.cj.jdbc.Driver"
+    password:              "scott"
+    username:              "scott"
+    initialSize:           1
+    maxTotal:              1
+    minIdle:               1
+    maxIdle:               1
+
+  # format of yaml key for kafka consumer configuration subtree:  kafkaconsumer_{id}
+  kafkaconsumer_something:
+    servers:           localhost
+    groupId:           whatever
+    keySerializer:     "some.java.classname"
+    keyDeserializer:   "some.other.java.classname"
+
+  cassandraConfig_internal:
+    hosts: localhost
+    binaryPort: 9042
+    keyspaceName: apixio
+    baseDelayMs: 50
+    maxDelayMs: 5000
+    readConsistencyLevel: LOCAL_QUORUM
+    writeConsistencyLevel: LOCAL_QUORUM
+    minConnections: 1
+    maxConnections: 2
+    cqlDebug: false
+    batchSyncEnabled: false
+    localDC: datacenter1
+    username: you
+    password: there
+
+  # unfortunately required for PersistenceServices:
+  redisConfig:
+    host:  localhost
+    port:  6379
+    keyPrefix: nothing
+  jedisConfig:
+    testWhileIdle: true
+    testOnBorrow: true
+    maxTotal: 100
+  jedisPool:
+    timeout: 60000

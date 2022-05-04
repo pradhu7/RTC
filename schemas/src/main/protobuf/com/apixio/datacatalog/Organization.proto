@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/ContactInfo.proto";
+
+
+message Organization {
+  string name = 1;
+  ExternalId primaryId = 2;
+  repeated ExternalId alternateIds = 3;
+  ContactInfo contactDetails = 4;
+}

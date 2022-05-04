@@ -1,0 +1,105 @@
+[
+  {
+    "api-id": "version",
+    "api-name": "version",
+    "api-url": "GET:/version",
+    "state-config": {
+      "ACTIVE": "allow"
+    }
+  },
+  {
+    "api-id": "healthcheck",
+    "api-name": "healthcheck",
+    "api-url": "GET:/healthcheck",
+    "state-config": {
+      "ACTIVE": "allow"
+    }
+  },
+  {
+    "api-id": "Search-Patient-Snippets",
+    "api-name": "Search-Patient-Snippets",
+    "api-url": "POST:/search/snippets/patient/{patientId}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "viewDocuments",
+      "object": "[url-element:{patientId}; class:com.apixio.app.documentsearch.util.PatientToOrgID]"
+    }
+  },
+  {
+    "api-id": "Search-Patient-Overlays",
+    "api-name": "Search-Patient-Overlays",
+    "api-url": "POST:/search/overlays/patient/{patientId}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "viewDocuments",
+      "object": "[url-element:{patientId}; class:com.apixio.app.documentsearch.util.PatientToOrgID]"
+    }
+  },
+  {
+    "api-id": "Search-Patient-Highlights",
+    "api-name": "Search-Patient-Highlights",
+    "api-url": "POST:/search/highlights/patient/{patientId}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "viewDocuments",
+      "object": "[url-element:{patientId}; class:com.apixio.app.documentsearch.util.PatientToOrgID]"
+    }
+  },
+  {
+    "api-id": "GET-Document-Words",
+    "api-name": "GET-Document-Words",
+    "api-url": "GET:/search/words/document/{documentId}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "viewDocuments",
+      "object": "[url-element:{documentId}; class:com.apixio.app.documentsearch.util.DocumentToOrgID]"
+    }
+  },
+  {
+    "api-id": "Search-Document-Page-Coords",
+    "api-name": "Search-Document-Page-Coords",
+    "api-url": "POST:/search/words/document/{documentId}/{page}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "subject": "token:",
+      "operation": "viewDocuments",
+      "object": "[url-element:{documentId}; class:com.apixio.app.documentsearch.util.DocumentToOrgID]"
+    }
+  },
+  {
+    "api-id": "Get-Document-Page-Hocr",
+    "api-name": "Get-Document-Page-Hocr",
+    "api-url": "GET:/search/hocr/document/{documentId}/{page}",
+    "state-config": {
+      "ACTIVE": "allow"
+    },
+    "permission-config": {
+      "or": [
+        {
+          "subject": "token:",
+          "operation": "viewDocuments",
+          "object": "[url-element:{documentId}; class:com.apixio.app.documentsearch.util.DocumentToOrgID]"
+        },
+        {
+          "subject": "token:",
+          "operation": "viewLabelProjectDocuments",
+          "object": "query-param:projId"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,39 @@
+#%RAML 0.8
+title: Please type API title here
+baseUri: http://example.com
+protocols: [ HTTP ]
+/tokens: 
+  description: |
+    TokenRS is the RESTful entry point for the internal tokenization service that edge
+     servers are expected to call to exchange external tokens for internal ones.
+    
+     Edge servers MUST exchange an external token for an internal one at the beginning
+     of the sequence of (any) calls to internal RESTful services, and edge servers MUST
+     dispose of the internal token at the end of the sequence of such calls.  The easy
+     and recommended approach is to set up a web request filter that can intercept all
+     incoming requests and do this exchange automatically.
+    
+     If the deletion of the internal request is not done, internal use counts will increase
+     without bound and that will trigger intruder alerts which monitor these use counts.
+  post: 
+    description: |
+      Create an internal token from the external token.  This is invoked
+       if and only if the external token is valid.
+    responses: 
+      200: 
+        body: 
+          application/json: 
+  /{id}: 
+    delete: 
+      description: Delete an internal token that was retrieved via createInternal()
+      responses: 
+        200: 
+/util/version: 
+  description: |
+    @author lschneider
+     created on 6/17/15.
+    
+     place to put version endpoint
+  get: 
+    responses: 
+      200: 

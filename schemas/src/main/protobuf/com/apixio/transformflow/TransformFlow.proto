@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package com.apixio.transformflow;
+import "com/apixio/transformflow/TransformFlowMeta.proto";
+option java_outer_classname = "TransformFlowProto";
+
+message TemplateTransformFlow {
+     repeated TemplateTransformNode templateTransformNodes = 1;
+}
+
+message TransformFlow {
+    repeated TransformNode transformNodes = 1;
+}
+
+message TemplateTransformNode {
+    Events nodeId = 1;
+    int32 phase = 2;
+    string mcId = 3;
+    repeated Events prerequisites = 4;
+    repeated DependencyType dependencyTypes = 5;
+    McIdLocation mcIdsLocation = 6;
+    ComputationMuscle computationMuscle = 7;
+    RequestType requestType = 8;
+    ComputationUnit computationUnit = 9;
+    bool uniqueToDocset = 10;
+    bool uniqueToProject = 11;
+}
+
+message TransformNode {
+    Events nodeId = 1;
+    int32 phase = 2;
+    repeated string mcIds = 3;
+    repeated Events prerequisites = 4;
+    ComputationMuscle computationMuscle = 5;
+    RequestType requestType = 6;
+    ComputationUnit computationUnit = 7;
+    bool uniqueToDocset = 8;
+    bool uniqueToProject = 9;
+}
+

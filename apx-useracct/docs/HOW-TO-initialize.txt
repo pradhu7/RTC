@@ -1,0 +1,63 @@
+May 2016
+
+Initializing the system is complicated now due to the migration path that was
+introduced in the summer of 2015.
+
+Starting with a blank Redis store (changing the Redis keyprefix to something that has no
+keys in Redis is equivalent), the steps are:
+
+0.
+    export YAML="dw-useracct/src/main/resources/user-account.yaml"
+    export ROOT_EMAIL="root@api.apixio.com"
+    export ROOT_PASS="thePassword"
+    export KEYPREFIX="$(grep keyPrefix: ${YAML} | grep -v '^#' | awk '{print $NF}')"
+    alias rediscli="~/apixio/redis/redis-cli"
+
+1.  Note the key prefix used in dw-useracct/src/main/resources/user-account.yaml in the key
+
+      globalConfig.redisConfig.keyPrefix
+
+
+2.  Bootstrap Redis with a single user.  To do this, do the following:
+
+      bash> dw-useracct/bin/bootstrap.sh dw-useracct/src/main/resources/user-account.yaml $ROOT_EMAIL $ROOT_PASS | rediscli
+
+
+    NO confirmation email will be sent to the email address.  It is probably wise to use a real email address in order to
+    support the "lost password" functionality for root (another option is to run the script again to get another root user).
+
+    Note that the keyprefix used is taken from the user-account.yaml file specified on the cmdline so make sure you specify
+    the same .yaml file used when running the system (should be dw-useracct/src/main/resources/user-account.yaml)
+
+
+3.  Start up dw-useracct to perform some of the migration
+
+      bash> (cd dw-useracct; bin/start-svc.sh) & pid=$!; sleep 10; kill $pid
+
+      ... let it boot up, then ^C to kill it
+
+    You *will* see a failure about upgrading from version 7 to 8 failing.  That's expected.
+
+
+4.  Perform bootstrapping of role-based access control (RBAC) structures:
+
+      bash> (cd dw-useracct/migration; ./migrate-to-3.0.0.sh -l ../target -c localhost -a apx_cfAcl -r localhost -k $KEYPREFIX -u $ROOT_EMAIL)
+
+
+    where KEYPREFIX is what's in dw-useracct/src/main/resources/user-account.yaml and ROOTUSER is what was
+    set up in step 2.  Yeah, it's manual at this point
+
+
+5.  Start up dw-useracct to finish upgrading from 7 to 8
+
+      bash> (cd dw-useracct; bin/start-svc.sh)
+
+      ... let it boot up, then ^C to kill it
+
+
+Note that there's another migration step/cmdline called MigClean.  This does NOT need to be run on a new
+Redis store--it's meant for migrating property defs (there shouldn't be any), projects (ditto),
+organizations (the only org was correctly added in v7->v8 migration), users (no users need to be placed
+into orgs), and customers (none exist).
+
+

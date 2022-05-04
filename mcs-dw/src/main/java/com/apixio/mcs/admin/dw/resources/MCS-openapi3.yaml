@@ -1,0 +1,711 @@
+openapi: 3.0.0
+info:
+  title: Model Catalog Service API
+  description: REST API access for the Model Catalog Service
+  version: 0.0.1
+
+servers:
+  - url: https://modelcatalogsvc.apixio.com/
+    description: Main MCS service
+
+paths:
+
+  ################################################################ api group fxcore
+  /fx/fxdefs:
+    post:                                                      # fxcore.post
+      tags:
+         - Fx CRUD
+      summary: "Creates a new f(x) signature declaration"
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FxDef'
+      responses:
+        '201':
+          description: Location URI of newly created fxdef
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FxDef'
+
+  ################################################################ api group fx
+  /fx/fxdefs/{id}:
+    get:                                                 # fx.get
+      tags:
+         - Fx CRUD
+      summary: "Gets an f(x) definition"
+      parameters:
+        - in : path
+          required: True
+          name: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fx definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FxDef'
+
+  ################################################################ api group logdeps
+  /mcs/logids/{logid}/deps:
+    get:                                                 # logdeps.get
+      tags:
+         - Logical ID CRUD
+      summary: "Looks up logical dependencies.  Default relationship is 'uses' so it returns logical IDs that {logid} uses"
+      parameters:
+        - in: path
+          required: True
+          name: logid
+          schema:
+            type: string
+        - in: query                   ##? confirm
+          required: False
+          name: mode
+          schema:
+            type: string
+            enum: ["uses","used-by"]
+      responses:
+        '200':
+          description: "List of logical IDs that {logid} uses or is used by (depends on mode query pareameter)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:                                              # logdeps.post
+      tags:
+         - Logical ID CRUD
+      summary: "Adds to logical IDs that {logid} depends on (uses).  {logid} can't be locked, or 4xx is returned"
+      parameters:
+        - in: path
+          required: True
+          name: logid
+          description: "the logical id of the left side of the relation"
+          schema:
+            type: string
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: "Logical IDs were added to {logid} 'uses' list"
+    put:                                               # logdeps.put
+      tags:
+         - Logical ID CRUD
+      summary: "Replaces the list of logical IDs that {logid} depends on (uses).  {logid} can't be locked, or 4xx is returned"
+      parameters:
+        - in: path
+          required: True
+          name: logid
+          description: "the logical id of the left side of the relation"
+          schema:
+            type: string
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: "List of logical IDs for {logid} was replaced"
+    delete:                                          # logdeps.delete
+      tags:
+         - Logical ID CRUD
+      summary: "Removes all 'uses' dependencies for {logid}"
+      parameters:
+        - in: path
+          required: True
+          name: logid
+          description: "the logical id of the left side of the relation"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "All logical IDs used by {logid} were removed"
+
+  ################################################################ api group logowners
+  /mcs/logids/{logid}/deps/owners:
+    get:                                             # logowners.get
+      tags:
+         - Logical ID CRUD
+      summary: "Looks up logical dependencies for {logid}.  Default mode is 'uses'"
+      parameters:
+        - in: path
+          required: True
+          name: logid
+          schema:
+            type: string
+        - in: query
+          required: False
+          name: mode
+          schema:
+            type: string
+            enum: ["uses","used-by"]
+      responses:
+        '200':
+          description: "Array of tuple of (logicalID, ModelMetaOfOwningMC)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogicalMeta'
+
+  ################################################################ api group logowner
+  /mcs/logids/{logid}/deps/owner:
+    get:                                   # logowner.get
+      tags:
+         - Logical ID CRUD
+      summary: "Returns MCID that owns {logid}; '' if no owner"
+      parameters:
+        - in: path
+          required: True
+          name: logid
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "MC ID that owns {logid}, null if no owner"
+          content:
+            application/json:
+              schema:
+                type: string
+
+  ################################################################ api group mcscore
+  /mcs/models:
+    get:                                                       # mcscore.get
+      tags:
+         - MC CRUD
+      summary: "Search models by criteria; each query param is 'and'ed together; valid param names are core fields, MCS-defined metadata, 'core.*' and 'search.*'"
+      responses:
+        '200':
+          description: MC metadata
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelMeta'
+    post:                                                      # mcscore.post
+      tags:
+         - MC CRUD
+      summary: Creates a new Model Combination that has the given metadata
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelMeta'
+      responses:
+        '201':
+          description: Location URI of newly created model
+
+  ################################################################ api group mcsmc
+  /mcs/models/{id}:
+    delete:                                                 # mcsmc.delete
+      tags:
+         - MC CRUD
+      summary: Soft-deletes a Model Combination 
+      parameters:
+        - in : path
+          required: True
+          name: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Successful soft-delete"
+  
+  ################################################################ api group mcsmeta
+  /mcs/models/{id}/metadata:
+    get:                                                       # mcsmeta.get
+      tags:
+         - MC CRUD
+      summary: Get MC metadata
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: MC metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelMeta'
+    put:                                                       # mcsmeta.put
+      tags:
+         - MC CRUD
+      summary: Update MC metadata
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: query
+          required: False
+          name: method
+          schema:
+            type: string
+            enum: ["replace", "update"]
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelMeta'
+      responses:
+        '200':
+          description: Successful update of metadata
+  
+  ################################################################ api group mscscope
+  /mcs/models/{id}/metadata/{scope}:
+    get:                                             # mcsscope.get
+      tags:
+         - MC CRUD
+      summary: Get metadata for scope
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: scope
+          schema:
+            type: string
+            enum: ["core","search"]
+      responses:
+        '200':
+          description: "scope metadata of MC"
+          content:
+            application/json:
+              schema:
+                type: object
+    put:                                            # mcsscope.put
+      tags:
+         - MC CRUD
+      summary: "Update scope metadata"
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: scope
+          schema:
+            type: string
+            enum: ["core","search"]
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful update of metadata
+
+  ################################################################ api group partcore
+  /mcs/models/{mcid}/parts:
+    put:                                                      # partcore.put
+      tags:
+         - Parts CRUD
+      summary: "Batch creation of new parts"
+      parameters:
+        - in: path
+          required: True
+          name: mcid
+          schema:
+            type: string
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PartSource'
+      responses:
+        '201':
+          description: "Map from name to status (ok, no-md5)"
+          content:
+            application/json:
+              schema:
+                type: object
+
+  ################################################################ api group part
+  /mcs/models/{id}/parts/{part}:
+    get:                                               # part.get
+      tags:
+         - Parts CRUD
+      summary: Get part associated with MC
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: part
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Successful return of given part data"
+          content:
+            "*/*":
+              schema:
+                type: string
+    delete:                                          # part.delete
+      tags:
+         - Parts CRUD
+      summary: Delete part associated with MC
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: part
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Successful deletion of part"
+    put:                                        # part.put
+      tags:
+         - Parts CRUD
+      summary: Upsert part associated with MC
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: part
+          schema:
+            type: string
+        - in: header
+          required: True
+          name: Apixio-Uploaded-By
+          schema:
+            type: string
+        - in: query
+          required: False
+          name: ref
+          schema:
+            description: "md5hash of existing part"
+            type: string
+      requestBody:
+        required: True
+        content:
+          "*/*":
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: "Successful upsert of part data"
+
+  ################################################################ api group partmeta
+  /mcs/models/{id}/parts/{part}/metadata/{scope}:
+    get:                                           # partmeta.get
+      tags:
+         - Parts CRUD
+      summary: "Get part 'core' metadata"
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: part
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: scope
+          schema:
+            type: string
+            enum: ["core","search"]
+      responses:
+        '200':
+          description: "Part data metadata for given {scope}"
+          content:
+            application/json:
+              schema:
+                type: object
+    put:                                          # partmeta.put
+      tags:
+         - Parts CRUD
+      summary: "Upsert part metadata for {scope}"
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: part
+          schema:
+            type: string
+        - in: path
+          required: True
+          name: scope
+          schema:
+            type: string
+            enum: ["core","search"]
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: "Successful upsert of part {scope} data metadata"
+
+
+  ################################################################ api group mcsstate
+  /mcs/models/{id}/metadata/state:                   # mcsstate.put
+    put:
+      tags:
+         - MC CRUD
+      summary: Update MC state
+      parameters:
+        - in: path
+          required: True
+          name: id
+          schema:
+            type: string
+      requestBody:
+        required: True
+        content:
+          text/plain:
+            schema:
+              type: string
+              enum: ["DRAFT","EVALUATED","DISCARDED","ACCEPTED","RELEASED"]
+      responses:
+        '200':
+          description: "Successful update of MC lifecycle state"
+
+
+  ################################################################ api group mcsowners
+  /mcs/models/{mcid}/deps/owners:
+    get:                                   # mcsowns.get
+      tags:
+         - Logical ID CRUD
+      summary: "Return the full logical meta of all dependencies of a model combination id"
+      parameters:
+        - in: path
+          required: True
+          name: mcid
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "List of logical IDs"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogicalMeta'
+                  
+
+  ################################################################ api group mcsowns
+  /mcs/models/{mcid}/deps/owns:
+    get:                                   # mcsowns.get
+      tags:
+         - Logical ID CRUD
+      summary: "returns list of logicalIDs that {mcid} owns"
+      parameters:
+        - in: path
+          required: True
+          name: mcid
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "List of logical IDs"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    put:                                 # mcswowns.put
+      tags:
+         - Logical ID CRUD
+      summary: "replaces list of logicalIDs that {mcid} owns"
+      parameters:
+        - in: path
+          required: True
+          name: mcid
+          description: ""
+          schema:
+            type: string
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: "success"
+
+  ################################################################ api group parts
+  /mcs/parts:
+    get:                                         # parts.get
+      tags:
+         - Parts CRUD
+      summary: "Search for parts; only currently supported query param is md5=..."
+      parameters:
+        - in: query
+          required: True
+          name: md5
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "'search' part data metadata"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PartMeta'
+
+
+components:
+  schemas:
+    ModelMeta:
+      properties:
+        id:
+          type: string
+          description:  MCID - managed by server
+        createdAt:
+          type: string
+          description:  "ISO-8601 date string"
+        deleted:
+          type: boolean
+          description:  "True if MC has been soft-deleted"
+        createdBy:
+          type: string
+          description: the email address of the person who created this itemset
+          pattern: '[^\s+]@[A-Za-z0-9_]+.[A-Za-z]+'
+        executor:
+          type: string
+          description:  "??"
+        name:
+          type: string
+          description:  "??"
+        outputType:
+          type: string
+          description:  "??"
+        product:
+          type: string
+          description:  "??"
+        version:
+          type: string
+          description:  "??"
+        state:
+          type: string
+          enum: ["DRAFT", "RELEASED"]
+          description:  "??"
+
+    PartMeta:
+      properties:
+        modelId:
+          type: string
+          description:  Owning MC ID
+        name:
+          type: string
+          description:  "name of part"
+        s3Path:
+          type: string
+          description:  "Full S3 path to part data"
+        md5Digest:
+          type: string
+          description: md5 digest of part contents
+        createdBy:
+          type: string
+          description:  "email address of user who uploaded part"
+          pattern: '[^\s+]@[A-Za-z0-9_]+.[A-Za-z]+'
+        createdAt:
+          type: string
+          description:  "ISO-8601 date string"
+        core:
+          type: object
+          description:  "'core' metadata"
+        search:
+          type: object
+          description:  "'search' metadata"
+
+    PartSource:
+      properties:
+        name:
+          type: string
+          description:  Name of part
+        source:
+          type: string
+          description:  "URI-like source; md5:... or s3://..."
+        mimeType:
+          type: string
+          description:  "MIME type of part"
+
+    LogicalMeta:
+      properties:
+        logicalId:
+          type: string
+          description:  Logical ID
+        meta:
+          $ref: '#/components/schemas/ModelMeta'
+
+    FxDef:
+      properties:
+        createdBy:
+          type: string
+          description:  "email address of user who created f(x)"
+          pattern: '[^\s+]@[A-Za-z0-9_]+.[A-Za-z]+'
+        name:
+          type: string
+          description:  "unique name of f(x)"
+        description:
+          type: string
+          description:  "description of f(x)"
+        fxdef:
+          type: string
+          description:  "f(x) idl"
+

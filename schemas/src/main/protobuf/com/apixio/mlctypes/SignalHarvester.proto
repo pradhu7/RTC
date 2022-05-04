@@ -1,0 +1,23 @@
+/*
+
+ */
+syntax = "proto3";
+
+package com.apixio.harvesters;
+
+message SignalHarvesterParams {
+    string docId = 1;
+
+    repeated string generatorIds = 2;
+
+    repeated string docsetIds = 3;
+
+    string s3Bucket = 4;
+
+    string groupId = 5;
+
+    int32 threshold = 6;
+
+    string projectId = 7;
+
+}

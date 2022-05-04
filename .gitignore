@@ -1,0 +1,14 @@
+target/
+.DS_Store
+.classpath
+.idea
+.project
+.settings
+*.iml
+**/.flattened-pom.xml
+model/src/test/resources/*.json
+.pyc
+dependency-reduced-pom.xml
+.vscode
+.factorypath
+/.metadata/

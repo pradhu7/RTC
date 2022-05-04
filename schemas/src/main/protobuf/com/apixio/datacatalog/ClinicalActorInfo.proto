@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/ExternalId.proto";
+import "com/apixio/datacatalog/Name.proto";
+import "com/apixio/datacatalog/Organization.proto";
+import "com/apixio/datacatalog/ContactInfo.proto";
+
+
+message ClinicalActorInfo {
+  ExternalId primaryId = 1;
+  string actorRole = 2; // ActorRole is an enum in model com.apixio.model.patient.ActorRole
+  Name actorGivenName = 3;
+  repeated Name actorSupplementalNames = 4;
+  string title = 5;
+  repeated ExternalId alternateIds = 6;
+  Organization associatedOrg = 7;
+  ContactInfo contactDetails = 8;
+}

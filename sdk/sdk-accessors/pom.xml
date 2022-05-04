@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>apixio</groupId>
+        <artifactId>apixio-sdk</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>apixio-fx-accessors${scala.version.suffix}</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-sdk-core${scala.version.suffix}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-ensemble-interface${scala.version.suffix}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-dao${scala.version.suffix}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>apixio</groupId>
+            <artifactId>apixio-protoc</artifactId>
+        </dependency>
+
+	<dependency>
+	  <groupId>apixio</groupId>
+	  <artifactId>apixio-model${scala.version.suffix}</artifactId>
+	</dependency>
+
+	<dependency>
+	  <groupId>apixio</groupId>
+	  <artifactId>apixio-bizlogic${scala.version.suffix}</artifactId>
+	</dependency>
+
+    <dependency><groupId>net.sf.trove4j</groupId><artifactId>trove4j</artifactId></dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>                <!-- inherit from pluginManagement def -->
+                <artifactId>maven-shade-plugin</artifactId>
+
+		<executions>
+		  <execution>
+		    <phase>package</phase>
+		    <goals>
+		      <goal>shade</goal>
+		    </goals>
+		    <configuration>
+		      <artifactSet>
+			<excludes>
+                          <exclude>apixio:Aspose:*</exclude>
+                          <exclude>org.eclipse.emf.*:*</exclude>
+                          <exclude>org.eclipse.ocl*:*</exclude>
+                          <exclude>org.eclipse.uml2:*</exclude>
+			</excludes>
+		      </artifactSet>
+		    </configuration>
+		  </execution>
+		</executions>
+
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

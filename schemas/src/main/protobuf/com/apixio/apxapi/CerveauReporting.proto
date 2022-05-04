@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+import "com/apixio/messages/MessageMetadata.proto";
+
+package com.apixio.apxapi.cerveaureporting;
+
+// @see com.apixio.model.patientdataset.ProjectDataSetState
+enum ProjectDataSetState {
+    PUBLISHED = 0;
+    ACTIVE = 1;
+    PAUSED = 2;
+    CLOSED = 3;
+}
+
+// @see com.apixio.model.patientdataset.ProjectDataSetType
+enum ProjectDataSetType {
+    DOC_SET = 0;
+    PAT_SET = 1;
+}
+
+/*
+case class EngineVariantMetaData(@JsonProperty("engine")        engine: String,
+                            @JsonProperty("variant")       variant: String,
+                            @JsonProperty("mcid")       mcid: String)
+*/
+
+// @see com.apixio.model.patientdataset.EngineVariantMetaData
+message EngineVariantMetaData {
+    string engine = 1;
+    string variant = 2;
+    string mcid = 3;
+}
+
+
+/*
+Replaces the following scala case class:
+
+case class ProjectDataSetV2(@JsonProperty("dbId")                     dbId: Long,
+                          @JsonProperty("projectDataSetUuid")       projectDataSetUuid: XUUID,
+                          @JsonProperty("projectDataSetName")       projectDataSetName: String,
+                          @JsonProperty("projectUuid")              projectUuid: XUUID,
+                          @JsonProperty("state")                    state: ProjectDataSetState,
+                          @JsonProperty("pdsUuid")                  pdsUuid: XUUID,
+                          @JsonProperty("dataType")                 dataType: String,
+                          @JsonProperty("models")                   models: List[EngineVariantMetaData],
+                          @JsonProperty("numberOfItems")            numberOfItems: Int,
+                          @JsonProperty("documentDateOverride")     documentDateOverride: LocalDate,
+                          @JsonProperty("createdBy")                createdBy: String,
+                          @JsonProperty("createdAt")                createdAt: LocalDateTime,
+                          @JsonProperty("requireEligibility")       requireEligibility: Boolean,
+                          @JsonProperty("eligibilityDates")         eligibilityDates: List[EligibilityDateRange],
+                          @JsonProperty("projectDataSetType")       projectDataSetType: ProjectDataSetType,
+                          @JsonProperty("documentUuids")            documentUuids: List[String] = null,
+                          @JsonProperty("patientUuids")             patientUuids: List[String] = null,
+                          @JsonProperty("docPatMap")                docPatMap: Map[String,String] = null
+                         )
+*/
+
+// @see com.apixio.model.patientdataset.ProjectDataSetV2
+message ProjectDataSetV2 {
+    int64 dbId = 1;
+    com.apixio.messages.XUUID projectDataSetUuid = 2;
+    string projectDataSetName = 3;
+    com.apixio.messages.XUUID projectUuid = 4;
+    ProjectDataSetState state = 5;
+    com.apixio.messages.XUUID pdsUuid = 6;
+    string dataType = 7;
+    repeated EngineVariantMetaData models = 8;
+    int32 numberOfItems = 9;
+    // documentDateOverride not yet supported
+    string createdBy = 10;
+    repeated int32 createdAt = 11;
+    bool requireEligibility = 12;
+    // eligibilityDates not yet supported
+    ProjectDataSetType projectDataSetType = 13;
+    repeated string documentUuids = 14;
+    repeated string patientUuids = 15;
+    map<string, string> docPatMap = 16;
+}

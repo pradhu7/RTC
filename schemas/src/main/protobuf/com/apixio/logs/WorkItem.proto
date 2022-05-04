@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package com.apixio.logs;
+
+import "com/apixio/logs/Code.proto";
+import "com/apixio/logs/Finding.proto";
+import "google/protobuf/wrappers.proto";
+
+message WorkItem {
+  google.protobuf.StringValue state = 1;
+  google.protobuf.StringValue project = 2;
+  google.protobuf.StringValue phase = 3;
+  repeated google.protobuf.StringValue users = 4;
+  repeated Coverage coverage = 5;
+
+  message Coverage {
+    google.protobuf.StringValue s = 1;
+    google.protobuf.StringValue e = 2;
+  }
+
+  Code code = 6;
+  repeated Finding findings = 7;
+  repeated Code codes = 8;
+  google.protobuf.BoolValue completed = 9;
+  Metadata metadata = 10;
+
+  message Metadata {
+    google.protobuf.StringValue hccType = 1;
+    google.protobuf.UInt32Value findingCount = 2;
+  }
+
+  google.protobuf.BoolValue show_doc_gap_ui = 11 [json_name = "show_doc_gap_ui"];
+  repeated Code claimedCodes = 12;
+  google.protobuf.StringValue patient = 13;
+  google.protobuf.StringValue hccCode = 14;
+}

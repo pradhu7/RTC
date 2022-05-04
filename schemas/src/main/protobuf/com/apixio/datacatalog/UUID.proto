@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+message UUID {
+  string uuid = 1;
+}

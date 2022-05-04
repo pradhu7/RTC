@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+
+option java_outer_classname = "DefaultValueWrappers";
+
+
+message BoolWrapper {
+  bool value = 1;
+}
+
+message LongWrapper {
+  int64 value = 1;
+}
+
+message IntWrapper {
+  int32 value = 1;
+}
+
+message DoubleWrapper {
+  double value = 1;
+}

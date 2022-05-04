@@ -1,0 +1,52 @@
+[
+  {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "etU6FAG2CcqOUR0NsGMeEEA3",
+      "clinicalStatus": "resolved",
+      "verificationStatus": "confirmed",
+      "category": [
+        {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/condition-category",
+              "code": "problem-list-item",
+              "display": "Problem List Item"
+            }
+          ],
+          "text": "Problem List Item"
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.90",
+            "code": "F17.200"
+          },
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.96",
+            "code": "110483000"
+          }
+        ],
+        "text": "Tobacco use disorder"
+      },
+      "subject": {
+        "reference": "https://apporchard.epic.com/interconnect-aocurprd-oauth/api/FHIR/STU3/Patient/e63wRTbPfr1p8UW81d8Seiw3",
+        "display": "Mychart, Teddy"
+      },
+      "onsetPeriod": {
+        "start": "2006-07-07",
+        "end": "2006-07-07"
+      },
+      "abatementPeriod": {
+        "end": "2006-10-22"
+      },
+      "assertedDate": "2006-07-07",
+      "note": [
+        {
+          "text": "Started smoking age 16, smoking 1-15 ppd. Has made several half-hearted attempts to quit but has never been successful for longer than a few days. Only smoker in the family\r\n"
+        }
+      ]
+    }
+  }
+]

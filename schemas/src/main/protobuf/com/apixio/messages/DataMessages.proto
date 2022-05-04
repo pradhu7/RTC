@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package com.apixio.messages;
+
+import "com/apixio/messages/MessageMetadata.proto";
+
+message DataRequest {
+    MessageHeader header = 1;
+    XUUID docId = 2;
+    XUUID pdsId = 3;
+    DataType dataType = 4;
+    FileType fileType = 5;
+    FileLocation fileLocation = 6;
+    string batchId = 7;
+}
+
+enum DataType {
+    apo = 0; // corresponds to PartialPatientExchange.getDataTypeName
+}
+
+enum FileType {
+    ARCHIVE_DOCUMENT = 0; //default
+}
+
+enum FileLocation {
+    APIXIO_FILE_SYSTEM = 0; //default
+}

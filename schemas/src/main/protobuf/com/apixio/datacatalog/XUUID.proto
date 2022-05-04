@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+message XUUID {
+  string type = 1;
+  string uuid = 2;
+}

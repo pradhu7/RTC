@@ -1,0 +1,133 @@
+
+#### model endpoints:
+
+1. POST:/mcs/models
+  * accepts application/json
+  * produces application/json
+  * body is converted into ModelMeta instance
+
+1a: DELETE:/mcs/models/{id}
+  * deletes ALL data associated with blob (including subparts)
+  * produces application/json (result status)
+
+2. PUT:/mcs/models/{id}/metadata
+  * accepts application/json
+  * produces application/json (for error return)
+  * body is converted into ModelMeta instance
+  * query parameter "method":  if "replace" then payload replaces ALL existing metadata;
+                               if "update" then existing values for keys not in payload are untouched;
+			       default is "update"
+
+3a. PUT:/mcs/models/{id}/metadata/core
+3b. PUT:/mcs/models/{id}/metadata/search
+  * accepts application/json
+  * produces application/json (for error return)
+  * body is converted into Map<String,Object> instance (which will be value of "core" or "search" json); value is "without key"
+
+4. PUT:/mcs/models/{id}/state
+  * accepts text/plain
+  * produces application/json (for error return)
+  * body is case-insensitive name of new state:  [DRAFT, EVALUATED, DISCARDED, ACCEPTED, RELEASED];
+
+5. GET:/mcs/models/{id}/metadata
+  * produces application/json
+  * returns metadata of blob + parts
+
+6a. GET:/mcs/models/{id}/metadata/core
+6b. GET:/mcs/models/{id}/metadata/search
+  * produces application/json
+  * returns JsonMeta for search
+
+
+#### part-specific endpoints:
+
+7. PUT:/mcs/models/{id}/parts/{part}
+  * accepts */* (client declares type via Content-Type)
+  * optional query param "ref={md5hash}" will use the blob identified by the md5hash; 404 returned if no md5 hash match; body is not read
+  * body is byte[] to store in s3
+  * header Apixio-Uploaded-By is used to populate created_by field
+
+# note that part-specific JSON metadata ("core" and "search") is also
+# returned as part of "PartMeta" JSON
+
+8a. PUT:/mcs/models/{id}/parts/{part}/metadata/core
+8b. PUT:/mcs/models/{id}/parts/{part}/metadata/search
+  * accepts application/json
+  * produces application/json (for error return)
+  * body is JSON "extra" data
+
+9a. GET:/mcs/models/{id}/parts/{part}/metadata/core
+9b. GET:/mcs/models/{id}/parts/{part}/metadata/search
+  * produces stored JSON "extra" metadata as application/json;
+    4xx if {id} or {part} isn't found
+    empty body if no saved JSON
+
+10. GET:/mcs/models/{id}/parts/{part}
+  * produces */* (Content-Type of prior uploaded data)
+  * returned data is byte[]
+
+12. GET:/mcs/parts?searchcriteria
+  * only supported search criteria currently is "md5={hash}"
+  * returns application/json;
+  * returned data is JSON array of PartMeta of parts that meet search criteria
+
+20. DELETE:/mcs/models/{id}/parts/{name}
+  * return application/json (results of deletion)
+
+#### general:
+
+11. GET:/mcs/models?searchcriteria
+  * query params are core fields, MCS-defined metadata, and JSON "core." and "search." fields;
+    blobcore fields include [creator, deleted, s3path, createdat]; for "createdat", the
+    query parameter format is date:mm/dd/yyyy (with "/"s url-escaped); date operations include
+    "=", "lt", and "gt".  Example:  ?createdat=lt(date:09%2f30%2f2019) (to get all created prior to 9/30/2019)
+  * produces application/json
+  * returns array of JSON objects (ModelMeta)--one for each matching model
+
+#### logical ID dependency management:
+
+13. PUT:/mcs/logids/{logidleft}/deps
+  * replaces logical IDs that {logidleft} depends on (uses) if {logidleft} isn't locked;
+    if id is locked, then a 400 is returned
+  * body is ["...right1", "...right2", ...]
+
+14. POST:/mcs/logids/{logidleft}/deps
+  * same behavior as #13 but adds to instead of replacing current deps if {logidleft} isn't locked;
+    if id is locked, then a 400 is returned
+  * body is ["...right1", "...right2", ...]
+
+15: DELETE:/mcs/logids/{logidleft}/deps
+  * removes all "uses" dependencies for {logidleft}
+
+16: GET:/mcs/logids/{logid}/deps    -- dependency lookup
+  * looks up logical dependencies
+  * optional query param "mode=[uses,used-by]"; default is "uses"
+  * returns ["...right1", ...]
+
+17: GET:/mcs/logids/{logid}/deps/owners -- dependency lookup
+  * looks up logical dependencies; identical behavior to #16 but adds an
+    efficient translation from logicalIDs to Blob IDs that own those logicalIDs
+  * optional query param "mode=[uses,used-by]"; default is "uses"
+  * returns array of Blobs that own the used/used-by results
+
+#### management of ownership of logical IDs
+
+18: PUT:/mcs/models/{mcid}/owns
+  * replaces list of logicalIDs that {mcid} owns
+  * body is ["...logID1", ...]
+  * if model is that each phys owns at most 1 logical, then list.length==1
+
+(LATER) 19: POST:/mcs/models/{mcid}/owns
+  * adds to list of logicalIDs that {mcid} owns
+  * body is ["...logID1", ...]
+  * if model is that each phys owns at most 1 logical, then this variant probably shouldn't be called
+
+(LATER) 20: DELETE:/mcs/models/{mcid}/owns   !! IS THIS NEEDED???  not yet implemented!
+  * clears list of logicalIDs that {mcid} owns
+
+21: GET:/mcs/models/{mcid}/owns
+  * returns list of logicalIDs that {mcid} owns
+  * if model is that each phys owns at most 1 logical, then returned list.length==1
+
+22: GET:/mcs/logids/{logid}/owner
+  * returns {mcid} that owns {logid}; "" if none

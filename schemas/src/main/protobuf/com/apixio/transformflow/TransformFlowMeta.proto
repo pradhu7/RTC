@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package com.apixio.transformflow;
+option java_outer_classname = "TransformFlowMeta";
+
+
+enum ComputationMuscle {
+    Null_Computation_Muscle = 0;
+    cerebro = 1;
+    passive = 2;
+    kafka = 3;
+    dataHighway = 4;
+}
+
+enum RequestType {
+    None_Request_Type = 0;
+    signal = 1;
+    prediction = 2;
+    logs = 3;
+    annotations = 4;
+}
+
+enum ComputationUnit {
+    Null_Computation_Unit = 0;
+    document = 1;
+    patient = 2;
+    project = 3;
+    pds = 4;
+    documents = 5;
+}
+
+enum DependencyType {
+    None_Dependency_Type = 0;
+    PATIENT_SIGNAL = 1;
+    DOCUMENT_SIGNAL = 2;
+    WHOLE_DOC = 3;
+    PAGE_WINDOW = 4;
+    ANNOTATIONS = 5;
+    CODER_LOGS = 6;
+
+
+    // irr specific dependency types
+    DECISION_HARVESTER = 7;
+    SIGNAL_HARVESTER = 8;
+
+    // hcc complete specific dependency types
+    MA = 9;
+    DateIsAssumed = 10;
+    InferredDate = 11;
+    AssumedDate = 12;
+    CR = 13;
+
+    //// V7 and OTHER Lambda Signals
+    DOCUMENT_SIGNAL_MULTIPLE_PAGE_WINDOW = 14;
+
+}
+
+enum Events {
+    Null_Events = 0;
+    Eligibility = 1;
+    Demographics = 2;
+    Pat_Signals = 3;
+    Doc_Signals = 4;
+    Coder_Logs = 5;
+    Annotations = 6;
+    Predictions = 7;
+    Published_To_App = 8;
+    Signals_Generated = 9;
+    Predictions_Generated = 10;
+    Doc_Signals_Lambda = 11;
+}
+
+enum McIdLocation {
+    None_McId_Location = 0;
+    docset = 1;
+    transform = 2;
+}

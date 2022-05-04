@@ -1,0 +1,14 @@
+/RUNNING_PID
+/project/*-shim.sbt
+*.log
+target/
+/.idea/
+/.idea_modules/
+version.txt
+*.swp
+.DS_STORE
+
+.dir-locals.el
+ensime.sbt
+.ensime
+.ensime_cache

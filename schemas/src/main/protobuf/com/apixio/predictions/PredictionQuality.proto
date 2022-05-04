@@ -1,0 +1,340 @@
+syntax = "proto3";
+
+package com.apixio.predictions.quality;
+
+import "com/apixio/predictions/PredictionCommon.proto";
+
+option java_outer_classname = "Quality";
+
+//
+//==========================================
+// A.B.A
+//
+// QUALITY MEASURE: ABA_GT20
+//
+// Facts:
+//     * BMI
+//     * Weight
+//     * Height (Optional)
+//==========================================
+//
+message ConjectureAbaGt20
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     // ABA1 - BMI
+     FactAbaBmi abaBmi = 3;
+
+     // ABA3 - Height
+     FactAbaWeight abaWeight = 4;
+
+     // ABA2 - Weight (optional)
+     FactAbaHeight abaHeight = 5;
+}
+
+message FactAbaBmi
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute bmi  = 5;
+}
+
+message FactAbaHeight
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute height  = 5;
+}
+
+message FactAbaWeight
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute weight  = 5;
+}
+
+//
+//==========================================
+// A.B.A
+//
+// QUALITY MEASURE: ABA_LT20
+//
+// Facts:
+//     * BMI_PERCENTAGE
+//     * Weight
+//     * Height (Optional)
+//==========================================
+//
+
+message ConjectureAbaLt20
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     // ABA1 - BMI
+     FactAbaBmiPercentage abaBmiPercentage = 3;
+
+     // ABA3 - Height
+     FactAbaWeight abaWeight = 4;
+
+     // ABA2 - Weight (optional)
+     FactAbaHeight abaHeight = 5;
+}
+
+message FactAbaBmiPercentage
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute bmiPercentage  = 5;
+}
+
+//
+//==========================================
+// Colonoscopy
+//
+// QUALITY MEASURE: COL1
+//
+// Facts:
+//     * COL1
+//==========================================
+//
+
+message ConjectureCol1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCol1 col1 = 3;
+}
+
+message FactCol1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+}
+
+//
+//==========================================
+// FOBT
+//
+// QUALITY MEASURE: COL4
+//
+// Facts:
+//     * COL4
+//==========================================
+//
+
+message ConjectureCol4
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCol4 col4 = 3;
+}
+
+message FactCol4
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+}
+
+//
+//==========================================
+// FIT_DNA
+//
+// QUALITY MEASURE: COL5
+//
+// Facts:
+//     * COL5
+//==========================================
+//
+
+message ConjectureCol5
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCol5 col5 = 3;
+}
+
+message FactCol5
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+}
+
+//
+//==========================================
+// FLEX SIG
+//
+// QUALITY MEASURE: COL2
+//
+// Facts:
+//     * COL2
+//==========================================
+//
+
+message ConjectureCol2
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCol2 col2 = 3;
+}
+
+message FactCol2
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+}
+
+//
+//==========================================
+// CT Col
+//
+// QUALITY MEASURE: COL3
+//
+// Facts:
+//     * COL3
+//==========================================
+//
+
+message ConjectureCol3
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCol3 col3 = 3;
+}
+
+message FactCol3
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+}
+
+//
+//==========================================
+// AIC
+//
+// QUALITY MEASURE: CDC1
+//
+// Facts:
+//     * CDC1
+//==========================================
+//
+
+message ConjectureCdc1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCdc1 cdc1 = 3;
+}
+
+message FactCdc1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute A1C = 5;
+}
+
+//
+//==========================================
+// BP Control
+//
+// QUALITY MEASURE: CBP
+//
+// Facts:
+//     * CBP1 (systolic)
+//     * CBP2 (diastolic)
+//==========================================
+//
+
+message ConjectureCbp
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactCbp1 systolicBP = 3;
+     FactCbp2 diastolicBP = 4;
+}
+
+message FactCbp1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute systolicBP = 5;
+}
+
+message FactCbp2
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+     com.apixio.predictions.predictionbin.NumericFloatAttribute diastolicBP = 5;
+}
+
+//
+//==========================================
+// Mammo
+//
+// QUALITY MEASURE: BCS1
+//
+// Facts:
+//     * BCS1
+//==========================================
+//
+
+message ConjectureBcs1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     FactBcs1 bcs1 = 3;
+}
+
+message FactBcs1
+{
+     com.apixio.predictions.predictionbin.Code code = 1;
+     com.apixio.predictions.predictionbin.Source source = 2;
+
+     com.apixio.predictions.predictionbin.DateAttribute dateOfService = 3;
+     com.apixio.predictions.predictionbin.CategoryAttribute provider = 4;
+}

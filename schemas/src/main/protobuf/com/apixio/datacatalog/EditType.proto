@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+enum EditType {
+  ACTIVE = 0; //Default
+  ARCHIVE = 1;
+  DELETE = 2;
+}

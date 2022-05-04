@@ -1,0 +1,9 @@
+flask>=1.1.2
+protobuf>=3.18.0
+wheel>=0.37.0
+apxlogging>=1.0.7
+apxprotobufs>=10.14.2
+requests>=2.22.0
+awswrangler>=2.12.1
+graypy>=2.1.0
+pyyaml>=5.0

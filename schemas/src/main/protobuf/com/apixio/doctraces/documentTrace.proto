@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package com.apixio.doctraces;
+
+import "com/apixio/doctraces/Ocr.proto";
+import "com/apixio/doctraces/Pager.proto";
+import "com/apixio/doctraces/Parser.proto";
+import "com/apixio/doctraces/PatientAssembly.proto";
+import "com/apixio/doctraces/Persist.proto";
+import "com/apixio/doctraces/Index.proto";
+
+message DocumentTrace {
+  string documentUUID = 1;
+  string batchId = 2;
+  string uploadBatchId = 3;
+  string extractBatchId = 4;
+  string jobId = 5;
+  string sequenceFileName = 6;
+  string processName = 7;
+  string processStatusMessage = 8;
+  string version = 9;
+  int64 timeMs = 10;
+
+  string graphId = 11;
+  string graphVersion = 12;
+  string workRequestId = 13;
+  string pipelineVersion = 14;
+
+  oneof details {
+    ParserTrace parser = 15;
+    OcrTrace ocr = 16;
+    PagerDocTrace pager = 17;
+    PatientAssemblyTrace assemblyTrace = 18;
+    PersistTrace persist = 19;
+    IndexTrace index = 20;
+  }
+}
+

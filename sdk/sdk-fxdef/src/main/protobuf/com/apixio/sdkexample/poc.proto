@@ -1,0 +1,19 @@
+//@pragma proto(package=com.apixio.sdkexample.protos)
+//@pragma proto(wrapper=Protos)
+
+syntax = "proto3";
+
+package com.apixio.sdkexample.protos;
+option java_outer_classname = "Tests";
+
+message PbDob {
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+}
+
+message PbPerson {
+  string firstname = 1;
+  string lastname = 2;
+  PbDob dateOfBirth = 3;
+}

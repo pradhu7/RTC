@@ -1,0 +1,289 @@
+################################################################
+# RoleSet is created if not there.  Roles within a RoleSet are created if not
+# there.  Privileges within a Role are used during the creation, or, if the Role
+# already exists, its privileges are updated.
+#
+# IMPORTANT: role sets for both organizations and projects share a single
+# namespace, and the names must be unique, so that means that there can't be an
+# overlap of role set names between projects and organization types.  Because
+# (currently) the role set name for projects is based on the project type and
+# because that's defined by the application/client code, the code prepends
+# "Project." to the project type.  Obviously the nameID for an Organization
+# type of RoleSet shouldn't start with "Project." because of that.
+
+################################################################
+RoleSets:
+  - nameID:  System                                     # "nameID" is not changeable and is used to link things together
+    name:  System Roles
+    description: Roles for System-type organizations
+    type: ORGANIZATION
+    roles:
+      ################ root
+      - ROOT:
+        - forMember: true
+          operation: ManageSystem
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManagePipeline
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManageOrganization
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManageUser
+          acltarget: "*"
+
+        - forMember: true
+          operation: AllowMultipleSessions
+          acltarget: "*"
+
+      ################ data manager
+      - DATAMANAGER:
+        - forMember: true
+          operation: viewDocuments
+          acltarget: "*"
+
+        - forMember: true
+          operation: writeDocuments
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManageBundling
+          acltarget: "*"
+
+        - forMember: true
+          operation: ViewPipelineData
+          acltarget: "*"
+
+      ################ pipeline manager
+      - PIPELINEMANAGER:
+        - forMember: true
+          operation: ManagePipeline
+          acltarget: "*"
+
+        - forMember: true
+          operation: ViewPipelineData
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManageConfigurations
+          acltarget: "*"
+
+      ################ science manager
+      - SCIENCEMANAGER:
+        - forMember: true
+          operation: ManageScience
+          acltarget: "*"
+
+      ################ customer ops
+      - CUSTOMEROPS:
+        - forMember: true
+          operation: ManageProject
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManageOrganization
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManageUser
+          acltarget: "*"
+
+        - forMember: true
+          operation: ManagePatientDataSet
+          acltarget: "*"
+
+        - forMember: true
+          operation: ViewProjectData
+          acltarget: "*"
+
+        - forMember: true
+          operation: ViewPipelineData
+          acltarget: "*"
+
+  - nameID: Vendor
+    name:  Vendor Roles
+    description: Roles for Vendor organizations
+    type: ORGANIZATION
+    roles:
+      ################ admin
+      - ADMIN:
+        - forMember: true
+          operation: ManageUser
+          acltarget: member-of-org
+
+  - nameID: Customer
+    name:  Customer Roles
+    description: Roles for Customer organizations
+    type: ORGANIZATION
+    roles:
+      ################ admin
+      - ADMIN:
+        - forMember: true
+          operation: ManageUser
+          acltarget: member-of-org
+
+      ################ phi viewer
+# commented out because viewDocuments operation is supposed to be on PDS instances not on orgs...
+#      - PHIVIEWER:
+#          ### need mostly duplicate privs because you get same privs if you're a member-of the org or not...
+#        - forMember: true
+#          operation: viewDocuments
+#          acltarget: member-of-org       # could be target-org as the "true" requires that member-of-org == target-org
+#
+#        - forMember: false
+#          operation: viewDocuments
+#          acltarget: target-org
+
+  ################################################################
+  # Note the "Project." prefix below.  Also note that ALL "forMember" values SHOULD BE false as
+  # the underlying RBAC code tests for Organization "member-of" when testing against that
+  # value and NO user will EVER be a member-of (e.g., employee) of a Project!
+  - nameID: Project.hcc
+    name:  HCC Project
+    description: Roles for HCC Projects
+    type: PROJECT
+    roles:
+      ################ supervisor
+      - SUPERVISOR:
+        - forMember: false
+          operation: ManageAclGroupMembership
+          acltarget: acl-groupname
+        - forMember: false
+          operation: ViewUsers
+          acltarget: target-projorg
+
+      ################ qalead
+      - QALEAD:
+        - forMember: false
+          operation: ViewAnnotatedReports
+          acltarget: target-proj
+
+        - forMember: false
+          operation: viewDocuments
+          acltarget: target-projpds
+
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-proj
+
+      ################ reviewer
+      - REVIEWER:
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-proj
+
+        - forMember: false
+          operation: viewDocuments
+          acltarget: target-projpds
+
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-projpds
+
+
+  - nameID: Project.test
+    name:  Test-type Project
+    description: Roles for Test Projects
+    type: PROJECT
+    roles:
+      ################ qalead
+      - QALEAD:
+        - forMember: false
+          operation: ViewAnnotatedReports
+          acltarget: target-proj
+
+        - forMember: false
+          operation: viewDocuments
+          acltarget: target-projpds
+
+      ################ reviewer
+      - REVIEWER:
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-proj
+
+        - forMember: false
+          operation: viewDocuments
+          acltarget: target-projpds
+
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-projpds
+
+
+  - nameID: Project.science
+    name:  Science-type Project
+    description: Roles for Science Projects
+    type: PROJECT
+    roles:
+      ################ qalead
+      - QALEAD:
+        - forMember: false
+          operation: ViewAnnotatedReports
+          acltarget: target-proj
+
+        - forMember: false
+          operation: viewDocuments
+          acltarget: target-projpds
+
+      ################ reviewer
+      - REVIEWER:
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-proj
+
+        - forMember: false
+          operation: viewDocuments
+          acltarget: target-projpds
+
+        - forMember: false
+          operation: canAnnotate
+          acltarget: target-projpds
+
+
+
+################################################################
+# OrgType is created if not there.  Existing OrgTypes will NOT be updated with
+# new information, however.
+
+OrgTypes:
+  - name:  System
+    description: System Organizations 
+    roleSet: System         # RoleSet's "nameID" value
+
+  - name:  Vendor
+    description: blah
+    roleSet: Vendor
+
+  - name:  Customer
+    description: blah
+    roleSet: Customer
+
+################################################################
+# Organization is created if not there.  Existing Organizations will NOT be
+# updated with new information, however.
+
+Organizations:
+  - name:  Apixio
+    description: Apixio, Inc.
+    type: System            # OrgType name
+
+################################################################
+# Users must already exist
+
+Users:
+  - id:             root                         # id is used in RoleAssignments
+    email-address:  root@api.apixio.com
+    member-of:      Apixio
+
+################################################################
+# Role assignments are processed based on the add/rem action tag
+# (add results in call to RoleLogic.assignUserToRole).
+
+RoleAssignments:
+  - root: add Apixio(System/ROOT)
+  - root: add Apixio(System/CUSTOMEROPS)

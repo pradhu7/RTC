@@ -1,0 +1,93 @@
+#logging:
+#  type: external
+logging:
+  level: INFO
+  loggers:
+    apixio: DEBUG
+
+microserviceConfig:
+  apiaclConfig:
+    apiAclDefs: "src/main/resources/apiacls.json"
+    aclColumnFamilyName: apx_cfAcl
+    aclHpCacheTimeout: 10000
+    aclDebug: "DETAILED"
+  persistenceConfig:
+    jedisConfig:
+      testWhileIdle: true
+      testOnBorrow: true
+      maxTotal: 100
+    jedisPool:
+      timeout: 60000
+    redisConfig:
+      host: redis-1-stg.apixio.com
+      port: 6379
+      keyPrefix: development-
+  loggingConfig:
+    appName: infra-config
+    defaultLoggerName: infra-config
+    properties:
+      graphite: false
+      graphite.url: 127.0.0.1
+      graphite.folderPrefix: test.useraccount
+      fluent: false
+      fluent.url: 127.0.0.1
+      fluent.tag: test
+  # externalMaxTTL and internalMaxTTL specify the number of seconds after token
+  # creation when the token is destroyed, regardless of activity.
+  # externalActivityTimeout is the number of seconds after last activity after which
+  # the token is destroyed.  Example: externalMaxTTL=86400 forces a logout after a
+  # day, even with constant activity, whereas externalActivityTimeout=600 logs out
+  # after 10 minutes of inactivity even if it could otherwise be kept alive for a
+  # day.  internalMaxTTL and externalActivityTimeout are required and externalMaxTTL
+  # is optional.
+  tokenConfig:
+    internalMaxTTL: 60
+    externalMaxTTL: 86400
+    externalActivityTimeout: 1800
+    authCookieName: ApxToken
+    gatewayHeader: "x-envoy-internal: true"
+  # all request filters take configuration with the structure of a map from string to
+  # object, where the object can be whatever structure is needed (e.g., a list or
+  # map...).  One required map key is "filterClass" which refers to a class that
+  # extends com.apixio.web.Microfilter
+  # only 1 main filter is supported; this pattern indicates which URL requests
+  # actually get filtered: (Note: static bundles might affect this design here)
+  filterConfig:
+    filterUrlPattern:
+      - "/*"
+    # requestFilters is the list of web filters that will be applied in the listed order
+    # to each and every request coming in to the server:
+    requestFilters:
+      - com.apixio.restbase.web.RequestTimer
+      - com.apixio.restbase.web.ValidateToken
+      - com.apixio.useracct.web.AttachUser
+      - com.apixio.restbase.web.AclChecker
+    com.apixio.restbase.web.ValidateToken:
+      authCookieName: ApxToken             # MUST match what's in tokenConfig.authCookieName (sadly no central config on this)
+      tokenType: INTERNAL
+      publicURLs: [ ]
+      #partialAuthURLs:
+      #  - /api
+
+vaultConfig:
+  vaultAddress: "https://vault-stg.apixio.com:8200"
+  vaultRole: "infra-config-test"
+awsCredentialConfig:
+  awsRole: "arn:aws:iam::088921318242:role/stg/infra-config-stg"
+  accessKey: AKIARJNA7UNRKDAJRGVF
+  secretKey: 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
+sftpServersConfig:
+  unit-test:
+    region: us-west-2
+    hostname: sftp.apixio.com
+    port: 22
+    securityGroupId: "sg-08289385027345988"
+    s3Bucket: "apixio-test-sftp-bucket"
+    userAwsRole: "arn:aws:iam::088921318242:role/stg/infra-config-test"
+  sftp-stg-transferfamily-stg:
+    region: us-west-2
+    hostname: sftp.apixio.com
+    port: 22
+    securityGroupId: "sg-08289385027345988"
+    s3Bucket: "apixio-test-sftp-bucket"
+    userAwsRole: "arn:aws:iam::088921318242:role/stg/infra-config-test"

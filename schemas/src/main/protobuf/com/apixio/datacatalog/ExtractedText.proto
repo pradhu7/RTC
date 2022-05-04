@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+import "com/apixio/datacatalog/Source.proto";
+import "com/apixio/datacatalog/UUID.proto";
+import "com/apixio/datacatalog/PatientMeta.proto";
+
+
+message ExtractedText {
+  PatientMeta patientMeta = 1;
+  UUID documentId = 2;
+  Source source = 3;
+  bytes stringContent = 4;
+  TextType textType = 5;
+}
+
+// No Source or Patient Meta
+message RawExtractedText {
+  UUID documentId = 1;
+  UUID sourceId = 2;
+  bytes stringContent = 3;
+  TextType textType = 4;
+}
+
+enum TextType {
+  UNKNOWN_TYPE = 0;
+  HOCR = 1;
+  TEXT_EXTRACTED = 2;
+  STRING_CONTENT = 3;
+}

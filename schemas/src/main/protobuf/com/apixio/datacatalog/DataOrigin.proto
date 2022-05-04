@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.apixio.datacatalog;
+
+enum DataOrigin {
+  historicalApo = 0;
+  // Procedures
+  ffsClaims = 1;
+  fhir_procedure = 2;
+
+  // Other
+}

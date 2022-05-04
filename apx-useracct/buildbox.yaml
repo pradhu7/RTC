@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: docker
+    image: 088921318242.dkr.ecr.us-west-2.amazonaws.com/trivy
+    command: ["tail", "-f", "/dev/null"]
+  - name: maven
+    image: maven:3.6.3-jdk-8
+    command: ["tail", "-f", "/dev/null"] #noop
+    imagePullPolicy: IfNotPresent
+    resources:
+      requests:
+        memory: "4Gi"
+      limits:
+        memory: "4Gi"
+    volumeMounts:
+    - name: ivy2
+      mountPath: /root/.ivy2/build.credentials
+      subPath: build.credentials
+    - name: ivy2
+      mountPath: /root/.ivy2/release.credentials
+      subPath: release.credentials
+    - name: m2
+      mountPath: /root/.m2/settings.xml
+      subPath: settings.xml
+  volumes:
+  - name: ivy2
+    configMap:
+      name: jenkins-sbt-ivy2
+  - name: m2
+    configMap:
+      name: jenkins-sbt-m2

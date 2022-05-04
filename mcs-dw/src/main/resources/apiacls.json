@@ -1,0 +1,32 @@
+// Note that Java-style comments are allowed in this file :-)
+
+// API declarations in this file MUST be ordered as needed to ensure that more
+// specific URLs are before wildcarded URLs that would match the more specific URLs!
+// Keep in mind that HTTP method will be used as part of the matching process.
+
+// Notes:
+//
+//  * no field of "state-config", "role-config", or "permission-config" will deny access to the API
+//
+//  * all checks defined via *-config MUST return ALLOW or the API is forbidden (i.e., an implicit && is done)
+//
+//  * a missing *-config will *not* disallow (unless all are missing--see first bullet point)
+//
+//  * a missing auth-token will *not* disallow, so if a logged in user is required, some test must be made
+//
+//  * only *one* of each *-config is allowed
+//
+//  * for state-config and role-config, only *1* key is allowed (???).  if an "OR" operation
+//    is required, those roles/states that are OR-ed must be comma-separated
+
+[
+    // ################ 
+
+    { "api-id":   "all-1",
+      "api-name": "",
+      "api-url":  "*:/*",
+
+      "state-config": { "ACTIVE": "allow" }
+    }
+    
+]

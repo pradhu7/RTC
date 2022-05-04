@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package com.apixio.metric;
+
+message AuditEventRecord {
+    string identity = 1;
+    string id = 2;
+    int64 when_measured = 3 [json_name = "when_measured"];
+
+    string customer_id = 4 [json_name = "customer_id"];
+    string project_id = 5 [json_name = "project_id"];
+    string pds_id = 6 [json_name = "pds_id"];
+    string batch_name = 7 [json_name = "batch_name"];
+    string docset_id = 8 [json_name = "docset_id"];
+    string patient_id = 9 [json_name = "patient_id"];
+    string document_id = 10 [json_name = "document_id"];
+    string workrequest_id = 11 [json_name = "workrequest_id"];
+    string generator_id = 12 [json_name = "generator_id"];
+    string mc_id = 13 [json_name = "mc_id"];
+
+    string component = 14;
+    string event = 15;
+    string source = 16;
+    string status = 17;
+
+    int64 count = 18;
+
+    //string meta currently modeled in the the table. Needs to be migrated to meta_json
+
+    oneof meta {
+        PatientSignalMeta patient_signal_meta = 19 [json_name = "meta_json"];
+        WorkrequestMeta work_request_meta = 20 [json_name = "meta_json"];
+        SiggenMeta siggen_meta = 21 [json_name = "meta_json"];
+        LoaderMeta loader_meta = 22 [json_name = "meta_json"];
+        CombinerMeta combiner_meta = 23 [json_name = "meta_json"];
+        PipelineActivityMeta pipeline_meta = 24 [json_name = "meta_json"];
+        IntegrationSvcNotificationMeta integrationSvcNotificationMeta = 25 [json_name = "meta_json"];
+        NAssemblyMeta nassembly_meta = 26 [json_name = "meta_json"];
+        AirflowJobMeta airflow_job_meta = 27 [json_name = "meta_json"];
+        OcrOperationMeta ocr_operation_meta = 28 [json_name = "meta_json"];
+    }
+}
+
+message LoaderMeta {
+    string uploadjob_id = 1 [json_name = "uploadjob_id"];
+    string host_ip = 2 [json_name = "host_ip"];
+    string uploaded_file_id = 4 [json_name = "uploaded_file_id"];
+    string apx_package_uuid = 5 [json_name = "apx_package_uuid"];
+    string apx_package_type = 6 [json_name = "apx_package_type"];
+    string mime_type = 7 [json_name = "mime_type"];
+    string last_status = 8 [json_name = "last_status"];
+    int32 last_status_code = 9 [json_name = "last_status_code"];
+}
+
+message PatientSignalMeta {
+    string message_type = 2 [json_name = "message_type"];
+    string persisted_categories = 3 [json_name = "persisted_categories"];
+}
+
+message NAssemblyMeta {
+    string data_type = 1 [json_name = "data_type"];
+    string run_id = 2 [json_name = "run_id"];
+    string obj_id = 3 [json_name = "obj_id"];
+    string code_version = 4 [json_name = "code_version"];
+    string code_branch = 5 [json_name = "code_branch"];
+    string code_commit_id = 6 [json_name = "code_commit_id"];
+    string code_commit_time = 7 [json_name = "code_commit_time"];
+    string code_build_time = 8 [json_name = "code_build_time"];
+}
+
+message WorkrequestMeta {
+    int32 attempt_number = 1 [json_name = "attempt_number"];
+    string origin_id = 2 [json_name = "origin_id"];
+}
+
+message SiggenMeta {
+    string executorId = 1;
+    string threadId = 2;
+    string taskId = 3;
+}
+
+message CombinerMeta {
+    int64 startTime = 1 [json_name = "startTime"];
+    int64 endTime = 2 [json_name = "endTime"];
+    int64 resultCount = 3 [json_name = "resultCount"];
+    int64 docCount = 4 [json_name = "docCount"];
+    string persistId = 5 [json_name = "persistId"];
+
+    // some spark params for spark combiners
+
+    string s3Bucket = 6 [json_name = "s3Bucket"];
+    int32 threshold = 7 [json_name = "threshold"];
+    int32 groupCount = 8 [json_name = "groupCount"];
+    int32 batchSize = 9 [json_name = "batchSize"];
+
+    // add more params as they are needed for future combiners
+}
+
+message PipelineActivityMeta {
+    int64 etlDocsProcessed = 1 [json_name = "etlDocsProcessed"];
+    int64 etlPackagesProcessed = 2 [json_name = "etlPackagesProcessed"];
+    int64 sparkSiggenDocsProcessed = 3 [json_name = "sparkSiggenDocsProcessed"];
+    int64 lambdaEccDocsProcessed = 4 [json_name = "lambdaEccDocsProcessed"];
+    int64 irrProjectsRun = 5 [json_name = "irrProjectsRun"];
+    int64 harvestedDocsetsRun = 6 [json_name = "harvestedDocsetsRun"];
+    int64 harvestedDocumentCount = 7 [json_name = "harvestedDocumentCount"];
+}
+
+message IntegrationSvcNotificationMeta {
+    string triggerName = 1 [json_name = "triggerName"];
+    string livyBatchId = 2 [json_name = "livyBatchId"];
+    string sparkAppId = 3 [json_name = "sparkAppId"];
+    string outputPath = 4 [json_name = "outputPath"];
+    string message = 5 [json_name = "message"];
+    int64 failedWorkrequests = 6 [json_name = "failedWorkrequests"];
+}
+
+message AirflowJobMeta {
+    string dagId = 1 [json_name="dag_id"];
+    string taskId = 2 [json_name="task_id"];
+    string runId = 3 [json_name="run_id"];
+    string dataType = 4 [json_name="data_type"];
+    string executionDate = 5 [json_name="execution_date"];
+}
+
+message OcrOperationMeta {
+    string availablePages = 1 [json_name = "availablePages"];
+    string failedReason = 2 [json_name = "failedReason"];
+}
